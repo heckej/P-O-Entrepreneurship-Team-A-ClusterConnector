@@ -46,8 +46,6 @@ namespace ClusterConnector.Models
         //    }
         //}
 
-        private static bool bTest = true;
-
         public static List<TestQuestion> TestConnection(int id)
         {
             List<TestQuestion> questions = new List<TestQuestion>();
