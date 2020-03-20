@@ -31,5 +31,5 @@ jobs:
       with:
         app-name: 'clusterapi20200320113808'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_496d39e8a0744d38b93ac76fceaf02f6 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_24b37b8ae0aa4003a4ea759ff5616b1c }}
         package: ${{env.DOTNET_ROOT}}/myapp 
