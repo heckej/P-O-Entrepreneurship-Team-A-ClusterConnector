@@ -54,6 +54,7 @@ namespace ClusterConnector.Models
             using (SqlConnection connection = new SqlConnection("Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=BerndWeckx;Password=Bubbi100@3751;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
             {
                 String sqlCommand = "Select * From dbo.TestTable test Where test.ID = " + id +";";
+                sqlCommand = "Select * From dbo.TestTable ;";
                 SqlCommand command = new SqlCommand(sqlCommand, connection);
                 command.Connection.Open();
                 command.ExecuteNonQuery();
