@@ -24,7 +24,7 @@ class Actions(Enum):
 class Connector(object):
     """Allows communication with Cluster API server.
 
-    This Connector class allows communication with the Cluster API server by returning tasks
+    This Connector class allows communication with the Cluster API server by returning NLP tasks
     from the server whenever any are available and by replying with a response.
 
     Attributes:
@@ -159,9 +159,10 @@ class Connector(object):
         """Sends the given response to the server.
 
         Args:
-            response: A JSON object.
+            response: A dictionary built like a JSON object.
 
-            As a response argument, currently two possible structures can be parsed:
+            The effect of replying with a response that doesn't follow one of the below mentioned structures
+            is undefined. As a response argument, currently two possible structures are allowed:
 
             1. A reply to a `match_question` containing a top x of comparable questions:
 
@@ -176,7 +177,7 @@ class Connector(object):
                                 "question_id": 333,
                                 "prob": 0.654
                             }
-                        ]
+                        ],
                         "msg_id": 1234567890
                     }
 
