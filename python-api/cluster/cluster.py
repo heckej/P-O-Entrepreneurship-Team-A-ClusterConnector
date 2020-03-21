@@ -3,10 +3,16 @@ class Connector(object):
 
     This Connector class allows communication with the Cluster API server by returning tasks
     from the server whenever any are available and by replying with a response.
+
+    Attributes:
+        prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
+            only one task will be fetched at a time. To improve performance you may want to leave this set to True,
+            because that way less data transfers may be needed, though there's no guaranty for that.
     """
 
     def __init__(self):
-        self._tasks = list()  # store received tasks
+        self.prefetch = True
+        self._tasks = list()  # store non processed received tasks
         self._server_timeout = 4  # timeout used while checking for server messages
 
     def has_task(self):
