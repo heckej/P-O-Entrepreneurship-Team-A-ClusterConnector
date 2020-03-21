@@ -126,31 +126,23 @@ class Connector(object):
             if timeout is None or timeout > 0:
                 if timeout is not None:
                     # equally divide the given timeout
-                    timeout_offensive = timeout // 2
+                    timeout_offensive = timeout / 2
                     timeout_unmatched = timeout - timeout_offensive
+                else:
+                    timeout_unmatched = None
+                    timeout_offensive = None
+                path_unmatched = "/questions/unmatched"
+                tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
-                start_time = time.time()
-                end_time = start_time
-                while (timeout is None or end_time - start_time < timeout) and (self.prefetch or not tasks_found):
-                    path_unmatched = self._base_request_uri + "/questions/unmatched"
-                    tasks_found = self._request_questions(path_unmatched, timeout)
-
+                if self.prefetch or not tasks_found:
                     # request questions of which the offensiveness has to be tested
-                    path_offensive = self._base_request_uri + "/questions/offensive/undefined"
-                    if self.prefetch or (not self.prefetch and not tasks_found):
-                        # if prefetching disabled and already task found, then don't look for another task
-                        tasks_found = tasks_found | self._request_questions(path_offensive, timeout)
+                    path_offensive = "/questions/offensive/undefined"
+                    # if prefetching disabled and already task found, then don't look for another task
+                    tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
 
-                    # update the timer
-                    end_time = time.time()
-                    if timeout is None:
-                        # jump out of loop when timeout was endless and result received
-                        timeout = -1
-
-        if not tasks_found:
-            return None
-        task = self._tasks[0]
-        self._tasks.remove(0)
+            if not tasks_found:
+                return None
+        task = self._tasks.pop(0)
         self._tasks_in_progress[task['msg_id']] = task
 
         return task
