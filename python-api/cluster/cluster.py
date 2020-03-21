@@ -151,7 +151,8 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path, timeout):
+    def _request_questions(self, path: str, timeout: int):
+        """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = requests.get(request_uri, timeout=timeout)
         if request.status_code == 200:
