@@ -210,3 +210,19 @@ class Connector(object):
             which task the reply belongs. It corresponds to the `msg_id` from a task from
             the `get_next_task()` method.
         """
+
+        question_id = response['question_id']
+        print("TASKS IN PROGRESS:", self._tasks_in_progress)
+        print("TASKS:", self._tasks)
+        action = self._tasks_in_progress[response['msg_id']]['action']
+        if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
+            request_uri = self._base_request_uri
+            if action == Actions.MATCH_QUESTIONS.value:
+                request_uri += f"/questions/match/{question_id}"
+            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
+                request_uri += f"/questions/offensive/{question_id}"
+            del self._tasks_in_progress[response['msg_id']]
+            data = response
+            request = requests.post(request_uri, json=data)
+            return request.json()
+
