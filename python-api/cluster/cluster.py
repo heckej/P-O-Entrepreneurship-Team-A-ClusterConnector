@@ -119,23 +119,29 @@ class Connector(object):
         tasks_found = False
         if len(self._tasks) == 0:
             # no tasks left, ask the server
-            if timeout is not None and timeout > 0:
-                # equally divide the given timeout
-                timeout_offensive = timeout // 2
-                timeout_unmatched = timeout - timeout_offensive
+            if timeout is None or timeout > 0:
+                if timeout is not None:
+                    # equally divide the given timeout
+                    timeout_offensive = timeout // 2
+                    timeout_unmatched = timeout - timeout_offensive
 
                 start_time = time.time()
                 end_time = start_time
-                while end_time - start_time < timeout and not tasks_found:
+                while (timeout is None or end_time - start_time < timeout) and (self.prefetch or not tasks_found):
                     path_unmatched = self._base_request_uri + "/questions/unmatched"
                     tasks_found = self._request_questions(path_unmatched, timeout)
 
                     # request questions of which the offensiveness has to be tested
                     path_offensive = self._base_request_uri + "/questions/offensive/undefined"
-                    tasks_found = tasks_found | self._request_questions(path_offensive, timeout)
+                    if self.prefetch or (not self.prefetch and not tasks_found):
+                        # if prefetching disabled and already task found, then don't look for another task
+                        tasks_found = tasks_found | self._request_questions(path_offensive, timeout)
 
                     # update the timer
                     end_time = time.time()
+                    if timeout is None:
+                        # jump out of loop when timeout was endless and result received
+                        timeout = -1
 
         if not tasks_found:
             return None
