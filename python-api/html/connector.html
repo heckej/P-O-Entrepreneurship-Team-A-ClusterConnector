@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>cluster API documentation</title>
+<title>connector API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>cluster</code></h1>
+<h1 class="title">Module <code>connector</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -32,6 +32,7 @@
     &#34;&#34;&#34;
 
     def __init__(self):
+        &#34;&#34;&#34;Inits Connector.&#34;&#34;&#34;
         self._tasks = list()  # store received tasks
         self._server_timeout = 4  # timeout used while checking for server messages
 
@@ -54,292 +55,12 @@
         &#34;&#34;&#34;
         Waits for the next task from the server and returns it.
 
-        Currently two possible JSON structures can be expected:
-
-        1. The server asks to match a question with an undefined number of questions:
-
-                {
-                    &#34;action&#34;: &#34;match_questions&#34;,
-                    &#34;question_id&#34;: 123,
-                    &#34;question&#34;: &#34;XXX&#34;,
-                    &#34;compare_questions&#34;: [
-                        {
-                            &#34;question_id&#34;: 111,
-                            &#34;question&#34;: &#34;AAA&#34;
-                        },
-                        {
-                            &#34;question_id&#34;: 222,
-                            &#34;question&#34;: &#34;BBB&#34;
-                        },
-                        {
-                            &#34;question_id&#34;: 333,
-                            &#34;question&#34;: &#34;CCC&#34;
-                        },
-                    ],
-                    &#34;msg_id&#34;: 1234567890
-                }
-
-
-        2. The server asks to estimate the offensiveness of a sentence:
-
-                 {
-                    &#34;action&#34;: &#34;estimate_offensiveness&#34;,
-                    &#34;question_id&#34;: 100,
-                    &#34;question&#34;: &#34;XXX&#34;,
-                    &#34;msg_id&#34;: 1234567890
-                 }
-
         Returns:
              A task to be processed as a JSON object.
-        &#34;&#34;&#34;
+             Currently two possible JSON structures are to be expected:
+             1. The server asks to match a question with an undefined number of questions:
 
-        &#34;&#34;&#34;
-        1st iteration:
-            Send a simple HTTP request to API server requesting task to be performed.
-            Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
-            possible, because this method only ends when a task has been received and appended to _tasks).
-        
-        2nd iteration:
-            Connect to server using web socket, so a permanent connection is made. This way the server
-            can push directly any tasks without this client having to poll every now and then.
-        &#34;&#34;&#34;
-
-    def reply(self, response):
-        &#34;&#34;&#34;Sends the given response to the server.
-
-        Args:
-            response: A JSON object.
-
-            As a response argument, currently two possible structures can be parsed:
-
-            1. A reply to a `match_question` containing a top x of comparable questions:
-
-                    {
-                        &#34;question_id&#34;: 123,
-                        &#34;possible_matches&#34;: [
-                            {
-                                &#34;question_id&#34;: 111,
-                                &#34;prob&#34;: 0.789
-                            },
-                            {
-                                &#34;question_id&#34;: 333,
-                                &#34;prob&#34;: 0.654
-                            }
-                        ]
-                        &#34;msg_id&#34;: 1234567890
-                    }
-
-            2. A reply to an `estimate_offensiveness`:
-
-                    {
-                        &#34;question_id&#34;: 100,
-                        &#34;prob&#34;: 0.123,
-                        &#34;msg_id&#34;: 1234567890
-                    }
-
-            The `msg_id` is always used to include in the reply so that the server knows to
-            which task the reply belongs. It corresponds to the `msg_id` from a task from
-            the `get_next_task()` method.
-        &#34;&#34;&#34;</code></pre>
-</details>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-</section>
-<section>
-<h2 class="section-title" id="header-classes">Classes</h2>
-<dl>
-<dt id="cluster.Connector"><code class="flex name class">
-<span>class <span class="ident">Connector</span></span>
-</code></dt>
-<dd>
-<section class="desc"><p>Allows communication with Cluster API server.</p>
-<p>This Connector class allows communication with the Cluster API server by returning tasks
-from the server whenever any are available and by replying with a response.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">class Connector(object):
-    &#34;&#34;&#34;Allows communication with Cluster API server.
-
-    This Connector class allows communication with the Cluster API server by returning tasks
-    from the server whenever any are available and by replying with a response.
-    &#34;&#34;&#34;
-
-    def __init__(self):
-        self._tasks = list()  # store received tasks
-        self._server_timeout = 4  # timeout used while checking for server messages
-
-    def has_task(self):
-        &#34;&#34;&#34;Checks whether the server has any tasks available.
-
-        Sends a message to the server to check whether it has any tasks that should be processed.
-
-        Returns:
-            True if and only if there is a task to be processed.
-        &#34;&#34;&#34;
-        &#34;&#34;&#34;
-        CONCRETELY: We use this function to actively wait on a request, but if you
-        could implement a &#34;wait-and-wake-up&#34; method where the execution of the script
-        just waits until there is a request and then wakes up that would be even better
-        since active waiting will create unnecessary network traffic :)
-        &#34;&#34;&#34;
-
-    def get_next_task(self):
-        &#34;&#34;&#34;
-        Waits for the next task from the server and returns it.
-
-        Currently two possible JSON structures can be expected:
-
-        1. The server asks to match a question with an undefined number of questions:
-
-                {
-                    &#34;action&#34;: &#34;match_questions&#34;,
-                    &#34;question_id&#34;: 123,
-                    &#34;question&#34;: &#34;XXX&#34;,
-                    &#34;compare_questions&#34;: [
-                        {
-                            &#34;question_id&#34;: 111,
-                            &#34;question&#34;: &#34;AAA&#34;
-                        },
-                        {
-                            &#34;question_id&#34;: 222,
-                            &#34;question&#34;: &#34;BBB&#34;
-                        },
-                        {
-                            &#34;question_id&#34;: 333,
-                            &#34;question&#34;: &#34;CCC&#34;
-                        },
-                    ],
-                    &#34;msg_id&#34;: 1234567890
-                }
-
-
-        2. The server asks to estimate the offensiveness of a sentence:
-
-                 {
-                    &#34;action&#34;: &#34;estimate_offensiveness&#34;,
-                    &#34;question_id&#34;: 100,
-                    &#34;question&#34;: &#34;XXX&#34;,
-                    &#34;msg_id&#34;: 1234567890
-                 }
-
-        Returns:
-             A task to be processed as a JSON object.
-        &#34;&#34;&#34;
-
-        &#34;&#34;&#34;
-        1st iteration:
-            Send a simple HTTP request to API server requesting task to be performed.
-            Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
-            possible, because this method only ends when a task has been received and appended to _tasks).
-        
-        2nd iteration:
-            Connect to server using web socket, so a permanent connection is made. This way the server
-            can push directly any tasks without this client having to poll every now and then.
-        &#34;&#34;&#34;
-
-    def reply(self, response):
-        &#34;&#34;&#34;Sends the given response to the server.
-
-        Args:
-            response: A JSON object.
-
-            As a response argument, currently two possible structures can be parsed:
-
-            1. A reply to a `match_question` containing a top x of comparable questions:
-
-                    {
-                        &#34;question_id&#34;: 123,
-                        &#34;possible_matches&#34;: [
-                            {
-                                &#34;question_id&#34;: 111,
-                                &#34;prob&#34;: 0.789
-                            },
-                            {
-                                &#34;question_id&#34;: 333,
-                                &#34;prob&#34;: 0.654
-                            }
-                        ]
-                        &#34;msg_id&#34;: 1234567890
-                    }
-
-            2. A reply to an `estimate_offensiveness`:
-
-                    {
-                        &#34;question_id&#34;: 100,
-                        &#34;prob&#34;: 0.123,
-                        &#34;msg_id&#34;: 1234567890
-                    }
-
-            The `msg_id` is always used to include in the reply so that the server knows to
-            which task the reply belongs. It corresponds to the `msg_id` from a task from
-            the `get_next_task()` method.
-        &#34;&#34;&#34;</code></pre>
-</details>
-<h3>Methods</h3>
-<dl>
-<dt id="cluster.Connector.get_next_task"><code class="name flex">
-<span>def <span class="ident">get_next_task</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Waits for the next task from the server and returns it.</p>
-<p>Currently two possible JSON structures can be expected:</p>
-<ol>
-<li>
-<p>The server asks to match a question with an undefined number of questions:</p>
-<pre><code>{
-    "action": "match_questions",
-    "question_id": 123,
-    "question": "XXX",
-    "compare_questions": [
-        {
-            "question_id": 111,
-            "question": "AAA"
-        },
-        {
-            "question_id": 222,
-            "question": "BBB"
-        },
-        {
-            "question_id": 333,
-            "question": "CCC"
-        },
-    ],
-    "msg_id": 1234567890
-}
-</code></pre>
-</li>
-<li>
-<p>The server asks to estimate the offensiveness of a sentence:</p>
-<pre><code> {
-    "action": "estimate_offensiveness",
-    "question_id": 100,
-    "question": "XXX",
-    "msg_id": 1234567890
- }
-</code></pre>
-</li>
-</ol>
-<h2 id="returns">Returns</h2>
-<p>A task to be processed as a JSON object.</p></section>
-<details class="source">
-<summary>
-<span>Expand source code</span>
-</summary>
-<pre><code class="python">def get_next_task(self):
-    &#34;&#34;&#34;
-    Waits for the next task from the server and returns it.
-
-    Currently two possible JSON structures can be expected:
-
-    1. The server asks to match a question with an undefined number of questions:
-
-            {
+             {
                 &#34;action&#34;: &#34;match_questions&#34;,
                 &#34;question_id&#34;: 123,
                 &#34;question&#34;: &#34;XXX&#34;,
@@ -358,10 +79,9 @@ from the server whenever any are available and by replying with a response.</p><
                     },
                 ],
                 &#34;msg_id&#34;: 1234567890
-            }
+             }
 
-
-    2. The server asks to estimate the offensiveness of a sentence:
+             2. The server asks to estimate the offensiveness of a sentence:
 
              {
                 &#34;action&#34;: &#34;estimate_offensiveness&#34;,
@@ -369,15 +89,286 @@ from the server whenever any are available and by replying with a response.</p><
                 &#34;question&#34;: &#34;XXX&#34;,
                 &#34;msg_id&#34;: 1234567890
              }
+        &#34;&#34;&#34;
+
+        &#34;&#34;&#34;
+        1st iteration:
+            Send a simple HTTP request to API server requesting task to be performed.
+            Append received tasks to _tasks and return first item of list if not empty (shouldn&#39;t be 
+            possible, because this method only ends when a task has been received and appended to _tasks).
+        
+        2nd iteration:
+            Connect to server using web socket, so a permanent connection is made. This way the server
+            can push directly any tasks without this client having to poll every now and then.
+        &#34;&#34;&#34;
+
+    def reply(self, response):
+        &#34;&#34;&#34;Sends the given response to the server.
+
+        Args:
+            response: A JSON object.
+
+            As a response argument, currently two possible structures can be parsed:
+            1. A reply to a &#34;match_question&#34; containing a top x of comparable questions:
+
+            {
+                &#34;question_id&#34;: 123,
+                &#34;possible_matches&#34;: [
+                    {
+                        &#34;question_id&#34;: 111,
+                        &#34;prob&#34;: 0.789
+                    },
+                    {
+                        &#34;question_id&#34;: 333,
+                        &#34;prob&#34;: 0.654
+                    }
+                ]
+                &#34;msg_id&#34;: 1234567890
+            }
+
+            2. A reply to an &#34;estimate_offensiveness&#34;:
+
+            {
+                &#34;question_id&#34;: 100,
+                &#34;prob&#34;: 0.123,
+                &#34;msg_id&#34;: 1234567890
+            }
+
+            The &#39;msg_id&#39; is always used to include in the reply so that the server knows to
+            which task the reply belongs. It corresponds to the &#39;msg_id&#39; from a task from
+            the &#39;get_next_task()&#39; method.
+        &#34;&#34;&#34;</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="connector.Connector"><code class="flex name class">
+<span>class <span class="ident">Connector</span></span>
+</code></dt>
+<dd>
+<section class="desc"><p>Allows communication with Cluster API server.</p>
+<p>This Connector class allows communication with the Cluster API server by returning tasks
+from the server whenever any are available and by replying with a response.</p>
+<p>Inits Connector.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Connector(object):
+    &#34;&#34;&#34;Allows communication with Cluster API server.
+
+    This Connector class allows communication with the Cluster API server by returning tasks
+    from the server whenever any are available and by replying with a response.
+    &#34;&#34;&#34;
+
+    def __init__(self):
+        &#34;&#34;&#34;Inits Connector.&#34;&#34;&#34;
+        self._tasks = list()  # store received tasks
+        self._server_timeout = 4  # timeout used while checking for server messages
+
+    def has_task(self):
+        &#34;&#34;&#34;Checks whether the server has any tasks available.
+
+        Sends a message to the server to check whether it has any tasks that should be processed.
+
+        Returns:
+            True if and only if there is a task to be processed.
+        &#34;&#34;&#34;
+        &#34;&#34;&#34;
+        CONCRETELY: We use this function to actively wait on a request, but if you
+        could implement a &#34;wait-and-wake-up&#34; method where the execution of the script
+        just waits until there is a request and then wakes up that would be even better
+        since active waiting will create unnecessary network traffic :)
+        &#34;&#34;&#34;
+
+    def get_next_task(self):
+        &#34;&#34;&#34;
+        Waits for the next task from the server and returns it.
+
+        Returns:
+             A task to be processed as a JSON object.
+             Currently two possible JSON structures are to be expected:
+             1. The server asks to match a question with an undefined number of questions:
+
+             {
+                &#34;action&#34;: &#34;match_questions&#34;,
+                &#34;question_id&#34;: 123,
+                &#34;question&#34;: &#34;XXX&#34;,
+                &#34;compare_questions&#34;: [
+                    {
+                        &#34;question_id&#34;: 111,
+                        &#34;question&#34;: &#34;AAA&#34;
+                    },
+                    {
+                        &#34;question_id&#34;: 222,
+                        &#34;question&#34;: &#34;BBB&#34;
+                    },
+                    {
+                        &#34;question_id&#34;: 333,
+                        &#34;question&#34;: &#34;CCC&#34;
+                    },
+                ],
+                &#34;msg_id&#34;: 1234567890
+             }
+
+             2. The server asks to estimate the offensiveness of a sentence:
+
+             {
+                &#34;action&#34;: &#34;estimate_offensiveness&#34;,
+                &#34;question_id&#34;: 100,
+                &#34;question&#34;: &#34;XXX&#34;,
+                &#34;msg_id&#34;: 1234567890
+             }
+        &#34;&#34;&#34;
+
+        &#34;&#34;&#34;
+        1st iteration:
+            Send a simple HTTP request to API server requesting task to be performed.
+            Append received tasks to _tasks and return first item of list if not empty (shouldn&#39;t be 
+            possible, because this method only ends when a task has been received and appended to _tasks).
+        
+        2nd iteration:
+            Connect to server using web socket, so a permanent connection is made. This way the server
+            can push directly any tasks without this client having to poll every now and then.
+        &#34;&#34;&#34;
+
+    def reply(self, response):
+        &#34;&#34;&#34;Sends the given response to the server.
+
+        Args:
+            response: A JSON object.
+
+            As a response argument, currently two possible structures can be parsed:
+            1. A reply to a &#34;match_question&#34; containing a top x of comparable questions:
+
+            {
+                &#34;question_id&#34;: 123,
+                &#34;possible_matches&#34;: [
+                    {
+                        &#34;question_id&#34;: 111,
+                        &#34;prob&#34;: 0.789
+                    },
+                    {
+                        &#34;question_id&#34;: 333,
+                        &#34;prob&#34;: 0.654
+                    }
+                ]
+                &#34;msg_id&#34;: 1234567890
+            }
+
+            2. A reply to an &#34;estimate_offensiveness&#34;:
+
+            {
+                &#34;question_id&#34;: 100,
+                &#34;prob&#34;: 0.123,
+                &#34;msg_id&#34;: 1234567890
+            }
+
+            The &#39;msg_id&#39; is always used to include in the reply so that the server knows to
+            which task the reply belongs. It corresponds to the &#39;msg_id&#39; from a task from
+            the &#39;get_next_task()&#39; method.
+        &#34;&#34;&#34;</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="connector.Connector.get_next_task"><code class="name flex">
+<span>def <span class="ident">get_next_task</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Waits for the next task from the server and returns it.</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt>A task to be processed as a JSON object.</dt>
+<dt><code>Currently</code> <code>two</code> <code>possible</code> <code>JSON</code> <code>structures</code> <code>are</code> <code>to</code> <code>be</code> <code>expected</code>:</dt>
+<dd>&nbsp;</dd>
+<dt><code>1.</code> <code>The</code> <code>server</code> <code>asks</code> <code>to</code> <code>match</code> <code>a</code> <code>question</code> <code>with</code> <code>an</code> <code>undefined</code> <code>number</code> of <code>questions</code>:</dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>{
+"action": "match_questions",
+"question_id": 123,
+"question": "XXX",
+"compare_questions": [
+{
+"question_id": 111,
+"question": "AAA"
+},
+{
+"question_id": 222,
+"question": "BBB"
+},
+{
+"question_id": 333,
+"question": "CCC"
+},
+],
+"msg_id": 1234567890
+}</p>
+<dl>
+<dt><code>2.</code> <code>The</code> <code>server</code> <code>asks</code> <code>to</code> <code>estimate</code> <code>the</code> <code>offensiveness</code> of <code>a</code> <code>sentence</code>:</dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>{
+"action": "estimate_offensiveness",
+"question_id": 100,
+"question": "XXX",
+"msg_id": 1234567890
+}</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_task(self):
+    &#34;&#34;&#34;
+    Waits for the next task from the server and returns it.
 
     Returns:
          A task to be processed as a JSON object.
+         Currently two possible JSON structures are to be expected:
+         1. The server asks to match a question with an undefined number of questions:
+
+         {
+            &#34;action&#34;: &#34;match_questions&#34;,
+            &#34;question_id&#34;: 123,
+            &#34;question&#34;: &#34;XXX&#34;,
+            &#34;compare_questions&#34;: [
+                {
+                    &#34;question_id&#34;: 111,
+                    &#34;question&#34;: &#34;AAA&#34;
+                },
+                {
+                    &#34;question_id&#34;: 222,
+                    &#34;question&#34;: &#34;BBB&#34;
+                },
+                {
+                    &#34;question_id&#34;: 333,
+                    &#34;question&#34;: &#34;CCC&#34;
+                },
+            ],
+            &#34;msg_id&#34;: 1234567890
+         }
+
+         2. The server asks to estimate the offensiveness of a sentence:
+
+         {
+            &#34;action&#34;: &#34;estimate_offensiveness&#34;,
+            &#34;question_id&#34;: 100,
+            &#34;question&#34;: &#34;XXX&#34;,
+            &#34;msg_id&#34;: 1234567890
+         }
     &#34;&#34;&#34;
 
     &#34;&#34;&#34;
     1st iteration:
         Send a simple HTTP request to API server requesting task to be performed.
-        Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
+        Append received tasks to _tasks and return first item of list if not empty (shouldn&#39;t be 
         possible, because this method only ends when a task has been received and appended to _tasks).
     
     2nd iteration:
@@ -386,7 +377,7 @@ from the server whenever any are available and by replying with a response.</p><
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="cluster.Connector.has_task"><code class="name flex">
+<dt id="connector.Connector.has_task"><code class="name flex">
 <span>def <span class="ident">has_task</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -414,7 +405,7 @@ from the server whenever any are available and by replying with a response.</p><
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
-<dt id="cluster.Connector.reply"><code class="name flex">
+<dt id="connector.Connector.reply"><code class="name flex">
 <span>def <span class="ident">reply</span></span>(<span>self, response)</span>
 </code></dt>
 <dd>
@@ -424,39 +415,33 @@ from the server whenever any are available and by replying with a response.</p><
 <dt><strong><code>response</code></strong></dt>
 <dd>A JSON object.</dd>
 </dl>
-<p>As a response argument, currently two possible structures can be parsed:</p>
+<p>As a response argument, currently two possible structures can be parsed:
+1. A reply to a "match_question" containing a top x of comparable questions:</p>
+<p>{
+"question_id": 123,
+"possible_matches": [
+{
+"question_id": 111,
+"prob": 0.789
+},
+{
+"question_id": 333,
+"prob": 0.654
+}
+]
+"msg_id": 1234567890
+}</p>
 <ol>
-<li>
-<p>A reply to a <code>match_question</code> containing a top x of comparable questions:</p>
-<pre><code>{
-    "question_id": 123,
-    "possible_matches": [
-        {
-            "question_id": 111,
-            "prob": 0.789
-        },
-        {
-            "question_id": 333,
-            "prob": 0.654
-        }
-    ]
-    "msg_id": 1234567890
-}
-</code></pre>
-</li>
-<li>
-<p>A reply to an <code>estimate_offensiveness</code>:</p>
-<pre><code>{
-    "question_id": 100,
-    "prob": 0.123,
-    "msg_id": 1234567890
-}
-</code></pre>
-</li>
+<li>A reply to an "estimate_offensiveness":</li>
 </ol>
-<p>The <code>msg_id</code> is always used to include in the reply so that the server knows to
-which task the reply belongs. It corresponds to the <code>msg_id</code> from a task from
-the <code>get_next_task()</code> method.</p></section>
+<p>{
+"question_id": 100,
+"prob": 0.123,
+"msg_id": 1234567890
+}</p>
+<p>The 'msg_id' is always used to include in the reply so that the server knows to
+which task the reply belongs. It corresponds to the 'msg_id' from a task from
+the 'get_next_task()' method.</p></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -468,35 +453,34 @@ the <code>get_next_task()</code> method.</p></section>
         response: A JSON object.
 
         As a response argument, currently two possible structures can be parsed:
+        1. A reply to a &#34;match_question&#34; containing a top x of comparable questions:
 
-        1. A reply to a `match_question` containing a top x of comparable questions:
-
+        {
+            &#34;question_id&#34;: 123,
+            &#34;possible_matches&#34;: [
                 {
-                    &#34;question_id&#34;: 123,
-                    &#34;possible_matches&#34;: [
-                        {
-                            &#34;question_id&#34;: 111,
-                            &#34;prob&#34;: 0.789
-                        },
-                        {
-                            &#34;question_id&#34;: 333,
-                            &#34;prob&#34;: 0.654
-                        }
-                    ]
-                    &#34;msg_id&#34;: 1234567890
-                }
-
-        2. A reply to an `estimate_offensiveness`:
-
+                    &#34;question_id&#34;: 111,
+                    &#34;prob&#34;: 0.789
+                },
                 {
-                    &#34;question_id&#34;: 100,
-                    &#34;prob&#34;: 0.123,
-                    &#34;msg_id&#34;: 1234567890
+                    &#34;question_id&#34;: 333,
+                    &#34;prob&#34;: 0.654
                 }
+            ]
+            &#34;msg_id&#34;: 1234567890
+        }
 
-        The `msg_id` is always used to include in the reply so that the server knows to
-        which task the reply belongs. It corresponds to the `msg_id` from a task from
-        the `get_next_task()` method.
+        2. A reply to an &#34;estimate_offensiveness&#34;:
+
+        {
+            &#34;question_id&#34;: 100,
+            &#34;prob&#34;: 0.123,
+            &#34;msg_id&#34;: 1234567890
+        }
+
+        The &#39;msg_id&#39; is always used to include in the reply so that the server knows to
+        which task the reply belongs. It corresponds to the &#39;msg_id&#39; from a task from
+        the &#39;get_next_task()&#39; method.
     &#34;&#34;&#34;</code></pre>
 </details>
 </dd>
@@ -514,11 +498,11 @@ the <code>get_next_task()</code> method.</p></section>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="cluster.Connector" href="#cluster.Connector">Connector</a></code></h4>
+<h4><code><a title="connector.Connector" href="#connector.Connector">Connector</a></code></h4>
 <ul class="">
-<li><code><a title="cluster.Connector.get_next_task" href="#cluster.Connector.get_next_task">get_next_task</a></code></li>
-<li><code><a title="cluster.Connector.has_task" href="#cluster.Connector.has_task">has_task</a></code></li>
-<li><code><a title="cluster.Connector.reply" href="#cluster.Connector.reply">reply</a></code></li>
+<li><code><a title="connector.Connector.get_next_task" href="#connector.Connector.get_next_task">get_next_task</a></code></li>
+<li><code><a title="connector.Connector.has_task" href="#connector.Connector.has_task">has_task</a></code></li>
+<li><code><a title="connector.Connector.reply" href="#connector.Connector.reply">reply</a></code></li>
 </ul>
 </li>
 </ul>
