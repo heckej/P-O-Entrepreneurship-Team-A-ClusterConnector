@@ -20,6 +20,10 @@ class Actions(Enum):
     ESTIMATE_OFFENSIVENESS = "estimate_offensiveness"
     """Estimate the offensiveness of a question."""
 
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
 
 class Connector(object):
     """Allows communication with Cluster API server.
