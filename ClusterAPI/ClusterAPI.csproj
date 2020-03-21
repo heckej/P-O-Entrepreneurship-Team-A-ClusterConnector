@@ -156,6 +156,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NLP\QuestionMatchController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
@@ -193,9 +194,8 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <None Include="Properties\PublishProfiles\ClusterAPI20200320113808 - Web Deploy.pubxml" />
-    <None Include="Properties\PublishProfiles\ClusterAPI20200320113808 - Web Deploy1.pubxml" />
-    <None Include="Properties\PublishProfiles\ClusterAPI20200320113808 - Web Deploy2.pubxml" />
+    <None Include="Properties\PublishProfiles\ClusterAPIDEBUG - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\ClusterAPIRelease.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
