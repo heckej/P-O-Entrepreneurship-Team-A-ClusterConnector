@@ -17,16 +17,15 @@ class Connector(object):
         Returns:
             True if and only if there is a task to be processed.
         """
+    def get_next_task(self, timeout=None) -> any:
         """
-        CONCRETELY: We use this function to actively wait on a request, but if you
-        could implement a "wait-and-wake-up" method where the execution of the script
-        just waits until there is a request and then wakes up that would be even better
-        since active waiting will create unnecessary network traffic :)
-        """
+        Waits for the next task from the server and returns it as a dictionary.
 
-    def get_next_task(self):
-        """
-        Waits for the next task from the server and returns it.
+        Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        Args:
+            timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
+                then the method will only return upon receiving a task from the server.
 
         Currently two possible JSON structures can be expected:
 
@@ -64,16 +63,19 @@ class Connector(object):
                  }
 
         Returns:
-             A task to be processed as a JSON object.
+             A task to be processed as a JSON object or None when no task was received before timeout.
         """
-
         """
-        1st iteration:
+        TODO(Joren) 1st iteration:
             Send a simple HTTP request to API server requesting task to be performed.
             Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
             possible, because this method only ends when a task has been received and appended to _tasks).
         
-        2nd iteration:
+        TODO(Joren) 1st-2nd iteration: 
+            Return first element of _tasks and update _tasks in background without causing delay in case _tasks is not
+            empty.
+        
+        TODO(Joren) 2nd-3rd iteration:
             Connect to server using web socket, so a permanent connection is made. This way the server
             can push directly any tasks without this client having to poll every now and then.
         """
