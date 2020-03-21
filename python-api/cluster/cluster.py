@@ -163,9 +163,25 @@ class Connector(object):
         request = requests.get(request_uri, timeout=timeout)
         if request.status_code == 200:
             # Status == OK
-            questions = json.loads(request.json())
-            self._tasks.append(questions)
-            return True
+            # JSON response can be in different format than the one that should be returned
+            received_tasks = self._parse_response(request.json())
+            if self.prefetch:
+                # fetch all available tasks
+                new_task_found = False
+                for task in received_tasks:
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
+                        # only add task if not in the (processing) task list already
+                        self._tasks.append(task)
+                        new_task_found = True
+                return new_task_found
+            else:
+                # prefetching disabled, so only fetch one question that is not in the task list already
+                for task in received_tasks:
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
+                        self._tasks.append(task)
+                        return True
+                # all available tasks have been fetched before
+                return False
         return False
 
     @classmethod
