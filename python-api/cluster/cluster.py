@@ -109,6 +109,11 @@ class Connector(object):
 
         Returns:
              A task to be processed as a JSON object or None when no task was received before timeout.
+
+        Raises:
+            Exception: something went wrong while communicating with the server.
+                This exception may become more specific in a future release, but for now it is kept as general as
+                possible, so any implementation changes don't effect these specifications.
         """
         """
         TODO(Joren) 1st iteration:
@@ -214,6 +219,11 @@ class Connector(object):
             The `msg_id` is always used to include in the reply so that the server knows to
             which task the reply belongs. It corresponds to the `msg_id` from a task from
             the `get_next_task()` method.
+
+        Raises:
+            Exception: something went wrong while sending the reply to the server.
+                This exception may become more specific in a future release, but for now it is kept as general as
+                possible, so any implementation changes don't effect these specifications.
         """
 
         question_id = response['question_id']
