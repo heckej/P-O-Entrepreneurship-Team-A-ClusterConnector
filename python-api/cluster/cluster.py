@@ -13,6 +13,7 @@ class Connector(object):
     def __init__(self):
         self.prefetch = True
         self._tasks = list()  # store non processed received tasks
+        self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
 
     def has_task(self):
