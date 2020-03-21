@@ -1,3 +1,8 @@
+import time
+import requests
+import json
+
+
 class Connector(object):
     """Allows communication with Cluster API server.
 
@@ -90,6 +95,33 @@ class Connector(object):
         """
 
         tasks_found = False
+        if len(self._tasks) == 0:
+            # no tasks left, ask the server
+            if timeout is not None and timeout > 0:
+                # equally divide the given timeout
+                timeout_offensive = timeout // 2
+                timeout_unmatched = timeout - timeout_offensive
+
+                start_time = time.time()
+                end_time = start_time
+                while end_time - start_time < timeout and not tasks_found:
+                    path_unmatched = self._base_request_uri + "/questions/unmatched"
+                    tasks_found = self._request_questions(path_unmatched, timeout)
+
+                    # request questions of which the offensiveness has to be tested
+                    path_offensive = self._base_request_uri + "/questions/offensive/undefined"
+                    tasks_found = tasks_found | self._request_questions(path_offensive, timeout)
+
+                    # update the timer
+                    end_time = time.time()
+
+        if not tasks_found:
+            return None
+        task = self._tasks[0]
+        self._tasks.remove(0)
+        self._tasks_in_progress[task['msg_id']] = task
+
+        return task
 
     def _request_questions(self, path, timeout):
         request_uri = self._base_request_uri + path
