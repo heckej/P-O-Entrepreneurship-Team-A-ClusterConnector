@@ -37,13 +37,18 @@ class Connector(object):
             because that way less data transfers may be needed, though there's no guaranty for that.
     """
 
-    _base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
-
     def __init__(self):
+        """
+        Raises:
+            Exception: Something went wrong while sending the reply to the server.
+                This exception may become more specific in a future release, but for now it is kept as general as
+                possible, so any implementation changes don't effect these specifications.
+        """
         self.prefetch = True
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
+        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
