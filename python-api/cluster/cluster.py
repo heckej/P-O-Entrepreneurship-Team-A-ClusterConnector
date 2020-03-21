@@ -23,14 +23,18 @@ class Connector(object):
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
 
-    def has_task(self):
+    def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
 
-        Sends a message to the server to check whether it has any tasks that should be processed.
+        Asks the server to check whether it has any tasks that should be processed.
+        This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
+        of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
 
         Returns:
             True if and only if there is a task to be processed.
         """
+        return True
+
     def get_next_task(self, timeout=None) -> any:
         """
         Waits for the next task from the server and returns it as a dictionary.
