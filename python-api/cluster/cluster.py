@@ -10,6 +10,8 @@ class Connector(object):
             because that way less data transfers may be needed, though there's no guaranty for that.
     """
 
+    _base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
+
     def __init__(self):
         self.prefetch = True
         self._tasks = list()  # store non processed received tasks
@@ -87,7 +89,19 @@ class Connector(object):
             can push directly any tasks without this client having to poll every now and then.
         """
 
-    def reply(self, response):
+        tasks_found = False
+
+    def _request_questions(self, path, timeout):
+        request_uri = self._base_request_uri + path
+        request = requests.get(request_uri, timeout=timeout)
+        if request.status_code == 200:
+            # Status == OK
+            questions = json.loads(request.json())
+            self._tasks.append(questions)
+            return True
+        return False
+
+    def reply(self, response: dict) -> None:
         """Sends the given response to the server.
 
         Args:
