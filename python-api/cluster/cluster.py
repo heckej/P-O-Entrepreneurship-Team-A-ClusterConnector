@@ -158,7 +158,21 @@ class Connector(object):
             return True
         return False
 
-    def reply(self, response: dict) -> None:
+    @classmethod
+    def _parse_response(cls, response: dict) -> dict:
+        """Processes a dictionary received from the server and returns a dictionary that complies to
+        structure of the result of `get_next_task()`.
+
+        Args:
+            response: The response from the server as a dictionary.
+
+        Returns:
+            A dictionary that complies to the structure of the result of `get_next_task()` containing the
+            information of the given `response` as far as the structure allows it.
+        """
+        return response
+
+    def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
 
         Args:
