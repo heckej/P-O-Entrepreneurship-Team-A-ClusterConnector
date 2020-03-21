@@ -1,6 +1,24 @@
 import time
 import requests
 import json
+from enum import Enum
+
+
+class Actions(Enum):
+    """Enumeration of recognized actions.
+
+    The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
+    To loop through all of the actions in this enumeration, simply use
+
+        for action in Actions:
+               # do something with action
+    """
+
+    MATCH_QUESTIONS = "match_questions"
+    """Match questions."""
+
+    ESTIMATE_OFFENSIVENESS = "estimate_offensiveness"
+    """Estimate the offensiveness of a question."""
 
 
 class Connector(object):
@@ -50,7 +68,7 @@ class Connector(object):
         1. The server asks to match a question with an undefined number of questions:
 
                 {
-                    "action": "match_questions",
+                    "action": Answers.MATCH_QUESTIONS,
                     "question_id": 123,
                     "question": "XXX",
                     "compare_questions": [
@@ -74,7 +92,7 @@ class Connector(object):
         2. The server asks to estimate the offensiveness of a sentence:
 
                  {
-                    "action": "estimate_offensiveness",
+                    "action": Answers.ESTIMATE_OFFENSIVENESS,
                     "question_id": 100,
                     "question": "XXX",
                     "msg_id": 1234567890
