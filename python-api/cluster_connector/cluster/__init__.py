@@ -1,1 +1,2 @@
-from cluster_connector.cluster import cluster
+from cluster.cluster import Connector
+from cluster.cluster import Actions

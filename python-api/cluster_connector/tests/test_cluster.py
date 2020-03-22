@@ -1,5 +1,5 @@
 import pytest
-from cluster_connector.cluster import cluster
+import cluster
 api_url = "http://localhost/api/nlp"
 task1 = {"action":"match_questions","question_id":123,"question":"What is your name?","compare_questions":{"0":{"question_id":111,"question":"Who are you?"},"1":{"question_id":222,"question":"Who am I?"},"2":{"question_id":333},"question":"What is my name?"},"msg_id":1234567890}
 task2 = {"action":"match_questions","question_id":567,"question":"How are you?","compare_questions":{"0":{"question_id":111,"question":"Who are you?"},"1":{"question_id":444,"question":"What are you doing?"},"2":{"question_id":555},"question":"How are you doing?"},"msg_id":1234567892}
