@@ -50,8 +50,10 @@ class Connector(object):
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
+        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
+        self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -63,7 +65,10 @@ class Connector(object):
         Returns:
             True if and only if there is a task to be processed.
         """
-        return True
+        uri_unmatched = self._request_paths['unmatched']
+        uri_offensive = self._request_paths['offensive']
+        return len(self._tasks) > 0 or self._request_questions(uri_unmatched, 0.25, False) or \
+            self._request_questions(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout=None) -> any:
         """
@@ -153,12 +158,12 @@ class Connector(object):
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = "/questions/unmatched"
+                        path_unmatched = self._request_paths['unmatched']
                         tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = "/questions/offensive/undefined"
+                            path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
                             tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
@@ -175,7 +180,7 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path: str, timeout: int):
+    def _request_questions(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = requests.get(request_uri, timeout=timeout)
@@ -190,15 +195,16 @@ class Connector(object):
                 # fetch all available tasks
                 new_task_found = False
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
-                        # only add task if not in the (processing) task list already
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
+                        # only add task if not in the (processing) task list already and appending is enabled
                         self._tasks.append(task)
                         new_task_found = True
                 return new_task_found
             else:
-                # prefetching disabled, so only fetch one question that is not in the task list already
+                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
+                # appending is disabled
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
                         self._tasks.append(task)
                         return True
                 # all available tasks have been fetched before
@@ -263,18 +269,14 @@ class Connector(object):
                 possible, so any implementation changes don't effect these specifications.
         """
 
-        question_id = response['question_id']
-        print("TASKS IN PROGRESS:", self._tasks_in_progress)
-        print("TASKS:", self._tasks)
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += f"/questions/match/{question_id}"
+                request_uri += self._post_paths['matched']
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += f"/questions/offensive/{question_id}"
+                request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
             data = response
             request = requests.post(request_uri, json=data)
             return request.json()
-
