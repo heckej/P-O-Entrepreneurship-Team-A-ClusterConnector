@@ -1,0 +1,7 @@
+=======================================
+CHANGES.txt - Cluster Connector NLP API
+=======================================
+
+v0.1.1
+---------------------------------------
+The method `has_task()` now behaves as expected, i.e. it returns whether any tasks are available instead of always True.
