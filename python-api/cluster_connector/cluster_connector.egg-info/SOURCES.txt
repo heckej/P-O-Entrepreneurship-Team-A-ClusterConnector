@@ -10,5 +10,3 @@ cluster_connector.egg-info/dependency_links.txt
 cluster_connector.egg-info/requires.txt
 cluster_connector.egg-info/top_level.txt
 doc/docs.html
-tests/__init__.py
-tests/test_cluster.py

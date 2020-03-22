@@ -65,7 +65,10 @@ class Connector(object):
         Returns:
             True if and only if there is a task to be processed.
         """
-        return True
+        uri_unmatched = self._request_paths['unmatched']
+        uri_offensive = self._request_paths['offensive']
+        return len(self._tasks) > 0 or self._request_questions(uri_unmatched, 0.25, False) or \
+            self._request_questions(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout=None) -> any:
         """
@@ -177,7 +180,7 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path: str, timeout: int):
+    def _request_questions(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = requests.get(request_uri, timeout=timeout)
@@ -192,15 +195,16 @@ class Connector(object):
                 # fetch all available tasks
                 new_task_found = False
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
-                        # only add task if not in the (processing) task list already
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
+                        # only add task if not in the (processing) task list already and appending is enabled
                         self._tasks.append(task)
                         new_task_found = True
                 return new_task_found
             else:
-                # prefetching disabled, so only fetch one question that is not in the task list already
+                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
+                # appending is disabled
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
+                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
                         self._tasks.append(task)
                         return True
                 # all available tasks have been fetched before
