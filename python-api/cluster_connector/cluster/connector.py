@@ -265,8 +265,6 @@ class Connector(object):
         """
 
         question_id = response['question_id']
-        print("TASKS IN PROGRESS:", self._tasks_in_progress)
-        print("TASKS:", self._tasks)
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
