@@ -1,1 +1,1 @@
-from cc.cluster import cluster
+from cluster_connector.cluster import cluster
