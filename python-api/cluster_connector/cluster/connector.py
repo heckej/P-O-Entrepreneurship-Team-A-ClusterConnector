@@ -53,6 +53,7 @@ class Connector(object):
         self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
+        self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionMatched'}
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -264,16 +265,14 @@ class Connector(object):
                 possible, so any implementation changes don't effect these specifications.
         """
 
-        question_id = response['question_id']
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += f"/questions/match/{question_id}"
+                request_uri += self._post_paths['matched']
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += f"/questions/offensive/{question_id}"
+                request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
             data = response
             request = requests.post(request_uri, json=data)
             return request.json()
-
