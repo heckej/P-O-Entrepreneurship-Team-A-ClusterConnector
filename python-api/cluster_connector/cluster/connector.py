@@ -52,6 +52,7 @@ class Connector(object):
         self._server_timeout = 4  # timeout used while checking for server messages
         self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -153,12 +154,12 @@ class Connector(object):
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = "/questions/unmatched"
+                        path_unmatched = self._request_paths['unmatched']
                         tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = "/questions/offensive/undefined"
+                            path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
                             tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
