@@ -3,7 +3,7 @@ MANIFEST.in
 README.txt
 setup.py
 cluster/__init__.py
-cluster/cluster.py
+cluster/connector.py
 cluster_connector.egg-info/PKG-INFO
 cluster_connector.egg-info/SOURCES.txt
 cluster_connector.egg-info/dependency_links.txt

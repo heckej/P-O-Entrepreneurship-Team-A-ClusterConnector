@@ -1,1 +1,1 @@
-from cluster.cluster import Connector
+from cluster import connector

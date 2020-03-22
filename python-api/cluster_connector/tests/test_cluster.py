@@ -1,5 +1,5 @@
 import pytest
-import cluster
+from cluster import connector
 api_url = "http://localhost/api/nlp"
 task1 = {"action":"match_questions","question_id":123,"question":"What is your name?","compare_questions":{"0":{"question_id":111,"question":"Who are you?"},"1":{"question_id":222,"question":"Who am I?"},"2":{"question_id":333},"question":"What is my name?"},"msg_id":1234567890}
 task2 = {"action":"match_questions","question_id":567,"question":"How are you?","compare_questions":{"0":{"question_id":111,"question":"Who are you?"},"1":{"question_id":444,"question":"What are you doing?"},"2":{"question_id":555},"question":"How are you doing?"},"msg_id":1234567892}
@@ -20,7 +20,7 @@ indices = range(0, 1)
 
 
 def test_connector_get_next_task_prefetch():
-    con = cluster.Connector()
+    con = connector.Connector()
     con._base_request_uri = api_url
     con.prefetch = True
     assert con.get_next_task() == task1
@@ -34,7 +34,7 @@ def test_connector_get_next_task_prefetch():
 
 
 def test_connector_get_next_task_no_prefetch():
-    con = cluster.Connector()
+    con = connector.Connector()
     con._base_request_uri = api_url
     con.prefetch = False
     assert con.get_next_task() == task1
@@ -50,7 +50,7 @@ def test_connector_get_next_task_no_prefetch():
 
 @pytest.mark.parametrize("i", indices)
 def test_connector_reply(i):
-    con = cluster.Connector()
+    con = connector.Connector()
     con._base_request_uri = api_url
     con.get_next_task()
     assert con.reply(replies[i]) == expected_responses[i]
