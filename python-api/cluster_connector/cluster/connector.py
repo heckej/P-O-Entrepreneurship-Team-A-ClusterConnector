@@ -50,7 +50,7 @@ class Connector(object):
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
+        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
 
     def has_task(self) -> bool:
