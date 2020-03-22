@@ -53,7 +53,7 @@ class Connector(object):
         self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
-        self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionMatched'}
+        self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.

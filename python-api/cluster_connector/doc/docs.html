@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>cluster API documentation</title>
+<title>connector API documentation</title>
 <meta name="description" content="" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
@@ -17,7 +17,7 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>cluster</code></h1>
+<h1 class="title">Module <code>connector</code></h1>
 </header>
 <section id="section-intro">
 <details class="source">
@@ -76,8 +76,10 @@ class Connector(object):
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/nlp&#34;
+        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
+        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
 
     def has_task(self) -&gt; bool:
         &#34;&#34;&#34;Checks whether the server has any tasks available.
@@ -179,12 +181,12 @@ class Connector(object):
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = &#34;/questions/unmatched&#34;
+                        path_unmatched = self._request_paths[&#39;unmatched&#39;]
                         tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = &#34;/questions/offensive/undefined&#34;
+                            path_offensive = self._request_paths[&#39;offensive&#39;]
                             # if prefetching disabled and already task found, then don&#39;t look for another task
                             tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
@@ -289,16 +291,13 @@ class Connector(object):
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
 
-        question_id = response[&#39;question_id&#39;]
-        print(&#34;TASKS IN PROGRESS:&#34;, self._tasks_in_progress)
-        print(&#34;TASKS:&#34;, self._tasks)
         action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
         if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += f&#34;/questions/match/{question_id}&#34;
+                request_uri += self._post_paths[&#39;matched&#39;]
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += f&#34;/questions/offensive/{question_id}&#34;
+                request_uri += self._post_paths[&#39;offensive&#39;]
             del self._tasks_in_progress[response[&#39;msg_id&#39;]]
             data = response
             request = requests.post(request_uri, json=data)
@@ -314,7 +313,7 @@ class Connector(object):
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="cluster.Actions"><code class="flex name class">
+<dt id="connector.Actions"><code class="flex name class">
 <span>class <span class="ident">Actions</span></span>
 <span>(</span><span>*args, **kwargs)</span>
 </code></dt>
@@ -358,21 +357,21 @@ To loop through all of the actions in this enumeration, simply use</p>
 </ul>
 <h3>Class variables</h3>
 <dl>
-<dt id="cluster.Actions.ESTIMATE_OFFENSIVENESS"><code class="name">var <span class="ident">ESTIMATE_OFFENSIVENESS</span></code></dt>
+<dt id="connector.Actions.ESTIMATE_OFFENSIVENESS"><code class="name">var <span class="ident">ESTIMATE_OFFENSIVENESS</span></code></dt>
 <dd>
 <section class="desc"><p>Estimate the offensiveness of a question.</p></section>
 </dd>
-<dt id="cluster.Actions.MATCH_QUESTIONS"><code class="name">var <span class="ident">MATCH_QUESTIONS</span></code></dt>
+<dt id="connector.Actions.MATCH_QUESTIONS"><code class="name">var <span class="ident">MATCH_QUESTIONS</span></code></dt>
 <dd>
 <section class="desc"><p>Match questions.</p></section>
 </dd>
-<dt id="cluster.Actions.NO_WORK"><code class="name">var <span class="ident">NO_WORK</span></code></dt>
+<dt id="connector.Actions.NO_WORK"><code class="name">var <span class="ident">NO_WORK</span></code></dt>
 <dd>
 <section class="desc"><p>There server has no tasks to process.</p></section>
 </dd>
 </dl>
 </dd>
-<dt id="cluster.Connector"><code class="flex name class">
+<dt id="connector.Connector"><code class="flex name class">
 <span>class <span class="ident">Connector</span></span>
 </code></dt>
 <dd>
@@ -420,8 +419,10 @@ possible, so any implementation changes don't effect these specifications.</dd>
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/nlp&#34;
+        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
+        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
 
     def has_task(self) -&gt; bool:
         &#34;&#34;&#34;Checks whether the server has any tasks available.
@@ -523,12 +524,12 @@ possible, so any implementation changes don't effect these specifications.</dd>
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = &#34;/questions/unmatched&#34;
+                        path_unmatched = self._request_paths[&#39;unmatched&#39;]
                         tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = &#34;/questions/offensive/undefined&#34;
+                            path_offensive = self._request_paths[&#39;offensive&#39;]
                             # if prefetching disabled and already task found, then don&#39;t look for another task
                             tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
@@ -633,16 +634,13 @@ possible, so any implementation changes don't effect these specifications.</dd>
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
 
-        question_id = response[&#39;question_id&#39;]
-        print(&#34;TASKS IN PROGRESS:&#34;, self._tasks_in_progress)
-        print(&#34;TASKS:&#34;, self._tasks)
         action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
         if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += f&#34;/questions/match/{question_id}&#34;
+                request_uri += self._post_paths[&#39;matched&#39;]
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += f&#34;/questions/offensive/{question_id}&#34;
+                request_uri += self._post_paths[&#39;offensive&#39;]
             del self._tasks_in_progress[response[&#39;msg_id&#39;]]
             data = response
             request = requests.post(request_uri, json=data)
@@ -650,7 +648,7 @@ possible, so any implementation changes don't effect these specifications.</dd>
 </details>
 <h3>Methods</h3>
 <dl>
-<dt id="cluster.Connector.get_next_task"><code class="name flex">
+<dt id="connector.Connector.get_next_task"><code class="name flex">
 <span>def <span class="ident">get_next_task</span></span>(<span>self, timeout=None)</span>
 </code></dt>
 <dd>
@@ -801,12 +799,12 @@ possible, so any implementation changes don't effect these specifications.</dd>
                     else:
                         timeout_unmatched = None
                         timeout_offensive = None
-                    path_unmatched = &#34;/questions/unmatched&#34;
+                    path_unmatched = self._request_paths[&#39;unmatched&#39;]
                     tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
                     if self.prefetch or not tasks_found:
                         # request questions of which the offensiveness has to be tested
-                        path_offensive = &#34;/questions/offensive/undefined&#34;
+                        path_offensive = self._request_paths[&#39;offensive&#39;]
                         # if prefetching disabled and already task found, then don&#39;t look for another task
                         tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
                     sleep_start = time.time()  # start sleeping
@@ -824,7 +822,7 @@ possible, so any implementation changes don't effect these specifications.</dd>
     return task</code></pre>
 </details>
 </dd>
-<dt id="cluster.Connector.has_task"><code class="name flex">
+<dt id="connector.Connector.has_task"><code class="name flex">
 <span>def <span class="ident">has_task</span></span>(<span>self)</span>
 </code></dt>
 <dd>
@@ -851,7 +849,7 @@ of situations seems to be quite uncommon, this method will likely be removed in 
     return True</code></pre>
 </details>
 </dd>
-<dt id="cluster.Connector.reply"><code class="name flex">
+<dt id="connector.Connector.reply"><code class="name flex">
 <span>def <span class="ident">reply</span></span>(<span>self, response)</span>
 </code></dt>
 <dd>
@@ -950,16 +948,13 @@ possible, so any implementation changes don't effect these specifications.</dd>
             possible, so any implementation changes don&#39;t effect these specifications.
     &#34;&#34;&#34;
 
-    question_id = response[&#39;question_id&#39;]
-    print(&#34;TASKS IN PROGRESS:&#34;, self._tasks_in_progress)
-    print(&#34;TASKS:&#34;, self._tasks)
     action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
     if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
         request_uri = self._base_request_uri
         if action == Actions.MATCH_QUESTIONS.value:
-            request_uri += f&#34;/questions/match/{question_id}&#34;
+            request_uri += self._post_paths[&#39;matched&#39;]
         elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-            request_uri += f&#34;/questions/offensive/{question_id}&#34;
+            request_uri += self._post_paths[&#39;offensive&#39;]
         del self._tasks_in_progress[response[&#39;msg_id&#39;]]
         data = response
         request = requests.post(request_uri, json=data)
@@ -980,19 +975,19 @@ possible, so any implementation changes don't effect these specifications.</dd>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
-<h4><code><a title="cluster.Actions" href="#cluster.Actions">Actions</a></code></h4>
+<h4><code><a title="connector.Actions" href="#connector.Actions">Actions</a></code></h4>
 <ul class="">
-<li><code><a title="cluster.Actions.ESTIMATE_OFFENSIVENESS" href="#cluster.Actions.ESTIMATE_OFFENSIVENESS">ESTIMATE_OFFENSIVENESS</a></code></li>
-<li><code><a title="cluster.Actions.MATCH_QUESTIONS" href="#cluster.Actions.MATCH_QUESTIONS">MATCH_QUESTIONS</a></code></li>
-<li><code><a title="cluster.Actions.NO_WORK" href="#cluster.Actions.NO_WORK">NO_WORK</a></code></li>
+<li><code><a title="connector.Actions.ESTIMATE_OFFENSIVENESS" href="#connector.Actions.ESTIMATE_OFFENSIVENESS">ESTIMATE_OFFENSIVENESS</a></code></li>
+<li><code><a title="connector.Actions.MATCH_QUESTIONS" href="#connector.Actions.MATCH_QUESTIONS">MATCH_QUESTIONS</a></code></li>
+<li><code><a title="connector.Actions.NO_WORK" href="#connector.Actions.NO_WORK">NO_WORK</a></code></li>
 </ul>
 </li>
 <li>
-<h4><code><a title="cluster.Connector" href="#cluster.Connector">Connector</a></code></h4>
+<h4><code><a title="connector.Connector" href="#connector.Connector">Connector</a></code></h4>
 <ul class="">
-<li><code><a title="cluster.Connector.get_next_task" href="#cluster.Connector.get_next_task">get_next_task</a></code></li>
-<li><code><a title="cluster.Connector.has_task" href="#cluster.Connector.has_task">has_task</a></code></li>
-<li><code><a title="cluster.Connector.reply" href="#cluster.Connector.reply">reply</a></code></li>
+<li><code><a title="connector.Connector.get_next_task" href="#connector.Connector.get_next_task">get_next_task</a></code></li>
+<li><code><a title="connector.Connector.has_task" href="#connector.Connector.has_task">has_task</a></code></li>
+<li><code><a title="connector.Connector.reply" href="#connector.Connector.reply">reply</a></code></li>
 </ul>
 </li>
 </ul>
