@@ -1,3 +1,4 @@
+import time
 import requests
 from enum import Enum
 
@@ -17,6 +18,9 @@ class Actions(Enum):
 
     ESTIMATE_OFFENSIVENESS = "estimate_offensiveness"
     """Estimate the offensiveness of a question."""
+
+    NO_WORK = "no_work"
+    """There server has no tasks to process."""
 
     @classmethod
     def has_value(cls, value):
@@ -47,6 +51,7 @@ class Connector(object):
         self._tasks_in_progress = dict()  # keep track of work in progress
         self._server_timeout = 4  # timeout used while checking for server messages
         self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/nlp"
+        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -105,6 +110,8 @@ class Connector(object):
                     "msg_id": 1234567890
                  }
 
+        Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
+
         Returns:
              A task to be processed as a JSON object or None when no task was received before timeout.
 
@@ -132,21 +139,34 @@ class Connector(object):
         if len(self._tasks) == 0:
             # no tasks left, ask the server
             if timeout is None or timeout > 0:
-                if timeout is not None:
-                    # equally divide the given timeout
-                    timeout_offensive = timeout / 2
-                    timeout_unmatched = timeout - timeout_offensive
-                else:
-                    timeout_unmatched = None
-                    timeout_offensive = None
-                path_unmatched = "/questions/unmatched"
-                tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
+                time_passed = 0
+                start_time = time.time()
+                sleep = False
+                sleep_start = 0
+                while not tasks_found and (timeout is None or (time_passed < timeout)):
+                    if not sleep:
+                        if timeout is not None:
+                            time_left = timeout - time_passed
+                            # equally divide the given timeout
+                            timeout_offensive = time_left / 2
+                            timeout_unmatched = time_left - timeout_offensive
+                        else:
+                            timeout_unmatched = None
+                            timeout_offensive = None
+                        path_unmatched = "/questions/unmatched"
+                        tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
 
-                if self.prefetch or not tasks_found:
-                    # request questions of which the offensiveness has to be tested
-                    path_offensive = "/questions/offensive/undefined"
-                    # if prefetching disabled and already task found, then don't look for another task
-                    tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
+                        if self.prefetch or not tasks_found:
+                            # request questions of which the offensiveness has to be tested
+                            path_offensive = "/questions/offensive/undefined"
+                            # if prefetching disabled and already task found, then don't look for another task
+                            tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
+                        sleep_start = time.time()  # start sleeping
+                    time_passed = start_time - time.time()  # keep track of the passed time
+                    # stay asleep until 'time_until_retry' seconds passed and
+                    # there is more time left than 'time_until_retry' seconds
+                    sleep = (time.time() - sleep_start < self._time_until_retry) and \
+                            (timeout is None or self._time_until_retry < timeout - time_passed)
 
             if not tasks_found:
                 return None
@@ -163,6 +183,9 @@ class Connector(object):
             # Status == OK
             # JSON response can be in different format than the one that should be returned
             received_tasks = self._parse_response(request.json())
+            # The server might not have tasks.
+            if received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
+                return False
             if self.prefetch:
                 # fetch all available tasks
                 new_task_found = False
@@ -243,7 +266,7 @@ class Connector(object):
         question_id = response['question_id']
         print("TASKS IN PROGRESS:", self._tasks_in_progress)
         print("TASKS:", self._tasks)
-        action = self._tasks_in_progress[response['msg_id']]['action']
+        action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
