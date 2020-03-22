@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     # Needed to silence warnings (and to be a worthwhile package)
-    name='Cluster Connector NLP API',
+    name='cluster-connector',
     url='https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector',
     author='Joren Van Hecke',
     author_email='joren.vanhecke@student.kuleuven.be',
