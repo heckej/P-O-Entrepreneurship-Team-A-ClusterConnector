@@ -65,7 +65,10 @@ class Connector(object):
         Returns:
             True if and only if there is a task to be processed.
         """
-        return True
+        uri_unmatched = self._request_paths['unmatched']
+        uri_offensive = self._request_paths['offensive']
+        return len(self._tasks) > 0 or self._request_questions(uri_unmatched, 0.25, False) or \
+            self._request_questions(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout=None) -> any:
         """
@@ -177,7 +180,7 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path: str, timeout: int, append=True):
+    def _request_questions(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = requests.get(request_uri, timeout=timeout)
