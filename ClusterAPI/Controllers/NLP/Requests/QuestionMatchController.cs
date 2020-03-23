@@ -10,11 +10,12 @@ namespace ClusterAPI.Controllers.NLP
 {
     public class QuestionMatchController : ApiController
     {
-        private static String DEFAULT_ACTION = "Answers.MATCH_QUESTIONS";
+        private static readonly String DEFAULT_ACTION = "Answers.MATCH_QUESTIONS";
 
+        [Route("api/NLP/QuestionMatch")]
         public IHttpActionResult GetTestQuestion()
         {
-            NLPAction nLPAction = new NLPAction();
+            NLPActionQuestionMatch nLPAction = new NLPActionQuestionMatch();
             nLPAction.Action = DEFAULT_ACTION;
             nLPAction.Question_id = -1;
             nLPAction.Question = "ROSES ARE RED, VIOLETS ARE BLUE, GANDALF IS A WIZARD, NOW FLY YOU FOOL!";

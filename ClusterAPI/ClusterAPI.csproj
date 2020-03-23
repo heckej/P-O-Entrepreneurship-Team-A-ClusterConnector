@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
@@ -155,14 +156,27 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\DB\DBAnswerController.cs" />
+    <Compile Include="Controllers\DB\DBUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\NLP\QuestionMatchController.cs" />
+    <Compile Include="Controllers\NLP\Requests\QuestionOffenseController.cs" />
+    <Compile Include="Controllers\NLP\Responses\OffenseResponseController.cs" />
+    <Compile Include="Controllers\NLP\Requests\QuestionMatchController.cs" />
+    <Compile Include="Controllers\NLP\Responses\QuestionMatchResponseController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\MatchQuestionModel.cs" />
+    <Compile Include="Models\NLPMatchModel.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>NLPMatchModel.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Models\OffensivenessModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\CommaDelimitedArrayModelBinder.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -194,7 +208,16 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
+    <EntityDeploy Include="Models\NLPMatchModel.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>NLPMatchModel.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Models\NLPMatchModel.edmx.diagram">
+      <DependentUpon>NLPMatchModel.edmx</DependentUpon>
+    </Content>
+    <None Include="Properties\PublishProfiles\ClusterAPI20200320113808 - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\ClusterAPIDEBUG - Web Deploy.pubxml" />
+    <None Include="Properties\PublishProfiles\ClusterAPIDEBUG - Web Deploy1.pubxml" />
     <None Include="Properties\PublishProfiles\ClusterAPIRelease.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
@@ -219,7 +242,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Models\" />
+    <Folder Include="Examples\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
