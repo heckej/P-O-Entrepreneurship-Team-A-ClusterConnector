@@ -22,7 +22,14 @@ namespace ClusterConnector.Processors
 
             DBUser answer = new DBUser();
             answer.User_id = (int)reader["user_id"];
-            answer.Last_active = ((DateTime)reader["last_active"]).ToString(ServerUtilities.DATE_TIME_FORMAT);
+            if (DBNull.Value != reader["last_active"])
+            {
+                answer.Last_active = ((DateTime)reader["last_active"]).ToString(ServerUtilities.DATE_TIME_FORMAT);
+            }
+            else
+            {
+                answer.Last_active = "NULL";
+            }
             answer.Fname = (String)reader["fname"];
             answer.Lname = (String)reader["lname"];
             answer.Email = (String)reader["email"];

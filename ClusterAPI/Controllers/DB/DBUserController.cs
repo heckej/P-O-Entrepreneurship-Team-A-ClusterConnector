@@ -21,6 +21,7 @@ namespace ClusterAPI.Controllers.DB
             {
                 return NotFound();
             }
+            var response = Ok(result);
             return Ok(result);
         }
 
