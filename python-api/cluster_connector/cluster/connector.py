@@ -69,7 +69,7 @@ class Connector(object):
         uri_unmatched = self._request_paths['unmatched']
         uri_offensive = self._request_paths['offensive']
         return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
-               self._request_tasks(uri_offensive, 0.25, False)
+            self._request_tasks(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout: float = None) -> any:
         """
