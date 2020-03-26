@@ -57,6 +57,7 @@ class Connector(object):
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
         self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
         self._request_thread = None
+        self.fetch_in_background = True
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -181,7 +182,7 @@ class Connector(object):
                 return None
         else:
             # still tasks left, but there might be new ones to be fetched
-            if self._request_thread is None or not self._request_thread.is_alive():
+            if self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
                 self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
                                                         args=([path_unmatched, path_offensive], self._server_timeout))
                 self._request_thread.start()
