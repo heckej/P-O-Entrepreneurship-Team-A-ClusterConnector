@@ -68,8 +68,8 @@ class Connector(object):
         """
         uri_unmatched = self._request_paths['unmatched']
         uri_offensive = self._request_paths['offensive']
-        return len(self._tasks) > 0 or self._request_questions(uri_unmatched, 0.25, False) or \
-            self._request_questions(uri_offensive, 0.25, False)
+        return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
+               self._request_tasks(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout=None) -> any:
         """
@@ -160,13 +160,13 @@ class Connector(object):
                             timeout_unmatched = None
                             timeout_offensive = None
                         path_unmatched = self._request_paths['unmatched']
-                        tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
+                        tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
                             path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
-                            tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
+                            tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
                     time_passed = start_time - time.time()  # keep track of the passed time
                     # stay asleep until 'time_until_retry' seconds passed and
@@ -181,7 +181,7 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path: str, timeout: float, append=True):
+    def _request_tasks(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = self._session.get(request_uri, timeout=timeout)
