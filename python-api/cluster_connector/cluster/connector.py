@@ -38,6 +38,12 @@ class Connector(object):
         prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
             only one task will be fetched at a time. To improve performance you may want to leave this set to True,
             because that way less data transfers may be needed, though there's no guaranty for that.
+
+        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
+            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
+            additional time to fetch when no tasks are available immediately. To improve performance you may want to
+            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
+            is required when requesting the next task using `get_next_task()`.
     """
 
     def __init__(self):
