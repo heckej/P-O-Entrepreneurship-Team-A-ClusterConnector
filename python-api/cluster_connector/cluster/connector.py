@@ -71,7 +71,7 @@ class Connector(object):
         return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
                self._request_tasks(uri_offensive, 0.25, False)
 
-    def get_next_task(self, timeout=None) -> any:
+    def get_next_task(self, timeout: float = None) -> any:
         """
         Waits for the next task from the server and returns it as a dictionary.
 
@@ -182,6 +182,7 @@ class Connector(object):
         return task
 
     def _request_tasks(self, path: str, timeout: float, append=True):
+    def _request_tasks(self, path: str, timeout: float, append: bool = True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = self._session.get(request_uri, timeout=timeout)
