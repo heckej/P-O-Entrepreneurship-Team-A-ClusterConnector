@@ -1,5 +1,6 @@
 import time
 import requests
+import threading
 from enum import Enum
 
 
@@ -55,6 +56,7 @@ class Connector(object):
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
         self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
+        self._request_thread = None
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -152,7 +154,8 @@ class Connector(object):
                 sleep = False
                 sleep_start = 0
                 while not tasks_found and (timeout is None or (time_passed < timeout)):
-                    if not sleep:
+                    if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
+                        # only try when not sleeping and when no tasks are being requested in a background already
                         if timeout is not None:
                             time_left = timeout - time_passed
                             # equally divide the given timeout
@@ -176,6 +179,12 @@ class Connector(object):
 
             if not tasks_found:
                 return None
+        else:
+            # still tasks left, but there might be new ones to be fetched
+            if self._request_thread is None or not self._request_thread.is_alive():
+                self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
+                                                        args=([path_unmatched, path_offensive], self._server_timeout))
+                self._request_thread.start()
         task = self._tasks.pop(0)
         self._tasks_in_progress[task['msg_id']] = task
 
