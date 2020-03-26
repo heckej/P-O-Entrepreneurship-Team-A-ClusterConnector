@@ -54,6 +54,7 @@ class Connector(object):
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
+        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -183,7 +184,7 @@ class Connector(object):
     def _request_questions(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
-        request = requests.get(request_uri, timeout=timeout)
+        request = self._session.get(request_uri, timeout=timeout)
         if request.status_code == 200:
             # Status == OK
             # JSON response can be in different format than the one that should be returned
@@ -278,5 +279,5 @@ class Connector(object):
                 request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
             data = response
-            request = requests.post(request_uri, json=data)
+            request = self._session.post(request_uri, json=data)
             return request.json()
