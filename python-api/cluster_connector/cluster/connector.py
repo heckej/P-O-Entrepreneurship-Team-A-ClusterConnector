@@ -181,7 +181,11 @@ class Connector(object):
 
         return task
 
-    def _request_tasks(self, path: str, timeout: float, append=True):
+    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
+        """Requests tasks from the server at all given paths."""
+        for path in paths:
+            self._request_tasks(path, timeout, append)
+
     def _request_tasks(self, path: str, timeout: float, append: bool = True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
