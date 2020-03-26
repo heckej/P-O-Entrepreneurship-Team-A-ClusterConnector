@@ -142,6 +142,8 @@ class Connector(object):
         """
 
         tasks_found = False
+        path_unmatched = self._request_paths['unmatched']
+        path_offensive = self._request_paths['offensive']
         if len(self._tasks) == 0:
             # no tasks left, ask the server
             if timeout is None or timeout > 0:
@@ -159,12 +161,10 @@ class Connector(object):
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = self._request_paths['unmatched']
                         tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
                             tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
