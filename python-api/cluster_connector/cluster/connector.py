@@ -86,34 +86,34 @@ class Connector(object):
         1. The server asks to match a question with an undefined number of questions:
 
                 {
-                    "action": Answers.MATCH_QUESTIONS,
-                    "question_id": 123,
-                    "question": "XXX",
-                    "compare_questions": [
+                    "Action": Actions.MATCH_QUESTIONS,
+                    "Question_id": 123,
+                    "Question": "XXX",
+                    "Compare_questions": [
                         {
-                            "question_id": 111,
-                            "question": "AAA"
+                            "Question_id": 111,
+                            "Question": "AAA"
                         },
                         {
-                            "question_id": 222,
-                            "question": "BBB"
+                            "Question_id": 222,
+                            "Question": "BBB"
                         },
                         {
-                            "question_id": 333,
-                            "question": "CCC"
+                            "Question_id": 333,
+                            "Question": "CCC"
                         },
                     ],
-                    "msg_id": 1234567890
+                    "Msg_id": 1234567890
                 }
 
 
         2. The server asks to estimate the offensiveness of a sentence:
 
                  {
-                    "action": Answers.ESTIMATE_OFFENSIVENESS,
-                    "question_id": 100,
-                    "question": "XXX",
-                    "msg_id": 1234567890
+                    "Action": Answers.ESTIMATE_OFFENSIVENESS,
+                    "Question_id": 100,
+                    "Question": "XXX",
+                    "Msg_id": 1234567890
                  }
 
         Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
@@ -177,7 +177,7 @@ class Connector(object):
             if not tasks_found:
                 return None
         task = self._tasks.pop(0)
-        self._tasks_in_progress[task['msg_id']] = task
+        self._tasks_in_progress[task['Msg_id']] = task
 
         return task
 
@@ -190,13 +190,13 @@ class Connector(object):
             # JSON response can be in different format than the one that should be returned
             received_tasks = self._parse_response(request.json())
             # The server might not have tasks.
-            if received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
+            if received_tasks[0]['Action'].lower() == Actions.NO_WORK.value:
                 return False
             if self.prefetch:
                 # fetch all available tasks
                 new_task_found = False
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
+                    if task not in self._tasks and task['Msg_id'] not in self._tasks_in_progress and append:
                         # only add task if not in the (processing) task list already and appending is enabled
                         self._tasks.append(task)
                         new_task_found = True
@@ -205,7 +205,7 @@ class Connector(object):
                 # prefetching disabled, so only fetch one question that is not in the task list already, but not if
                 # appending is disabled
                 for task in received_tasks:
-                    if task not in self._tasks and task['msg_id'] not in self._tasks_in_progress and append:
+                    if task not in self._tasks and task['Msg_id'] not in self._tasks_in_progress and append:
                         self._tasks.append(task)
                         return True
                 # all available tasks have been fetched before
@@ -238,30 +238,30 @@ class Connector(object):
             1. A reply to a `match_question` containing a top x of comparable questions:
 
                     {
-                        "question_id": 123,
-                        "possible_matches": [
+                        "Question_id": 123,
+                        "Possible_matches": [
                             {
-                                "question_id": 111,
-                                "prob": 0.789
+                                "Question_id": 111,
+                                "Prob": 0.789
                             },
                             {
-                                "question_id": 333,
-                                "prob": 0.654
+                                "Question_id": 333,
+                                "Prob": 0.654
                             }
                         ],
-                        "msg_id": 1234567890
+                        "Msg_id": 1234567890
                     }
 
             2. A reply to an `estimate_offensiveness`:
 
                     {
-                        "question_id": 100,
-                        "prob": 0.123,
-                        "msg_id": 1234567890
+                        "Question_id": 100,
+                        "Prob": 0.123,
+                        "Msg_id": 1234567890
                     }
 
-            The `msg_id` is always used to include in the reply so that the server knows to
-            which task the reply belongs. It corresponds to the `msg_id` from a task from
+            The `Msg_id` is always used to include in the reply so that the server knows to
+            which task the reply belongs. It corresponds to the `Msg_id` from a task from
             the `get_next_task()` method.
 
         Raises:
@@ -270,14 +270,14 @@ class Connector(object):
                 possible, so any implementation changes don't effect these specifications.
         """
 
-        action = self._tasks_in_progress[response['msg_id']]['action'].lower()
-        if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
+        action = self._tasks_in_progress[response['Msg_id']]['Action'].lower()
+        if Actions.has_value(action) and response['Msg_id'] in self._tasks_in_progress.keys():
             request_uri = self._base_request_uri
             if action == Actions.MATCH_QUESTIONS.value:
                 request_uri += self._post_paths['matched']
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
                 request_uri += self._post_paths['offensive']
-            del self._tasks_in_progress[response['msg_id']]
+            del self._tasks_in_progress[response['Msg_id']]
             data = response
             request = self._session.post(request_uri, json=data)
             return request.json()
