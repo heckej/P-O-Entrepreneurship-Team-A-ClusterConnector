@@ -225,7 +225,22 @@ class Connector(object):
             A dictionary that complies to the structure of the result of `get_next_task()` containing the
             information of the given `response` as far as the structure allows it.
         """
+        response = {k.lower(): v for k, v in response.items()}
         return response
+
+    @classmethod
+    def _parse_request(cls, request: dict) -> dict:
+        """Processes a dictionary received from the NLP and returns a dictionary that complies to
+        structure that can be understood by the server.
+
+        Args:
+            request: The request from the NLP as a dictionary.
+
+        Returns:
+            A dictionary that complies to the structure understood by the server containing the
+            information of the given `request` as far as the structure allows it.
+        """
+        return request
 
     def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
@@ -279,6 +294,6 @@ class Connector(object):
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
                 request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
-            data = response
+            data = self._parse_request(response)
             request = self._session.post(request_uri, json=data)
             return request.json()
