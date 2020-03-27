@@ -10,8 +10,9 @@ setup(
     packages=['cluster'],
     # Needed for dependencies
     install_requires=['requests'],
+    python_requires='>=3.7, <4',
     # *strongly* suggested for sharing
-    version='0.1.1',
+    version='0.1.2',
     # The license can be anything you like
     license='MIT',
     description='An API to communicate with the Cluster Connector server',

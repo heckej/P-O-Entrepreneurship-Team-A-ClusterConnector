@@ -13,13 +13,13 @@ class Actions(Enum):
                # do something with action
     """
 
-    MATCH_QUESTIONS = "MATCH_QUESTIONS"
+    MATCH_QUESTIONS = "match_questions"
     """Match questions."""
 
-    ESTIMATE_OFFENSIVENESS = "ESTIMATE_OFFENSIVENESS"
+    ESTIMATE_OFFENSIVENESS = "estimate_offensiveness"
     """Estimate the offensiveness of a question."""
 
-    NO_WORK = "NO_WORK"
+    NO_WORK = "no_work"
     """There server has no tasks to process."""
 
     @classmethod
@@ -132,11 +132,11 @@ class Connector(object):
             Send a simple HTTP request to API server requesting task to be performed.
             Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
             possible, because this method only ends when a task has been received and appended to _tasks).
-        
+
         TODO(Joren) 1st-2nd iteration: 
             Return first element of _tasks and update _tasks in background without causing delay in case _tasks is not
             empty.
-        
+
         TODO(Joren) 2nd-3rd iteration:
             Connect to server using web socket, so a permanent connection is made. This way the server
             can push directly any tasks without this client having to poll every now and then.
@@ -191,7 +191,7 @@ class Connector(object):
             # JSON response can be in different format than the one that should be returned
             received_tasks = self._parse_response(request.json())
             # The server might not have tasks.
-            if received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
+            if len(received_tasks) == 0 or received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
                 return False
             if self.prefetch:
                 # fetch all available tasks
@@ -214,19 +214,41 @@ class Connector(object):
         return False
 
     @classmethod
-    def _parse_response(cls, response: dict) -> dict:
-        """Processes a dictionary received from the server and returns a dictionary that complies to
-        structure of the result of `get_next_task()`.
+    def _parse_response(cls, response) -> list:
+        """Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries
+         that comply to the structure of the result of `get_next_task()`.
 
         Args:
-            response: The response from the server as a dictionary.
+            response: The response from the server as a dictionary or a list of dictionaries.
 
         Returns:
-            A dictionary that complies to the structure of the result of `get_next_task()` containing the
+            A list of dictionaries that comply to the structure of the result of `get_next_task()` containing the
             information of the given `response` as far as the structure allows it.
         """
-        response = {k.lower(): v for k, v in response.items()}
-        return response
+        parsed_response = list()
+        if type(response) == list:
+            for task in response:
+                task = Connector._parse_response_dict(task)
+                parsed_response.append(task)
+        elif type(response) == dict():
+            task = Connector._parse_response_dict(response)
+            parsed_response.append(task)
+        return parsed_response
+
+    @classmethod
+    def _parse_response_dict(cls, response_dict: dict) -> dict:
+        parsed_response = dict()
+        for key, value in response_dict.items():
+            if type(value) == list:
+                new_value = list()
+                for item in value:
+                    if type(item) == dict:
+                        item = {k.lower(): v for k, v in item.items()}  # deepest expected nesting is this level
+                    new_value.append(item)
+                value = new_value
+            key = key.lower()
+            parsed_response[key] = value
+        return parsed_response
 
     @classmethod
     def _parse_request(cls, request: dict) -> dict:
