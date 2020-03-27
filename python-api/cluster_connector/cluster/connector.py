@@ -225,6 +225,7 @@ class Connector(object):
             A dictionary that complies to the structure of the result of `get_next_task()` containing the
             information of the given `response` as far as the structure allows it.
         """
+        response = {k.lower(): v for k, v in response.items()}
         return response
 
     def reply(self, response: dict) -> dict:
