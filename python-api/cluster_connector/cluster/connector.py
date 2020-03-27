@@ -13,13 +13,13 @@ class Actions(Enum):
                # do something with action
     """
 
-    MATCH_QUESTIONS = "match_questions"
+    MATCH_QUESTIONS = "MATCH_QUESTIONS"
     """Match questions."""
 
-    ESTIMATE_OFFENSIVENESS = "estimate_offensiveness"
+    ESTIMATE_OFFENSIVENESS = "ESTIMATE_OFFENSIVENESS"
     """Estimate the offensiveness of a question."""
 
-    NO_WORK = "no_work"
+    NO_WORK = "NO_WORK"
     """There server has no tasks to process."""
 
     @classmethod
