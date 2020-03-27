@@ -214,19 +214,26 @@ class Connector(object):
         return False
 
     @classmethod
-    def _parse_response(cls, response: dict) -> dict:
-        """Processes a dictionary received from the server and returns a dictionary that complies to
-        structure of the result of `get_next_task()`.
+    def _parse_response(cls, response) -> list:
+        """Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries
+         that comply to the structure of the result of `get_next_task()`.
 
         Args:
-            response: The response from the server as a dictionary.
+            response: The response from the server as a dictionary or a list of dictionaries.
 
         Returns:
-            A dictionary that complies to the structure of the result of `get_next_task()` containing the
+            A list of dictionaries that comply to the structure of the result of `get_next_task()` containing the
             information of the given `response` as far as the structure allows it.
         """
-        response = {k.lower(): v for k, v in response.items()}
-        return response
+        parsed_response = list()
+        if type(response) == list:
+            for task in response:
+                task = {k.lower(): v for k, v in task.items()}
+                parsed_response.append(task)
+        elif type(response) == dict():
+            task = {k.lower(): v for k, v in response.items()}
+            parsed_response.append(task)
+        return parsed_response
 
     @classmethod
     def _parse_request(cls, request: dict) -> dict:
