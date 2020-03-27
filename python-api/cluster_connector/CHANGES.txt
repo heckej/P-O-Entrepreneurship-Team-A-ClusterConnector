@@ -2,6 +2,11 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
+v0.1.2
+---------------------------------------
+* Bug solved: `KeyError` occurred because of case sensitiveness in dictionary keys.
+* Bug solved: empty responses from server are now handled correctly.
+
 v0.1.1
 ---------------------------------------
 The method `has_task()` now behaves as expected, i.e. it returns whether any tasks are available instead of always True.

@@ -54,6 +54,8 @@ class Connector(object):
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
+        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
+        self._session.headers.update({'Accept': 'application/json'})  # make sure to request json only
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -67,8 +69,8 @@ class Connector(object):
         """
         uri_unmatched = self._request_paths['unmatched']
         uri_offensive = self._request_paths['offensive']
-        return len(self._tasks) > 0 or self._request_questions(uri_unmatched, 0.25, False) or \
-            self._request_questions(uri_offensive, 0.25, False)
+        return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
+               self._request_tasks(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout=None) -> any:
         """
@@ -130,11 +132,11 @@ class Connector(object):
             Send a simple HTTP request to API server requesting task to be performed.
             Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
             possible, because this method only ends when a task has been received and appended to _tasks).
-        
+
         TODO(Joren) 1st-2nd iteration: 
             Return first element of _tasks and update _tasks in background without causing delay in case _tasks is not
             empty.
-        
+
         TODO(Joren) 2nd-3rd iteration:
             Connect to server using web socket, so a permanent connection is made. This way the server
             can push directly any tasks without this client having to poll every now and then.
@@ -159,13 +161,13 @@ class Connector(object):
                             timeout_unmatched = None
                             timeout_offensive = None
                         path_unmatched = self._request_paths['unmatched']
-                        tasks_found = self._request_questions(path_unmatched, timeout_unmatched)
+                        tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
                             path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
-                            tasks_found = tasks_found | self._request_questions(path_offensive, timeout_offensive)
+                            tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
                     time_passed = start_time - time.time()  # keep track of the passed time
                     # stay asleep until 'time_until_retry' seconds passed and
@@ -180,16 +182,16 @@ class Connector(object):
 
         return task
 
-    def _request_questions(self, path: str, timeout: float, append=True):
+    def _request_tasks(self, path: str, timeout: float, append=True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
-        request = requests.get(request_uri, timeout=timeout)
+        request = self._session.get(request_uri, timeout=timeout)
         if request.status_code == 200:
             # Status == OK
             # JSON response can be in different format than the one that should be returned
             received_tasks = self._parse_response(request.json())
             # The server might not have tasks.
-            if received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
+            if len(received_tasks) == 0 or received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
                 return False
             if self.prefetch:
                 # fetch all available tasks
@@ -212,18 +214,55 @@ class Connector(object):
         return False
 
     @classmethod
-    def _parse_response(cls, response: dict) -> dict:
-        """Processes a dictionary received from the server and returns a dictionary that complies to
-        structure of the result of `get_next_task()`.
+    def _parse_response(cls, response) -> list:
+        """Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries
+         that comply to the structure of the result of `get_next_task()`.
 
         Args:
-            response: The response from the server as a dictionary.
+            response: The response from the server as a dictionary or a list of dictionaries.
 
         Returns:
-            A dictionary that complies to the structure of the result of `get_next_task()` containing the
+            A list of dictionaries that comply to the structure of the result of `get_next_task()` containing the
             information of the given `response` as far as the structure allows it.
         """
-        return response
+        parsed_response = list()
+        if type(response) == list:
+            for task in response:
+                task = Connector._parse_response_dict(task)
+                parsed_response.append(task)
+        elif type(response) == dict():
+            task = Connector._parse_response_dict(response)
+            parsed_response.append(task)
+        return parsed_response
+
+    @classmethod
+    def _parse_response_dict(cls, response_dict: dict) -> dict:
+        parsed_response = dict()
+        for key, value in response_dict.items():
+            if type(value) == list:
+                new_value = list()
+                for item in value:
+                    if type(item) == dict:
+                        item = {k.lower(): v for k, v in item.items()}  # deepest expected nesting is this level
+                    new_value.append(item)
+                value = new_value
+            key = key.lower()
+            parsed_response[key] = value
+        return parsed_response
+
+    @classmethod
+    def _parse_request(cls, request: dict) -> dict:
+        """Processes a dictionary received from the NLP and returns a dictionary that complies to
+        structure that can be understood by the server.
+
+        Args:
+            request: The request from the NLP as a dictionary.
+
+        Returns:
+            A dictionary that complies to the structure understood by the server containing the
+            information of the given `request` as far as the structure allows it.
+        """
+        return request
 
     def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
@@ -277,6 +316,6 @@ class Connector(object):
             elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
                 request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
-            data = response
-            request = requests.post(request_uri, json=data)
+            data = self._parse_request(response)
+            request = self._session.post(request_uri, json=data)
             return request.json()
