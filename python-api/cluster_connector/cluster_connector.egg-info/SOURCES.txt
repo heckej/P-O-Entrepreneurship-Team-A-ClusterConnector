@@ -1,3 +1,4 @@
+CHANGES.txt
 LICENSE.txt
 MANIFEST.in
 README.txt
