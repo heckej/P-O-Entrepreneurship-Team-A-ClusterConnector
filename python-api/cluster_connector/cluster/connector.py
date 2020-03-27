@@ -240,6 +240,7 @@ class Connector(object):
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         """
+        return request
 
     def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
