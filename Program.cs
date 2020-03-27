@@ -1,3 +1,4 @@
+using ClusterAPI.Utilities.Sockets;
 using ClusterConnector.Models;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,9 @@ namespace ClusterConnector
             // The code provided will print ‘Hello World’ to the console.
             // Press Ctrl+F5 (or go to Debug > Start Without Debugging) to run your app.
             Console.WriteLine("Hello World!");
-            Console.ReadKey();
+            //Console.ReadKey();
+
+            ClusterServerSocket clusterServerSocket = new ClusterServerSocket();
 
             List<int> numbers = new List<int>();
             numbers.AddRange(new List<int>() { 1,2,3,4,5});
