@@ -10,6 +10,7 @@ setup(
     packages=['cluster'],
     # Needed for dependencies
     install_requires=['requests'],
+    python_requires='>=3.7, <4',
     # *strongly* suggested for sharing
     version='0.1.1',
     # The license can be anything you like
