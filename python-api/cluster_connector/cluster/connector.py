@@ -55,6 +55,7 @@ class Connector(object):
         self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
         self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
+        self._session.headers.update({'Accept': 'application/json'})  # make sure to request json only
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
