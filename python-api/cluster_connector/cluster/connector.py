@@ -228,11 +228,26 @@ class Connector(object):
         parsed_response = list()
         if type(response) == list:
             for task in response:
-                task = {k.lower(): v for k, v in task.items()}
+                task = Connector._parse_response_dict(task)
                 parsed_response.append(task)
         elif type(response) == dict():
-            task = {k.lower(): v for k, v in response.items()}
+            task = Connector._parse_response_dict(response)
             parsed_response.append(task)
+        return parsed_response
+
+    @classmethod
+    def _parse_response_dict(cls, response_dict: dict) -> dict:
+        parsed_response = dict()
+        for key, value in response_dict.items():
+            if type(value) == list:
+                new_value = list()
+                for item in value:
+                    if type(item) == dict:
+                        item = {k.lower(): v for k, v in item.items()}  # deepest expected nesting is this level
+                    new_value.append(item)
+                value = new_value
+            key = key.lower()
+            parsed_response[key] = value
         return parsed_response
 
     @classmethod
