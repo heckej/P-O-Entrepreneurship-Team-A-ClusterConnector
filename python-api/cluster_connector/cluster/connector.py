@@ -132,11 +132,11 @@ class Connector(object):
             Send a simple HTTP request to API server requesting task to be performed.
             Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
             possible, because this method only ends when a task has been received and appended to _tasks).
-        
+
         TODO(Joren) 1st-2nd iteration: 
             Return first element of _tasks and update _tasks in background without causing delay in case _tasks is not
             empty.
-        
+
         TODO(Joren) 2nd-3rd iteration:
             Connect to server using web socket, so a permanent connection is made. This way the server
             can push directly any tasks without this client having to poll every now and then.
@@ -191,7 +191,7 @@ class Connector(object):
             # JSON response can be in different format than the one that should be returned
             received_tasks = self._parse_response(request.json())
             # The server might not have tasks.
-            if received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
+            if len(received_tasks) == 0 or received_tasks[0]['action'].lower() == Actions.NO_WORK.value:
                 return False
             if self.prefetch:
                 # fetch all available tasks
