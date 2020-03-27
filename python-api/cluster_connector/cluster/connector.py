@@ -1,5 +1,6 @@
 import time
 import requests
+import threading
 from enum import Enum
 
 
@@ -37,6 +38,12 @@ class Connector(object):
         prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
             only one task will be fetched at a time. To improve performance you may want to leave this set to True,
             because that way less data transfers may be needed, though there's no guaranty for that.
+
+        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
+            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
+            additional time to fetch when no tasks are available immediately. To improve performance you may want to
+            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
+            is required when requesting the next task using `get_next_task()`.
     """
 
     def __init__(self):
@@ -56,6 +63,8 @@ class Connector(object):
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
         self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
         self._session.headers.update({'Accept': 'application/json'})  # make sure to request json only
+        self._request_thread = None
+        self.fetch_in_background = True
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
@@ -70,9 +79,9 @@ class Connector(object):
         uri_unmatched = self._request_paths['unmatched']
         uri_offensive = self._request_paths['offensive']
         return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
-               self._request_tasks(uri_offensive, 0.25, False)
+            self._request_tasks(uri_offensive, 0.25, False)
 
-    def get_next_task(self, timeout=None) -> any:
+    def get_next_task(self, timeout: float = None) -> any:
         """
         Waits for the next task from the server and returns it as a dictionary.
 
@@ -143,6 +152,8 @@ class Connector(object):
         """
 
         tasks_found = False
+        path_unmatched = self._request_paths['unmatched']
+        path_offensive = self._request_paths['offensive']
         if len(self._tasks) == 0:
             # no tasks left, ask the server
             if timeout is None or timeout > 0:
@@ -151,7 +162,8 @@ class Connector(object):
                 sleep = False
                 sleep_start = 0
                 while not tasks_found and (timeout is None or (time_passed < timeout)):
-                    if not sleep:
+                    if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
+                        # only try when not sleeping and when no tasks are being requested in a background already
                         if timeout is not None:
                             time_left = timeout - time_passed
                             # equally divide the given timeout
@@ -160,12 +172,10 @@ class Connector(object):
                         else:
                             timeout_unmatched = None
                             timeout_offensive = None
-                        path_unmatched = self._request_paths['unmatched']
                         tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
 
                         if self.prefetch or not tasks_found:
                             # request questions of which the offensiveness has to be tested
-                            path_offensive = self._request_paths['offensive']
                             # if prefetching disabled and already task found, then don't look for another task
                             tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
                         sleep_start = time.time()  # start sleeping
@@ -177,12 +187,23 @@ class Connector(object):
 
             if not tasks_found:
                 return None
+        else:
+            # still tasks left, but there might be new ones to be fetched
+            if self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
+                self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
+                                                        args=([path_unmatched, path_offensive], self._server_timeout))
+                self._request_thread.start()
         task = self._tasks.pop(0)
         self._tasks_in_progress[task['msg_id']] = task
 
         return task
 
-    def _request_tasks(self, path: str, timeout: float, append=True):
+    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
+        """Requests tasks from the server at all given paths."""
+        for path in paths:
+            self._request_tasks(path, timeout, append)
+
+    def _request_tasks(self, path: str, timeout: float, append: bool = True):
         """Sends a request to the server to receive tasks."""
         request_uri = self._base_request_uri + path
         request = self._session.get(request_uri, timeout=timeout)
