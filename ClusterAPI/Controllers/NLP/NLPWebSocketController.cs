@@ -137,6 +137,10 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<MatchQuestionModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION, new List<BaseModel>() { result });
             }
             catch {
@@ -146,6 +150,13 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<MatchQuestionModel[]>(jsonResponse);
+                foreach (var item in result)
+                {
+                    if (!item.IsComplete())
+                    {
+                        throw new Exception();
+                    }
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION, result.ToList<BaseModel>());
             }
             catch
@@ -156,6 +167,10 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<OffensivenessModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS, new List<BaseModel>() { result });
             }
             catch
@@ -166,6 +181,13 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<OffensivenessModel[]>(jsonResponse);
+                foreach (var item in result)
+                {
+                    if (!item.IsComplete())
+                    {
+                        throw new Exception();
+                    }
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS, result.ToList<BaseModel>());
             }
             catch

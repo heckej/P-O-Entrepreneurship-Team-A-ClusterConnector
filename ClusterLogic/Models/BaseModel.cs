@@ -7,5 +7,6 @@ namespace ClusterLogic.Models
 {
     public interface BaseModel
     {
+        bool IsComplete();
     }
 }
