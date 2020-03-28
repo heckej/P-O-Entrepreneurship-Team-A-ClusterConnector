@@ -314,13 +314,13 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ClusterLogic\ClusterLogic.csproj">
-      <Project>{1aeb8a0b-59f7-42cb-90b0-51bd62a14fa3}</Project>
-      <Name>ClusterLogic</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ClusterConnector.csproj">
       <Project>{0c411143-2973-479c-837c-79480c26ee59}</Project>
       <Name>ClusterConnector</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ClusterLogic\ClusterLogic.csproj">
+      <Project>{1aeb8a0b-59f7-42cb-90b0-51bd62a14fa3}</Project>
+      <Name>ClusterLogic</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterConnector", "Cluster
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterAPI", "ClusterAPI\ClusterAPI.csproj", "{67F45A66-EE37-41AF-9748-5FADB8D02E87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterLogic", "..\ClusterLogic\ClusterLogic.csproj", "{1AEB8A0B-59F7-42CB-90B0-51BD62A14FA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClusterLogic", "ClusterLogic\ClusterLogic.csproj", "{1AEB8A0B-59F7-42CB-90B0-51BD62A14FA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
