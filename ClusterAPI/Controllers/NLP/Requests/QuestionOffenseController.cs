@@ -10,11 +10,12 @@ namespace ClusterAPI.Controllers.NLP.Requests
 {
     public class QuestionOffenseController : ApiController
     {
-        private static readonly String DEFAULT_ACTION = "Answers.ESTIMATE_OFFENSIVENESS";
+        private static readonly String DEFAULT_ACTION = "estimate_offensiveness";
 
         [Route("api/NLP/questionOffensive")]
         public IHttpActionResult GetTestQuestion()
         {
+            NLPActionOffenseRating[] actions = new NLPActionOffenseRating[1];
             NLPActionOffenseRating nLPAction = new NLPActionOffenseRating();
             nLPAction.Action = DEFAULT_ACTION;
             nLPAction.Question_id = -1;
@@ -25,8 +26,8 @@ namespace ClusterAPI.Controllers.NLP.Requests
             {
                 return NotFound();
             }
-            var temp = Ok(nLPAction);
-            return Ok(nLPAction);
+            actions[0] = nLPAction;
+            return Ok(actions);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using ClusterAPI.Models;
+﻿using ClusterLogic.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

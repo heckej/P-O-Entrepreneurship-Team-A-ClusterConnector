@@ -10,11 +10,12 @@ namespace ClusterAPI.Controllers.NLP
 {
     public class QuestionMatchController : ApiController
     {
-        private static readonly String DEFAULT_ACTION = "Answers.MATCH_QUESTIONS";
+        private static readonly String DEFAULT_ACTION = "match_questions";
 
         [Route("api/NLP/QuestionMatch")]
         public IHttpActionResult GetTestQuestion()
         {
+            NLPActionQuestionMatch[] actions = new NLPActionQuestionMatch[1];
             NLPActionQuestionMatch nLPAction = new NLPActionQuestionMatch();
             nLPAction.Action = DEFAULT_ACTION;
             nLPAction.Question_id = -1;
@@ -26,8 +27,8 @@ namespace ClusterAPI.Controllers.NLP
             {
                 return NotFound();
             }
-            var temp = Ok(nLPAction);
-            return Ok(nLPAction);
+            actions[0] = nLPAction;
+            return Ok(actions);
         }
     }
 }

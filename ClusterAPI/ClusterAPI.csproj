@@ -202,7 +202,7 @@
     <Compile Include="Controllers\DB\DBAnswerController.cs" />
     <Compile Include="Controllers\DB\DBUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\NLP\Requests\WSQuestionMatchController.cs" />
+    <Compile Include="Controllers\NLP\NLPWebSocketController.cs" />
     <Compile Include="Controllers\NLP\Requests\QuestionOffenseController.cs" />
     <Compile Include="Controllers\NLP\Responses\OffenseResponseController.cs" />
     <Compile Include="Controllers\NLP\Requests\QuestionMatchController.cs" />
@@ -213,13 +213,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\MatchQuestionModel.cs" />
-    <Compile Include="Models\NLPMatchModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>NLPMatchModel.edmx</DependentUpon>
-    </Compile>
-    <Compile Include="Models\OffensivenessModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\CommaDelimitedArrayModelBinder.cs" />
     <Compile Include="Utilities\Sockets\ClientManager.cs" />
@@ -257,13 +250,6 @@
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\CollectionModelDescription.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\DisplayTemplates\ApiGroup.cshtml" />
     <Content Include="Areas\HelpPage\Views\Help\Api.cshtml" />
-    <EntityDeploy Include="Models\NLPMatchModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>NLPMatchModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\NLPMatchModel.edmx.diagram">
-      <DependentUpon>NLPMatchModel.edmx</DependentUpon>
-    </Content>
     <Content Include="libman.json" />
     <Content Include="lib\%40microsoft\signalr\dist\browser\signalr.min.js.map" />
     <None Include="Properties\PublishProfiles\ClusterAPI20200320113808 - Web Deploy.pubxml" />
@@ -296,6 +282,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Examples\" />
+    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -327,6 +314,10 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ClusterLogic\ClusterLogic.csproj">
+      <Project>{1aeb8a0b-59f7-42cb-90b0-51bd62a14fa3}</Project>
+      <Name>ClusterLogic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ClusterConnector.csproj">
       <Project>{0c411143-2973-479c-837c-79480c26ee59}</Project>
       <Name>ClusterConnector</Name>

@@ -1,4 +1,4 @@
-﻿using ClusterAPI.Models;
+﻿using ClusterLogic.Models;
 using System.Web.Http;
 
 namespace ClusterAPI.Controllers.NLP
