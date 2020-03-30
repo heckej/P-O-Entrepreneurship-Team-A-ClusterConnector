@@ -70,7 +70,7 @@ class Connector(object):
     """Set of keys that have to be in a task dictionary to be a valid task."""
 
     def __init__(self, use_websocket: bool = False,
-                 websocket_uri="wss://https://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
+                 websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10):
         """
         Args:
