@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>cluster.websocket_thread API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>cluster.websocket_thread</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import asyncio
+import threading
+import websockets
+import collections
+import queue
+import json
+import logging
+
+
+class WebsocketThread(threading.Thread):
+    &#34;&#34;&#34;Initiates a thread to run a websocket connection, send messages from a `reply_queue` and receive tasks, saving
+        them in a `tasks_queue`.
+
+    .. versionadded::0.2.0
+
+    Attributes:
+        stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
+            interrupted, the websocket is closed if it was open and the `run()` method returns.
+            When stop is set to True by a method of this thread, an exception is added to the `exception_queue` provided
+            at initialisation.
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
+    def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
+                 reply_queue: collections.deque, loop, connection_timeout: float):
+        &#34;&#34;&#34;
+        Args:
+            websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
+            exception_queue: A reference to a queue in which raised exceptions should be saved to be passed on to the
+                caller of this thread.
+            add_tasks: An instance method of the calling class that handles received messages.
+            reply_queue: A queue in which the messages to be sent can be found.
+            loop: The loop to be set as the asynchronous event loop of this thread.
+            connection_timeout: The timeout to be set when connecting to the websocket host.
+        &#34;&#34;&#34;
+        threading.Thread.__init__(self)
+        self._exception_queue = exception_queue  # reference to queue to store raised exceptions to sync with caller
+        self._websocket_uri = websocket_uri  # the uri of the websocket with which a connection should be made
+        self._add_tasks = add_tasks  # an instance method of the calling class that adds new tasks to its collection.
+        self._reply_queue = reply_queue  # reference to the waiting replies queue
+        self._connection_timeout = connection_timeout   # the timeout set for a websocket connection to be established
+        self._websocket = None  # variable to reference the websocket connection
+        self.stop = False  # variable controlling whether this thread should keep running or should return
+        self._loop = loop  # reference to the current loop in which async methods should be called
+        asyncio.set_event_loop(loop)
+
+    def run(self):
+        &#34;&#34;&#34;Starts communication with the websocket host.&#34;&#34;&#34;
+        self._loop.run_until_complete(self._communicate_with_server())
+        logging.debug(&#34;Thread &#34; + self.getName() + &#34; has stopped.&#34;)
+
+    async def _replies_to_send(self):
+        &#34;&#34;&#34;Generates next reply to be sent and removes it from the reply queue.&#34;&#34;&#34;
+        try:
+            yield self._reply_queue.popleft()
+        except IndexError:
+            raise StopAsyncIteration()
+
+    async def _receive_handler(self):
+        &#34;&#34;&#34;Checks for new messages from server and processes them.
+
+        Sets self.stop to True when the websocket raises a `ConnectionClosedError`.
+
+        Returns: None if the websocket raises a `ConnectionClosedError`.
+
+        Post: `self.stop` equals True.
+        &#34;&#34;&#34;
+        while not self.stop:
+            try:
+                async for message in self._websocket:
+                    await self._process_received_message(message)
+            except websockets.exceptions.ConnectionClosedError as ex:
+                logging.debug(ex)
+                self._exception_queue.put(ex)  # pass exception to caller of this thread
+                self.stop = True  # return method and stop this thread
+            except Exception as e:
+                logging.debug(e)
+
+    async def _process_received_message(self, message):
+        &#34;&#34;&#34;Adds valid received tasks to waiting tasks queue.&#34;&#34;&#34;
+        logging.debug(&#34;Processing received message: &#34; + str(message))
+        self._add_tasks(message)
+
+    async def _send_handler(self):
+        &#34;&#34;&#34;Sends replies from reply queue.
+
+        Waits 0.5s if reply could not be sent. Waits 0.05s if no replies are available.
+
+        Post: `self.stop` equals True
+        &#34;&#34;&#34;
+        while not self.stop:
+            try:
+                async for reply in self._replies_to_send():
+                    await self._websocket.send(reply)
+                    logging.debug(&#34;Reply sent: &#34; + str(reply))
+            except StopAsyncIteration as e1:
+                logging.debug(e1)
+                logging.debug(&#34;No replies available.&#34;)
+            except RuntimeError as e2:
+                logging.debug(e2)
+                logging.debug(&#34;Can&#39;t handle StopAsyncIteration.&#34;)
+                await asyncio.sleep(0.05)
+            except Exception as e:
+                logging.debug(&#34;Reply not sent.&#34;)
+                logging.exception(e)
+                await asyncio.sleep(0.5)
+
+    async def _handler(self):
+        &#34;&#34;&#34;Lets sender and receiver handlers work asynchronously.&#34;&#34;&#34;
+        receive_task = asyncio.ensure_future(
+            self._receive_handler())
+        send_task = asyncio.ensure_future(
+            self._send_handler())
+        done, pending = await asyncio.wait(
+            [receive_task, send_task],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+
+        for task in pending:
+            task.cancel()
+            logging.debug(&#34;Task cancelled: &#34; + str(task))
+
+    async def _communicate_with_server(self):
+        &#34;&#34;&#34;Keeps websocket connection running.
+
+        Tries to connect to the websocket server with a timeout equal to `self._connection_timeout`. When the connection
+        has been established a *Connection established* message is sent to the host.
+        If `websockets.exceptions.InvalidMessage` is raised for the first time, the method waits 1.5s asynchronously and
+        retries once afterwards. `self.stop` is set to True when `websockets.exceptions.InvalidMessage` occurs a
+        second time or when another Exception is raised.
+
+        Returns: None when `self.stop` equals True.
+
+        Post: Raised exceptions in the `self._exception_queue`.
+        &#34;&#34;&#34;
+        second_chance = False
+        while not self.stop:
+            try:
+                if self._websocket is None or not self._websocket.open:
+                    logging.debug(&#34;Websocket NOT connected. Trying to connect. &#34; + str(self._connection_timeout) +
+                                  &#34;s timeout set.&#34;)
+                    await asyncio.wait_for(self._connect_to_server(), self._connection_timeout)
+                    # Send initialisation message to wake host.
+                    await self._websocket.send(json.dumps({&#34;msg&#34;: &#34;Connection established.&#34;}))
+                logging.debug(&#34;Connection established.&#34;)
+                await self._handler()
+            except websockets.exceptions.InvalidMessage as e:
+                # Server responds, but not correctly: retry once
+                logging.exception(e)
+                if second_chance:
+                    loggin.debug(&#34;Second attempt to connect to active host failed.&#34;)
+                    self._exception_queue.put(e)
+                    self.stop = True
+                else:
+                    logging.debug(&#34;Retry once to connect after invalid response message from host. Wait 1.5s.&#34;)
+                    await asyncio.sleep(1.5)
+                second_chance = True
+            except Exception as e:
+                logging.exception(e)
+                self._exception_queue.put(e)
+                self.stop = True
+        if self.stop and self._websocket is not None and self._websocket.open:
+            logging.debug(&#34;Closing websocket.&#34;)
+            await self._websocket.close()
+        logging.debug(&#34;Communication with server ended.&#34;)
+        return
+
+    async def _connect_to_server(self):
+        &#34;&#34;&#34;Creates a websocket connection using the uri of this websocket thread.
+
+        Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
+                - Exception: depends the behaviour of `websockets.client.connect()`
+        &#34;&#34;&#34;
+        self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cluster.websocket_thread.WebsocketThread"><code class="flex name class">
+<span>class <span class="ident">WebsocketThread</span></span>
+<span>(</span><span>websocket_uri, exception_queue, add_tasks, reply_queue, loop, connection_timeout)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Initiates a thread to run a websocket connection, send messages from a <code>reply_queue</code> and receive tasks, saving
+them in a <code>tasks_queue</code>.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>stop</code></strong></dt>
+<dd>A boolean controlling the running state of this thread. When stop is set to True, running tasks are
+interrupted, the websocket is closed if it was open and the <code>run()</code> method returns.
+When stop is set to True by a method of this thread, an exception is added to the <code>exception_queue</code> provided
+at initialisation.</dd>
+</dl>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>websocket_uri</code></strong></dt>
+<dd>A string containing the uri of the websocket host with which a connection should be made.</dd>
+<dt><strong><code>exception_queue</code></strong></dt>
+<dd>A reference to a queue in which raised exceptions should be saved to be passed on to the
+caller of this thread.</dd>
+<dt><strong><code>add_tasks</code></strong></dt>
+<dd>An instance method of the calling class that handles received messages.</dd>
+<dt><strong><code>reply_queue</code></strong></dt>
+<dd>A queue in which the messages to be sent can be found.</dd>
+<dt><strong><code>loop</code></strong></dt>
+<dd>The loop to be set as the asynchronous event loop of this thread.</dd>
+<dt><strong><code>connection_timeout</code></strong></dt>
+<dd>The timeout to be set when connecting to the websocket host.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class WebsocketThread(threading.Thread):
+    &#34;&#34;&#34;Initiates a thread to run a websocket connection, send messages from a `reply_queue` and receive tasks, saving
+        them in a `tasks_queue`.
+
+    .. versionadded::0.2.0
+
+    Attributes:
+        stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
+            interrupted, the websocket is closed if it was open and the `run()` method returns.
+            When stop is set to True by a method of this thread, an exception is added to the `exception_queue` provided
+            at initialisation.
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
+    def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
+                 reply_queue: collections.deque, loop, connection_timeout: float):
+        &#34;&#34;&#34;
+        Args:
+            websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
+            exception_queue: A reference to a queue in which raised exceptions should be saved to be passed on to the
+                caller of this thread.
+            add_tasks: An instance method of the calling class that handles received messages.
+            reply_queue: A queue in which the messages to be sent can be found.
+            loop: The loop to be set as the asynchronous event loop of this thread.
+            connection_timeout: The timeout to be set when connecting to the websocket host.
+        &#34;&#34;&#34;
+        threading.Thread.__init__(self)
+        self._exception_queue = exception_queue  # reference to queue to store raised exceptions to sync with caller
+        self._websocket_uri = websocket_uri  # the uri of the websocket with which a connection should be made
+        self._add_tasks = add_tasks  # an instance method of the calling class that adds new tasks to its collection.
+        self._reply_queue = reply_queue  # reference to the waiting replies queue
+        self._connection_timeout = connection_timeout   # the timeout set for a websocket connection to be established
+        self._websocket = None  # variable to reference the websocket connection
+        self.stop = False  # variable controlling whether this thread should keep running or should return
+        self._loop = loop  # reference to the current loop in which async methods should be called
+        asyncio.set_event_loop(loop)
+
+    def run(self):
+        &#34;&#34;&#34;Starts communication with the websocket host.&#34;&#34;&#34;
+        self._loop.run_until_complete(self._communicate_with_server())
+        logging.debug(&#34;Thread &#34; + self.getName() + &#34; has stopped.&#34;)
+
+    async def _replies_to_send(self):
+        &#34;&#34;&#34;Generates next reply to be sent and removes it from the reply queue.&#34;&#34;&#34;
+        try:
+            yield self._reply_queue.popleft()
+        except IndexError:
+            raise StopAsyncIteration()
+
+    async def _receive_handler(self):
+        &#34;&#34;&#34;Checks for new messages from server and processes them.
+
+        Sets self.stop to True when the websocket raises a `ConnectionClosedError`.
+
+        Returns: None if the websocket raises a `ConnectionClosedError`.
+
+        Post: `self.stop` equals True.
+        &#34;&#34;&#34;
+        while not self.stop:
+            try:
+                async for message in self._websocket:
+                    await self._process_received_message(message)
+            except websockets.exceptions.ConnectionClosedError as ex:
+                logging.debug(ex)
+                self._exception_queue.put(ex)  # pass exception to caller of this thread
+                self.stop = True  # return method and stop this thread
+            except Exception as e:
+                logging.debug(e)
+
+    async def _process_received_message(self, message):
+        &#34;&#34;&#34;Adds valid received tasks to waiting tasks queue.&#34;&#34;&#34;
+        logging.debug(&#34;Processing received message: &#34; + str(message))
+        self._add_tasks(message)
+
+    async def _send_handler(self):
+        &#34;&#34;&#34;Sends replies from reply queue.
+
+        Waits 0.5s if reply could not be sent. Waits 0.05s if no replies are available.
+
+        Post: `self.stop` equals True
+        &#34;&#34;&#34;
+        while not self.stop:
+            try:
+                async for reply in self._replies_to_send():
+                    await self._websocket.send(reply)
+                    logging.debug(&#34;Reply sent: &#34; + str(reply))
+            except StopAsyncIteration as e1:
+                logging.debug(e1)
+                logging.debug(&#34;No replies available.&#34;)
+            except RuntimeError as e2:
+                logging.debug(e2)
+                logging.debug(&#34;Can&#39;t handle StopAsyncIteration.&#34;)
+                await asyncio.sleep(0.05)
+            except Exception as e:
+                logging.debug(&#34;Reply not sent.&#34;)
+                logging.exception(e)
+                await asyncio.sleep(0.5)
+
+    async def _handler(self):
+        &#34;&#34;&#34;Lets sender and receiver handlers work asynchronously.&#34;&#34;&#34;
+        receive_task = asyncio.ensure_future(
+            self._receive_handler())
+        send_task = asyncio.ensure_future(
+            self._send_handler())
+        done, pending = await asyncio.wait(
+            [receive_task, send_task],
+            return_when=asyncio.FIRST_COMPLETED,
+        )
+
+        for task in pending:
+            task.cancel()
+            logging.debug(&#34;Task cancelled: &#34; + str(task))
+
+    async def _communicate_with_server(self):
+        &#34;&#34;&#34;Keeps websocket connection running.
+
+        Tries to connect to the websocket server with a timeout equal to `self._connection_timeout`. When the connection
+        has been established a *Connection established* message is sent to the host.
+        If `websockets.exceptions.InvalidMessage` is raised for the first time, the method waits 1.5s asynchronously and
+        retries once afterwards. `self.stop` is set to True when `websockets.exceptions.InvalidMessage` occurs a
+        second time or when another Exception is raised.
+
+        Returns: None when `self.stop` equals True.
+
+        Post: Raised exceptions in the `self._exception_queue`.
+        &#34;&#34;&#34;
+        second_chance = False
+        while not self.stop:
+            try:
+                if self._websocket is None or not self._websocket.open:
+                    logging.debug(&#34;Websocket NOT connected. Trying to connect. &#34; + str(self._connection_timeout) +
+                                  &#34;s timeout set.&#34;)
+                    await asyncio.wait_for(self._connect_to_server(), self._connection_timeout)
+                    # Send initialisation message to wake host.
+                    await self._websocket.send(json.dumps({&#34;msg&#34;: &#34;Connection established.&#34;}))
+                logging.debug(&#34;Connection established.&#34;)
+                await self._handler()
+            except websockets.exceptions.InvalidMessage as e:
+                # Server responds, but not correctly: retry once
+                logging.exception(e)
+                if second_chance:
+                    loggin.debug(&#34;Second attempt to connect to active host failed.&#34;)
+                    self._exception_queue.put(e)
+                    self.stop = True
+                else:
+                    logging.debug(&#34;Retry once to connect after invalid response message from host. Wait 1.5s.&#34;)
+                    await asyncio.sleep(1.5)
+                second_chance = True
+            except Exception as e:
+                logging.exception(e)
+                self._exception_queue.put(e)
+                self.stop = True
+        if self.stop and self._websocket is not None and self._websocket.open:
+            logging.debug(&#34;Closing websocket.&#34;)
+            await self._websocket.close()
+        logging.debug(&#34;Communication with server ended.&#34;)
+        return
+
+    async def _connect_to_server(self):
+        &#34;&#34;&#34;Creates a websocket connection using the uri of this websocket thread.
+
+        Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
+                - Exception: depends the behaviour of `websockets.client.connect()`
+        &#34;&#34;&#34;
+        self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>threading.Thread</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="cluster.websocket_thread.WebsocketThread.run"><code class="name flex">
+<span>def <span class="ident">run</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Starts communication with the websocket host.</p></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def run(self):
+    &#34;&#34;&#34;Starts communication with the websocket host.&#34;&#34;&#34;
+    self._loop.run_until_complete(self._communicate_with_server())
+    logging.debug(&#34;Thread &#34; + self.getName() + &#34; has stopped.&#34;)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="cluster" href="index.html">cluster</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cluster.websocket_thread.WebsocketThread" href="#cluster.websocket_thread.WebsocketThread">WebsocketThread</a></code></h4>
+<ul class="">
+<li><code><a title="cluster.websocket_thread.WebsocketThread.run" href="#cluster.websocket_thread.WebsocketThread.run">run</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

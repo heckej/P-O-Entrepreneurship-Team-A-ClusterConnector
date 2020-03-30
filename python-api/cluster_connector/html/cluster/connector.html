@@ -1,0 +1,1604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>cluster.connector API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>cluster.connector</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import time
+import requests
+import threading
+import json
+import queue
+import collections
+from . import websocket_thread
+import asyncio
+import logging
+# import sys
+from enum import Enum
+# logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+
+
+class Actions(Enum):
+    &#34;&#34;&#34;Enumeration of recognized actions.
+
+    .. versionadded::0.1.0
+
+    The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
+    To loop through all of the actions in this enumeration, simply use
+
+        for action in Actions:
+               # do something with action
+    &#34;&#34;&#34;
+
+    MATCH_QUESTIONS = &#34;match_questions&#34;
+    &#34;&#34;&#34;Match questions.&#34;&#34;&#34;
+
+    ESTIMATE_OFFENSIVENESS = &#34;estimate_offensiveness&#34;
+    &#34;&#34;&#34;Estimate the offensiveness of a question.&#34;&#34;&#34;
+
+    NO_WORK = &#34;no_work&#34;
+    &#34;&#34;&#34;There server has no tasks to process.&#34;&#34;&#34;
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_
+
+
+class Connector(object):
+    &#34;&#34;&#34;Allows communication with Cluster API server.
+
+    This Connector class allows communication with the Cluster API server by returning NLP tasks
+    from the server whenever any are available and by replying with a response.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
+
+    Attributes:
+        prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
+            only one task will be fetched at a time. To improve performance you may want to leave this set to True,
+            because that way less data transfers may be needed, though there&#39;s no guaranty for that.
+
+        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
+            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
+            additional time to fetch when no tasks are available immediately. To improve performance you may want to
+            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
+            is required when requesting the next task using `get_next_task()`.
+
+        use_websocket: A boolean enabling the usage of a websocket connection to get tasks from the server and send
+            responses back. Usage of websockets is now still under development and will be enabled by default in a next
+            release. For now it is disabled by default.
+
+    Raises:
+        Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
+            mostly focused on `OSError` and `websockets.exceptions.InvalidMessage`, but is not limited to those.
+
+    Debugging:
+        To enable logging of debugging messages, use the following statements:
+        ```
+            &gt;&gt; import logging, sys
+            &gt;&gt; logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+        ```
+    &#34;&#34;&#34;
+
+    necessary_task_keys = {&#34;msg_id&#34;, &#34;action&#34;}
+    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.
+    
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
+    def __init__(self, use_websocket: bool = False,
+                 websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
+                 websocket_connection_timeout=10):
+        &#34;&#34;&#34;
+        Args:
+            use_websocket: A boolean that enables usage of websockets. See `use_websocket` under Attributes.
+
+            websocket_uri: A custom uri referencing the websocket host that should be used.
+
+            websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
+                default set to 10 seconds.
+        &#34;&#34;&#34;
+        self.prefetch = True
+        self._tasks = list()  # store non processed received tasks
+        self._tasks_in_progress = dict()  # keep track of work in progress
+
+        self._server_timeout = 4  # timeout used while checking for server messages
+        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
+        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
+        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
+        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
+        self._session.headers.update({&#39;Accept&#39;: &#39;application/json&#39;})  # make sure to request json only
+
+        self._request_thread = None
+        self.fetch_in_background = True
+        self.use_websocket = use_websocket
+        self._websocket_connection_timeout = websocket_connection_timeout
+        if use_websocket:
+            logging.warning(&#34;The use of websockets is currently still under development. Make sure to close the &#34;
+                            &#34;connection when done using `close()`. To print debugging statements, &#34;
+                            &#34;use\n&gt;&gt; import logging, sys\n&gt;&gt; logging.basicConfig(stream=sys.stderr, &#34;
+                            &#34;level=logging.DEBUG)&#34;)
+        else:
+            logging.warning(&#34;In the next release websockets will be enabled by default.&#34;)
+        self._websocket_uri = websocket_uri
+        self._reply_queue = collections.deque()  # keep list of replies to send
+        self._websocket_thread = None
+        self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
+        if self.use_websocket:
+            self._init_websocket_thread()
+
+    def reset_connection(self):
+        &#34;&#34;&#34;Resets the websocket thread.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        self._init_websocket_thread()
+
+    def _init_websocket_thread(self):
+        &#34;&#34;&#34;Initialize a new thread running a websocket connection.
+
+        Post:
+            In case a websocket thread had been assigned before, the previous websocket thread is stopped and a new
+            websocket thread is started.
+            `self._websocket_thread` equals the newly assigned websocket thread.
+        &#34;&#34;&#34;
+        if self._websocket_thread is not None:
+            self._websocket_thread.stop = True
+        # Clear exceptions in case any are still in the queue
+        logging.debug(&#34;Clearing exception queue.&#34;)
+        with self._websocket_exceptions.mutex:
+            self._websocket_exceptions.queue.clear()
+        # Let asynchronous websocket run in separate thread, so it doesn&#39;t block
+        logging.debug(&#34;Starting new thread.&#34;)
+        self._websocket_thread = websocket_thread.WebsocketThread(self._websocket_uri, self._websocket_exceptions,
+                                                                  self._add_tasks,
+                                                                  self._reply_queue, asyncio.get_event_loop(),
+                                                                  self._websocket_connection_timeout)
+        self._websocket_thread.start()
+        logging.debug(&#34;Thread &#34; + self._websocket_thread.getName() + &#34; started.&#34;)
+
+    def _checkout_websocket(self):
+        &#34;&#34;&#34;Checks whether the websocket thread is still alive and whether it has passed exceptions.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        # check if websocket still alive and hasn&#39;t thrown any exceptions
+        if not self._websocket_exceptions.empty():
+            # Websocket thread passed an exception.
+            exception = self._websocket_exceptions.get()
+            self._websocket_thread.stop = True
+            logging.debug(&#34;An exception occurred in the websocket thread.&#34;)
+            raise exception
+        elif self._websocket_thread is None or not self._websocket_thread.is_alive():
+            logging.debug(&#34;Reinitializing websocket thread.&#34;)
+            self._init_websocket_thread()
+
+    def _add_tasks(self, message):
+        &#34;&#34;&#34;Parses a given response and adds tasks from message to the queue if needed.&#34;&#34;&#34;
+        received_tasks = Connector._parse_response(message)
+        for task in received_tasks:
+            self._add_task(task)
+
+    def _add_task(self, task):
+        &#34;&#34;&#34;Adds the given task to the task queue if it is valid and not yet in the task or tasks in progress queue.&#34;&#34;&#34;
+        if not Connector.is_valid_task(task):
+            logging.debug(&#34;Task with invalid structure received: &#34; + str(task))
+        elif task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress:
+            # only add task if valid and not in the (progress) task list already
+            self._tasks.append(task)
+            logging.debug(&#34;Task added: &#34; + str(task))
+        else:
+            # task already received
+            logging.debug(&#34;Message id &#34; + str(task[&#39;msg_id&#39;]) + &#34; already in task or tasks in progress queue.&#34;)
+
+    def has_task(self) -&gt; bool:
+        &#34;&#34;&#34;Checks whether the server has any tasks available.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
+        Asks the server to check whether it has any tasks that should be processed.
+        This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
+        of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+
+        Returns:
+            True if and only if there is a task to be processed.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        if self.use_websocket:
+            self._checkout_websocket()
+        uri_unmatched = self._request_paths[&#39;unmatched&#39;]
+        uri_offensive = self._request_paths[&#39;offensive&#39;]
+        # print(&#34;using websocket:&#34;, self.use_websocket)
+        if self.use_websocket:
+            return len(self._tasks) &gt; 0
+        else:
+            return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)
+
+    def get_next_task(self, timeout: float = None) -&gt; any:
+        &#34;&#34;&#34;
+        Waits for the next task from the server and returns it as a dictionary.
+
+        Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
+        Args:
+            timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
+                then the method will only return upon receiving a task from the server.
+
+        Currently two possible JSON structures can be expected:
+
+        1. The server asks to match a question with an undefined number of questions:
+
+                {
+                    &#34;action&#34;: Actions.MATCH_QUESTIONS,
+                    &#34;question_id&#34;: 123,
+                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;compare_questions&#34;: [
+                        {
+                            &#34;question_id&#34;: 111,
+                            &#34;question&#34;: &#34;AAA&#34;
+                        },
+                        {
+                            &#34;question_id&#34;: 222,
+                            &#34;question&#34;: &#34;BBB&#34;
+                        },
+                        {
+                            &#34;question_id&#34;: 333,
+                            &#34;question&#34;: &#34;CCC&#34;
+                        },
+                    ],
+                    &#34;msg_id&#34;: 1234567890
+                }
+
+
+        2. The server asks to estimate the offensiveness of a sentence:
+
+                 {
+                    &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
+                    &#34;question_id&#34;: 100,
+                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;msg_id&#34;: 1234567890
+                 }
+
+        Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
+
+        Returns:
+             A task to be processed as a JSON object or None when no task was received before timeout.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        if self.use_websocket:
+            logging.debug(&#34;Get task using websocket&#34;)
+            tasks_found = len(self._tasks) &gt; 0
+            start_time = time.time()
+            time_passed = 0
+            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+                self._checkout_websocket()
+                tasks_found = len(self._tasks) &gt; 0
+                time_passed = time.time() - start_time  # keep track of the passed time
+        else:
+            tasks_found = self._get_next_task_by_request(timeout)
+        if tasks_found:
+            # Remove task from task list and add it to the tasks in progress list.
+            task = self._tasks.pop(0)
+            self._tasks_in_progress[task[&#39;msg_id&#39;]] = task
+        else:
+            task = None
+        return task
+
+    def close(self):
+        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        self._websocket_thread.stop = True
+
+    def _get_next_task_by_request(self, timeout=None) -&gt; bool:
+        &#34;&#34;&#34;Requests tasks using GET requests.
+
+        Args: timeout: the time to wait before returning False without having received a response from the server.
+
+        If timeout is set to None, then the method won&#39;t return until a response has been received.
+
+        If a task is immediately available from the task list, that task is returned and a separate thread is started
+        to send a request to check for new tasks in the background.
+        If no tasks are immediately available from the task list, a request is send to check for new tasks.
+
+        Returns: - True if a task was available from the task list.
+                 - True if new tasks were received from the request before timeout.
+                 - False if no tasks were available from the task list and a timeout occurred.
+        &#34;&#34;&#34;
+        tasks_found = len(self._tasks) &gt; 0
+        path_unmatched = self._request_paths[&#39;unmatched&#39;]
+        path_offensive = self._request_paths[&#39;offensive&#39;]
+        # no tasks left, ask the server
+        if not tasks_found and (timeout is None or timeout &gt; 0):
+            time_passed = 0
+            start_time = time.time()
+            sleep = False
+            sleep_start = 0
+            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+                if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
+                    # only try when not sleeping and when no tasks are being requested in a background already
+                    if timeout is not None:
+                        time_left = timeout - time_passed
+                        # equally divide the given timeout
+                        timeout_offensive = time_left / 2
+                        timeout_unmatched = time_left - timeout_offensive
+                    else:
+                        timeout_unmatched = None
+                        timeout_offensive = None
+                    tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
+
+                    if self.prefetch or not tasks_found:
+                        # request questions of which the offensiveness has to be tested
+                        # if prefetching disabled and already task found, then don&#39;t look for another task
+                        tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
+                    sleep_start = time.time()  # start sleeping
+                time_passed = time.time() - start_time  # keep track of the passed time
+                # stay asleep until &#39;time_until_retry&#39; seconds passed and
+                # there is more time left than &#39;time_until_retry&#39; seconds
+                sleep = (time.time() - sleep_start &lt; self._time_until_retry) and \
+                        (timeout is None or self._time_until_retry &lt; timeout - time_passed)
+
+        elif self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
+            # still tasks left, but there might be new ones to be fetched
+            self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
+                                                    args=([path_unmatched, path_offensive], self._server_timeout))
+            self._request_thread.start()
+        return tasks_found
+
+    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
+        &#34;&#34;&#34;Requests tasks from the server at all given paths.&#34;&#34;&#34;
+        for path in paths:
+            self._request_tasks(path, timeout, append)
+
+    def _request_tasks(self, path: str, timeout: float, append: bool = True):
+        &#34;&#34;&#34;Sends a request to the server to receive tasks.
+
+        Post: - If tasks were available from the server and `prefetch` is set to True, all tasks from the server are
+                added to the task list if they are not in the task or tasks in progress list.
+              - If tasks were available from the server and `prefetch` is set to False, only the first task that wasn&#39;t
+                in the task or tasks in progress list already is added to the task list.
+        &#34;&#34;&#34;
+        request_uri = self._base_request_uri + path
+        request = self._session.get(request_uri, timeout=timeout)
+        if request.status_code == 200:
+            # Status == OK
+            # JSON response can be in different format than the one that should be returned
+            received_tasks = self._parse_response(request.json())
+            # The server might not have tasks.
+            if len(received_tasks) == 0 or received_tasks[0][&#39;action&#39;].lower() == Actions.NO_WORK.value:
+                return False
+            if self.prefetch:
+                # fetch all available tasks
+                new_task_found = False
+                for task in received_tasks:
+                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
+                        # only add task if not in the (processing) task list already and appending is enabled
+                        self._tasks.append(task)
+                        new_task_found = True
+                return new_task_found
+            else:
+                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
+                # appending is disabled
+                for task in received_tasks:
+                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
+                        self._tasks.append(task)
+                        return True
+                # all available tasks have been fetched before
+                return False
+        return False
+
+    @classmethod
+    def is_valid_task(cls, task: dict):
+        &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
+        set.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
+
+    @classmethod
+    def _parse_response(cls, response) -&gt; list:
+        &#34;&#34;&#34;Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries
+         that comply to the structure of the result of `get_next_task()`.
+
+        Args:
+            response: The response from the server as a dictionary or a list of dictionaries.
+
+        Returns:
+            A list of dictionaries that comply to the structure of the result of `get_next_task()` containing the
+            information of the given `response` as far as the structure allows it.
+        &#34;&#34;&#34;
+        parsed_response = list()
+        try:
+            response = json.loads(response)
+        except json.decoder.JSONDecodeError as e:
+            response = &#34;&#34;
+            logging.debug(e)
+        if type(response) == list:
+            for task in response:
+                task = cls._parse_response_dict(task)
+                parsed_response.append(task)
+        elif type(response) == dict:
+            task = cls._parse_response_dict(response)
+            parsed_response.append(task)
+        return parsed_response
+
+    @classmethod
+    def _parse_response_dict(cls, response_dict: dict) -&gt; dict:
+        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.&#34;&#34;&#34;
+        parsed_response = dict()
+        for key, value in response_dict.items():
+            if type(value) == list:
+                new_value = list()
+                for item in value:
+                    if type(item) == dict:
+                        item = {k.lower(): v for k, v in item.items()}  # deepest expected nesting is this level
+                    new_value.append(item)
+                value = new_value
+            key = key.lower()
+            parsed_response[key] = value
+        return parsed_response
+
+    @classmethod
+    def _parse_request(cls, request: dict) -&gt; dict:
+        &#34;&#34;&#34;Processes a dictionary received from the NLP and returns a dictionary that complies to
+        structure that can be understood by the server.
+
+        Args:
+            request: The request from the NLP as a dictionary.
+
+        Returns:
+            A dictionary that complies to the structure understood by the server containing the
+            information of the given `request` as far as the structure allows it.
+        &#34;&#34;&#34;
+        return request
+
+    def reply(self, response: dict) -&gt; dict:
+        &#34;&#34;&#34;Sends the given response to the server.
+
+        .. versionadded::0.1.0
+
+        Args:
+            response: A dictionary built like a JSON object.
+
+            The effect of replying with a response that doesn&#39;t follow one of the below mentioned structures
+            is undefined. As a response argument, currently two possible structures are allowed:
+
+            1. A reply to a `match_question` containing a top x of comparable questions:
+
+                    {
+                        &#34;question_id&#34;: 123,
+                        &#34;possible_matches&#34;: [
+                            {
+                                &#34;question_id&#34;: 111,
+                                &#34;prob&#34;: 0.789
+                            },
+                            {
+                                &#34;question_id&#34;: 333,
+                                &#34;prob&#34;: 0.654
+                            }
+                        ],
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            2. A reply to an `estimate_offensiveness`:
+
+                    {
+                        &#34;question_id&#34;: 100,
+                        &#34;prob&#34;: 0.123,
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            The `msg_id` is always used to include in the reply so that the server knows to
+            which task the reply belongs. It corresponds to the `msg_id` from a task from
+            the `get_next_task()` method.
+
+        Raises:
+            Exception: Something went wrong while sending the reply to the server.
+                This exception may become more specific in a future release, but for now it is kept as general as
+                possible, so any implementation changes don&#39;t effect these specifications.
+        &#34;&#34;&#34;
+
+        action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
+        if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
+            request_uri = self._base_request_uri
+            if action == Actions.MATCH_QUESTIONS.value:
+                request_uri += self._post_paths[&#39;matched&#39;]
+            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
+                request_uri += self._post_paths[&#39;offensive&#39;]
+            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+            data = self._parse_request(response)
+            if self.use_websocket:
+                self._reply_queue.append(json.dumps(data))
+            else:
+                request = self._session.post(request_uri, json=data)
+                return request.json()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="cluster.connector.Actions"><code class="flex name class">
+<span>class <span class="ident">Actions</span></span>
+<span>(</span><span>*args, **kwargs)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Enumeration of recognized actions.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<p>The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
+To loop through all of the actions in this enumeration, simply use</p>
+<pre><code>for action in Actions:
+       # do something with action
+</code></pre></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Actions(Enum):
+    &#34;&#34;&#34;Enumeration of recognized actions.
+
+    .. versionadded::0.1.0
+
+    The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
+    To loop through all of the actions in this enumeration, simply use
+
+        for action in Actions:
+               # do something with action
+    &#34;&#34;&#34;
+
+    MATCH_QUESTIONS = &#34;match_questions&#34;
+    &#34;&#34;&#34;Match questions.&#34;&#34;&#34;
+
+    ESTIMATE_OFFENSIVENESS = &#34;estimate_offensiveness&#34;
+    &#34;&#34;&#34;Estimate the offensiveness of a question.&#34;&#34;&#34;
+
+    NO_WORK = &#34;no_work&#34;
+    &#34;&#34;&#34;There server has no tasks to process.&#34;&#34;&#34;
+
+    @classmethod
+    def has_value(cls, value):
+        return value in cls._value2member_map_</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="cluster.connector.Actions.ESTIMATE_OFFENSIVENESS"><code class="name">var <span class="ident">ESTIMATE_OFFENSIVENESS</span></code></dt>
+<dd>
+<section class="desc"><p>Estimate the offensiveness of a question.</p></section>
+</dd>
+<dt id="cluster.connector.Actions.MATCH_QUESTIONS"><code class="name">var <span class="ident">MATCH_QUESTIONS</span></code></dt>
+<dd>
+<section class="desc"><p>Match questions.</p></section>
+</dd>
+<dt id="cluster.connector.Actions.NO_WORK"><code class="name">var <span class="ident">NO_WORK</span></code></dt>
+<dd>
+<section class="desc"><p>There server has no tasks to process.</p></section>
+</dd>
+</dl>
+</dd>
+<dt id="cluster.connector.Connector"><code class="flex name class">
+<span>class <span class="ident">Connector</span></span>
+<span>(</span><span>use_websocket=False, websocket_uri='wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS', websocket_connection_timeout=10)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Allows communication with Cluster API server.</p>
+<p>This Connector class allows communication with the Cluster API server by returning NLP tasks
+from the server whenever any are available and by replying with a response.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
+<h2 id="attributes">Attributes</h2>
+<dl>
+<dt><strong><code>prefetch</code></strong></dt>
+<dd>A boolean that enables this Connector to fetch all available tasks. If <code>prefetch</code> is set to False,
+only one task will be fetched at a time. To improve performance you may want to leave this set to True,
+because that way less data transfers may be needed, though there's no guaranty for that.</dd>
+<dt><strong><code>fetch_in_background</code></strong></dt>
+<dd>A boolean that enables this Connector to fetch tasks in the background and return the
+the next task immediately when available. If <code>fetch_in_background</code> is set to False, new tasks may take
+additional time to fetch when no tasks are available immediately. To improve performance you may want to
+leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
+is required when requesting the next task using <code>get_next_task()</code>.</dd>
+<dt><strong><code>use_websocket</code></strong></dt>
+<dd>A boolean enabling the usage of a websocket connection to get tasks from the server and send
+responses back. Usage of websockets is now still under development and will be enabled by default in a next
+release. For now it is disabled by default.</dd>
+</dl>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>Exception</code></strong></dt>
+<dd>Something went wrong while trying to communicate with the server. The range of these exceptions is
+mostly focused on <code>OSError</code> and <code>websockets.exceptions.InvalidMessage</code>, but is not limited to those.</dd>
+</dl>
+<h2 id="debugging">Debugging</h2>
+<p>To enable logging of debugging messages, use the following statements:</p>
+<pre><code>    &gt;&gt; import logging, sys
+    &gt;&gt; logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+</code></pre>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>use_websocket</code></strong></dt>
+<dd>A boolean that enables usage of websockets. See <code>use_websocket</code> under Attributes.</dd>
+<dt><strong><code>websocket_uri</code></strong></dt>
+<dd>A custom uri referencing the websocket host that should be used.</dd>
+<dt><strong><code>websocket_connection_timeout</code></strong></dt>
+<dd>The timeout to be set for the websocket connection before giving up. By
+default set to 10 seconds.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Connector(object):
+    &#34;&#34;&#34;Allows communication with Cluster API server.
+
+    This Connector class allows communication with the Cluster API server by returning NLP tasks
+    from the server whenever any are available and by replying with a response.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
+
+    Attributes:
+        prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
+            only one task will be fetched at a time. To improve performance you may want to leave this set to True,
+            because that way less data transfers may be needed, though there&#39;s no guaranty for that.
+
+        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
+            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
+            additional time to fetch when no tasks are available immediately. To improve performance you may want to
+            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
+            is required when requesting the next task using `get_next_task()`.
+
+        use_websocket: A boolean enabling the usage of a websocket connection to get tasks from the server and send
+            responses back. Usage of websockets is now still under development and will be enabled by default in a next
+            release. For now it is disabled by default.
+
+    Raises:
+        Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
+            mostly focused on `OSError` and `websockets.exceptions.InvalidMessage`, but is not limited to those.
+
+    Debugging:
+        To enable logging of debugging messages, use the following statements:
+        ```
+            &gt;&gt; import logging, sys
+            &gt;&gt; logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+        ```
+    &#34;&#34;&#34;
+
+    necessary_task_keys = {&#34;msg_id&#34;, &#34;action&#34;}
+    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.
+    
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
+    def __init__(self, use_websocket: bool = False,
+                 websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
+                 websocket_connection_timeout=10):
+        &#34;&#34;&#34;
+        Args:
+            use_websocket: A boolean that enables usage of websockets. See `use_websocket` under Attributes.
+
+            websocket_uri: A custom uri referencing the websocket host that should be used.
+
+            websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
+                default set to 10 seconds.
+        &#34;&#34;&#34;
+        self.prefetch = True
+        self._tasks = list()  # store non processed received tasks
+        self._tasks_in_progress = dict()  # keep track of work in progress
+
+        self._server_timeout = 4  # timeout used while checking for server messages
+        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
+        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
+        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
+        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
+        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
+        self._session.headers.update({&#39;Accept&#39;: &#39;application/json&#39;})  # make sure to request json only
+
+        self._request_thread = None
+        self.fetch_in_background = True
+        self.use_websocket = use_websocket
+        self._websocket_connection_timeout = websocket_connection_timeout
+        if use_websocket:
+            logging.warning(&#34;The use of websockets is currently still under development. Make sure to close the &#34;
+                            &#34;connection when done using `close()`. To print debugging statements, &#34;
+                            &#34;use\n&gt;&gt; import logging, sys\n&gt;&gt; logging.basicConfig(stream=sys.stderr, &#34;
+                            &#34;level=logging.DEBUG)&#34;)
+        else:
+            logging.warning(&#34;In the next release websockets will be enabled by default.&#34;)
+        self._websocket_uri = websocket_uri
+        self._reply_queue = collections.deque()  # keep list of replies to send
+        self._websocket_thread = None
+        self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
+        if self.use_websocket:
+            self._init_websocket_thread()
+
+    def reset_connection(self):
+        &#34;&#34;&#34;Resets the websocket thread.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        self._init_websocket_thread()
+
+    def _init_websocket_thread(self):
+        &#34;&#34;&#34;Initialize a new thread running a websocket connection.
+
+        Post:
+            In case a websocket thread had been assigned before, the previous websocket thread is stopped and a new
+            websocket thread is started.
+            `self._websocket_thread` equals the newly assigned websocket thread.
+        &#34;&#34;&#34;
+        if self._websocket_thread is not None:
+            self._websocket_thread.stop = True
+        # Clear exceptions in case any are still in the queue
+        logging.debug(&#34;Clearing exception queue.&#34;)
+        with self._websocket_exceptions.mutex:
+            self._websocket_exceptions.queue.clear()
+        # Let asynchronous websocket run in separate thread, so it doesn&#39;t block
+        logging.debug(&#34;Starting new thread.&#34;)
+        self._websocket_thread = websocket_thread.WebsocketThread(self._websocket_uri, self._websocket_exceptions,
+                                                                  self._add_tasks,
+                                                                  self._reply_queue, asyncio.get_event_loop(),
+                                                                  self._websocket_connection_timeout)
+        self._websocket_thread.start()
+        logging.debug(&#34;Thread &#34; + self._websocket_thread.getName() + &#34; started.&#34;)
+
+    def _checkout_websocket(self):
+        &#34;&#34;&#34;Checks whether the websocket thread is still alive and whether it has passed exceptions.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        # check if websocket still alive and hasn&#39;t thrown any exceptions
+        if not self._websocket_exceptions.empty():
+            # Websocket thread passed an exception.
+            exception = self._websocket_exceptions.get()
+            self._websocket_thread.stop = True
+            logging.debug(&#34;An exception occurred in the websocket thread.&#34;)
+            raise exception
+        elif self._websocket_thread is None or not self._websocket_thread.is_alive():
+            logging.debug(&#34;Reinitializing websocket thread.&#34;)
+            self._init_websocket_thread()
+
+    def _add_tasks(self, message):
+        &#34;&#34;&#34;Parses a given response and adds tasks from message to the queue if needed.&#34;&#34;&#34;
+        received_tasks = Connector._parse_response(message)
+        for task in received_tasks:
+            self._add_task(task)
+
+    def _add_task(self, task):
+        &#34;&#34;&#34;Adds the given task to the task queue if it is valid and not yet in the task or tasks in progress queue.&#34;&#34;&#34;
+        if not Connector.is_valid_task(task):
+            logging.debug(&#34;Task with invalid structure received: &#34; + str(task))
+        elif task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress:
+            # only add task if valid and not in the (progress) task list already
+            self._tasks.append(task)
+            logging.debug(&#34;Task added: &#34; + str(task))
+        else:
+            # task already received
+            logging.debug(&#34;Message id &#34; + str(task[&#39;msg_id&#39;]) + &#34; already in task or tasks in progress queue.&#34;)
+
+    def has_task(self) -&gt; bool:
+        &#34;&#34;&#34;Checks whether the server has any tasks available.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
+        Asks the server to check whether it has any tasks that should be processed.
+        This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
+        of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+
+        Returns:
+            True if and only if there is a task to be processed.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        if self.use_websocket:
+            self._checkout_websocket()
+        uri_unmatched = self._request_paths[&#39;unmatched&#39;]
+        uri_offensive = self._request_paths[&#39;offensive&#39;]
+        # print(&#34;using websocket:&#34;, self.use_websocket)
+        if self.use_websocket:
+            return len(self._tasks) &gt; 0
+        else:
+            return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)
+
+    def get_next_task(self, timeout: float = None) -&gt; any:
+        &#34;&#34;&#34;
+        Waits for the next task from the server and returns it as a dictionary.
+
+        Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
+        Args:
+            timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
+                then the method will only return upon receiving a task from the server.
+
+        Currently two possible JSON structures can be expected:
+
+        1. The server asks to match a question with an undefined number of questions:
+
+                {
+                    &#34;action&#34;: Actions.MATCH_QUESTIONS,
+                    &#34;question_id&#34;: 123,
+                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;compare_questions&#34;: [
+                        {
+                            &#34;question_id&#34;: 111,
+                            &#34;question&#34;: &#34;AAA&#34;
+                        },
+                        {
+                            &#34;question_id&#34;: 222,
+                            &#34;question&#34;: &#34;BBB&#34;
+                        },
+                        {
+                            &#34;question_id&#34;: 333,
+                            &#34;question&#34;: &#34;CCC&#34;
+                        },
+                    ],
+                    &#34;msg_id&#34;: 1234567890
+                }
+
+
+        2. The server asks to estimate the offensiveness of a sentence:
+
+                 {
+                    &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
+                    &#34;question_id&#34;: 100,
+                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;msg_id&#34;: 1234567890
+                 }
+
+        Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
+
+        Returns:
+             A task to be processed as a JSON object or None when no task was received before timeout.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        &#34;&#34;&#34;
+        if self.use_websocket:
+            logging.debug(&#34;Get task using websocket&#34;)
+            tasks_found = len(self._tasks) &gt; 0
+            start_time = time.time()
+            time_passed = 0
+            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+                self._checkout_websocket()
+                tasks_found = len(self._tasks) &gt; 0
+                time_passed = time.time() - start_time  # keep track of the passed time
+        else:
+            tasks_found = self._get_next_task_by_request(timeout)
+        if tasks_found:
+            # Remove task from task list and add it to the tasks in progress list.
+            task = self._tasks.pop(0)
+            self._tasks_in_progress[task[&#39;msg_id&#39;]] = task
+        else:
+            task = None
+        return task
+
+    def close(self):
+        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        self._websocket_thread.stop = True
+
+    def _get_next_task_by_request(self, timeout=None) -&gt; bool:
+        &#34;&#34;&#34;Requests tasks using GET requests.
+
+        Args: timeout: the time to wait before returning False without having received a response from the server.
+
+        If timeout is set to None, then the method won&#39;t return until a response has been received.
+
+        If a task is immediately available from the task list, that task is returned and a separate thread is started
+        to send a request to check for new tasks in the background.
+        If no tasks are immediately available from the task list, a request is send to check for new tasks.
+
+        Returns: - True if a task was available from the task list.
+                 - True if new tasks were received from the request before timeout.
+                 - False if no tasks were available from the task list and a timeout occurred.
+        &#34;&#34;&#34;
+        tasks_found = len(self._tasks) &gt; 0
+        path_unmatched = self._request_paths[&#39;unmatched&#39;]
+        path_offensive = self._request_paths[&#39;offensive&#39;]
+        # no tasks left, ask the server
+        if not tasks_found and (timeout is None or timeout &gt; 0):
+            time_passed = 0
+            start_time = time.time()
+            sleep = False
+            sleep_start = 0
+            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+                if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
+                    # only try when not sleeping and when no tasks are being requested in a background already
+                    if timeout is not None:
+                        time_left = timeout - time_passed
+                        # equally divide the given timeout
+                        timeout_offensive = time_left / 2
+                        timeout_unmatched = time_left - timeout_offensive
+                    else:
+                        timeout_unmatched = None
+                        timeout_offensive = None
+                    tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
+
+                    if self.prefetch or not tasks_found:
+                        # request questions of which the offensiveness has to be tested
+                        # if prefetching disabled and already task found, then don&#39;t look for another task
+                        tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
+                    sleep_start = time.time()  # start sleeping
+                time_passed = time.time() - start_time  # keep track of the passed time
+                # stay asleep until &#39;time_until_retry&#39; seconds passed and
+                # there is more time left than &#39;time_until_retry&#39; seconds
+                sleep = (time.time() - sleep_start &lt; self._time_until_retry) and \
+                        (timeout is None or self._time_until_retry &lt; timeout - time_passed)
+
+        elif self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
+            # still tasks left, but there might be new ones to be fetched
+            self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
+                                                    args=([path_unmatched, path_offensive], self._server_timeout))
+            self._request_thread.start()
+        return tasks_found
+
+    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
+        &#34;&#34;&#34;Requests tasks from the server at all given paths.&#34;&#34;&#34;
+        for path in paths:
+            self._request_tasks(path, timeout, append)
+
+    def _request_tasks(self, path: str, timeout: float, append: bool = True):
+        &#34;&#34;&#34;Sends a request to the server to receive tasks.
+
+        Post: - If tasks were available from the server and `prefetch` is set to True, all tasks from the server are
+                added to the task list if they are not in the task or tasks in progress list.
+              - If tasks were available from the server and `prefetch` is set to False, only the first task that wasn&#39;t
+                in the task or tasks in progress list already is added to the task list.
+        &#34;&#34;&#34;
+        request_uri = self._base_request_uri + path
+        request = self._session.get(request_uri, timeout=timeout)
+        if request.status_code == 200:
+            # Status == OK
+            # JSON response can be in different format than the one that should be returned
+            received_tasks = self._parse_response(request.json())
+            # The server might not have tasks.
+            if len(received_tasks) == 0 or received_tasks[0][&#39;action&#39;].lower() == Actions.NO_WORK.value:
+                return False
+            if self.prefetch:
+                # fetch all available tasks
+                new_task_found = False
+                for task in received_tasks:
+                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
+                        # only add task if not in the (processing) task list already and appending is enabled
+                        self._tasks.append(task)
+                        new_task_found = True
+                return new_task_found
+            else:
+                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
+                # appending is disabled
+                for task in received_tasks:
+                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
+                        self._tasks.append(task)
+                        return True
+                # all available tasks have been fetched before
+                return False
+        return False
+
+    @classmethod
+    def is_valid_task(cls, task: dict):
+        &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
+        set.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
+        return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
+
+    @classmethod
+    def _parse_response(cls, response) -&gt; list:
+        &#34;&#34;&#34;Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries
+         that comply to the structure of the result of `get_next_task()`.
+
+        Args:
+            response: The response from the server as a dictionary or a list of dictionaries.
+
+        Returns:
+            A list of dictionaries that comply to the structure of the result of `get_next_task()` containing the
+            information of the given `response` as far as the structure allows it.
+        &#34;&#34;&#34;
+        parsed_response = list()
+        try:
+            response = json.loads(response)
+        except json.decoder.JSONDecodeError as e:
+            response = &#34;&#34;
+            logging.debug(e)
+        if type(response) == list:
+            for task in response:
+                task = cls._parse_response_dict(task)
+                parsed_response.append(task)
+        elif type(response) == dict:
+            task = cls._parse_response_dict(response)
+            parsed_response.append(task)
+        return parsed_response
+
+    @classmethod
+    def _parse_response_dict(cls, response_dict: dict) -&gt; dict:
+        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.&#34;&#34;&#34;
+        parsed_response = dict()
+        for key, value in response_dict.items():
+            if type(value) == list:
+                new_value = list()
+                for item in value:
+                    if type(item) == dict:
+                        item = {k.lower(): v for k, v in item.items()}  # deepest expected nesting is this level
+                    new_value.append(item)
+                value = new_value
+            key = key.lower()
+            parsed_response[key] = value
+        return parsed_response
+
+    @classmethod
+    def _parse_request(cls, request: dict) -&gt; dict:
+        &#34;&#34;&#34;Processes a dictionary received from the NLP and returns a dictionary that complies to
+        structure that can be understood by the server.
+
+        Args:
+            request: The request from the NLP as a dictionary.
+
+        Returns:
+            A dictionary that complies to the structure understood by the server containing the
+            information of the given `request` as far as the structure allows it.
+        &#34;&#34;&#34;
+        return request
+
+    def reply(self, response: dict) -&gt; dict:
+        &#34;&#34;&#34;Sends the given response to the server.
+
+        .. versionadded::0.1.0
+
+        Args:
+            response: A dictionary built like a JSON object.
+
+            The effect of replying with a response that doesn&#39;t follow one of the below mentioned structures
+            is undefined. As a response argument, currently two possible structures are allowed:
+
+            1. A reply to a `match_question` containing a top x of comparable questions:
+
+                    {
+                        &#34;question_id&#34;: 123,
+                        &#34;possible_matches&#34;: [
+                            {
+                                &#34;question_id&#34;: 111,
+                                &#34;prob&#34;: 0.789
+                            },
+                            {
+                                &#34;question_id&#34;: 333,
+                                &#34;prob&#34;: 0.654
+                            }
+                        ],
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            2. A reply to an `estimate_offensiveness`:
+
+                    {
+                        &#34;question_id&#34;: 100,
+                        &#34;prob&#34;: 0.123,
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            The `msg_id` is always used to include in the reply so that the server knows to
+            which task the reply belongs. It corresponds to the `msg_id` from a task from
+            the `get_next_task()` method.
+
+        Raises:
+            Exception: Something went wrong while sending the reply to the server.
+                This exception may become more specific in a future release, but for now it is kept as general as
+                possible, so any implementation changes don&#39;t effect these specifications.
+        &#34;&#34;&#34;
+
+        action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
+        if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
+            request_uri = self._base_request_uri
+            if action == Actions.MATCH_QUESTIONS.value:
+                request_uri += self._post_paths[&#39;matched&#39;]
+            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
+                request_uri += self._post_paths[&#39;offensive&#39;]
+            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+            data = self._parse_request(response)
+            if self.use_websocket:
+                self._reply_queue.append(json.dumps(data))
+            else:
+                request = self._session.post(request_uri, json=data)
+                return request.json()</code></pre>
+</details>
+<h3>Class variables</h3>
+<dl>
+<dt id="cluster.connector.Connector.necessary_task_keys"><code class="name">var <span class="ident">necessary_task_keys</span></code></dt>
+<dd>
+<section class="desc"><p>Set of keys that have to be in a task dictionary to be a valid task.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="cluster.connector.Connector.is_valid_task"><code class="name flex">
+<span>def <span class="ident">is_valid_task</span></span>(<span>task)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Returns True if and only if the given dictionary contains the keys that are in the <code>cls.necessary_task_keys</code>
+set.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@classmethod
+def is_valid_task(cls, task: dict):
+    &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
+    set.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+    return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys</code></pre>
+</details>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="cluster.connector.Connector.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sends a stop signal to the thread running the websocket connection of this connector.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def close(self):
+    &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+    self._websocket_thread.stop = True</code></pre>
+</details>
+</dd>
+<dt id="cluster.connector.Connector.get_next_task"><code class="name flex">
+<span>def <span class="ident">get_next_task</span></span>(<span>self, timeout=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Waits for the next task from the server and returns it as a dictionary.</p>
+<p>Waits until the server has delivered a task or until timeout if a timeout is set.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>timeout</code></strong></dt>
+<dd>The number of seconds to wait before returning without result. In case the timeout is set to None,
+then the method will only return upon receiving a task from the server.</dd>
+</dl>
+<p>Currently two possible JSON structures can be expected:</p>
+<ol>
+<li>
+<p>The server asks to match a question with an undefined number of questions:</p>
+<pre><code>{
+    "action": Actions.MATCH_QUESTIONS,
+    "question_id": 123,
+    "question": "XXX",
+    "compare_questions": [
+        {
+            "question_id": 111,
+            "question": "AAA"
+        },
+        {
+            "question_id": 222,
+            "question": "BBB"
+        },
+        {
+            "question_id": 333,
+            "question": "CCC"
+        },
+    ],
+    "msg_id": 1234567890
+}
+</code></pre>
+</li>
+<li>
+<p>The server asks to estimate the offensiveness of a sentence:</p>
+<pre><code> {
+    "action": Actions.ESTIMATE_OFFENSIVENESS,
+    "question_id": 100,
+    "question": "XXX",
+    "msg_id": 1234567890
+ }
+</code></pre>
+</li>
+</ol>
+<p>Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.</p>
+<h2 id="returns">Returns</h2>
+<p>A task to be processed as a JSON object or None when no task was received before timeout.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>Exception</code></strong></dt>
+<dd>The websocket thread has passed an exception. The passed exception is raised by this method.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_next_task(self, timeout: float = None) -&gt; any:
+    &#34;&#34;&#34;
+    Waits for the next task from the server and returns it as a dictionary.
+
+    Waits until the server has delivered a task or until timeout if a timeout is set.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
+
+    Args:
+        timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
+            then the method will only return upon receiving a task from the server.
+
+    Currently two possible JSON structures can be expected:
+
+    1. The server asks to match a question with an undefined number of questions:
+
+            {
+                &#34;action&#34;: Actions.MATCH_QUESTIONS,
+                &#34;question_id&#34;: 123,
+                &#34;question&#34;: &#34;XXX&#34;,
+                &#34;compare_questions&#34;: [
+                    {
+                        &#34;question_id&#34;: 111,
+                        &#34;question&#34;: &#34;AAA&#34;
+                    },
+                    {
+                        &#34;question_id&#34;: 222,
+                        &#34;question&#34;: &#34;BBB&#34;
+                    },
+                    {
+                        &#34;question_id&#34;: 333,
+                        &#34;question&#34;: &#34;CCC&#34;
+                    },
+                ],
+                &#34;msg_id&#34;: 1234567890
+            }
+
+
+    2. The server asks to estimate the offensiveness of a sentence:
+
+             {
+                &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
+                &#34;question_id&#34;: 100,
+                &#34;question&#34;: &#34;XXX&#34;,
+                &#34;msg_id&#34;: 1234567890
+             }
+
+    Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
+
+    Returns:
+         A task to be processed as a JSON object or None when no task was received before timeout.
+
+    Raises:
+        Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+    &#34;&#34;&#34;
+    if self.use_websocket:
+        logging.debug(&#34;Get task using websocket&#34;)
+        tasks_found = len(self._tasks) &gt; 0
+        start_time = time.time()
+        time_passed = 0
+        while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+            self._checkout_websocket()
+            tasks_found = len(self._tasks) &gt; 0
+            time_passed = time.time() - start_time  # keep track of the passed time
+    else:
+        tasks_found = self._get_next_task_by_request(timeout)
+    if tasks_found:
+        # Remove task from task list and add it to the tasks in progress list.
+        task = self._tasks.pop(0)
+        self._tasks_in_progress[task[&#39;msg_id&#39;]] = task
+    else:
+        task = None
+    return task</code></pre>
+</details>
+</dd>
+<dt id="cluster.connector.Connector.has_task"><code class="name flex">
+<span>def <span class="ident">has_task</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Checks whether the server has any tasks available.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
+<p>Asks the server to check whether it has any tasks that should be processed.
+This method should only be used when there is no reason to use <code>get_next_task()</code> afterwards. Because that kind
+of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.</p>
+<h2 id="returns">Returns</h2>
+<p>True if and only if there is a task to be processed.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>Exception</code></strong></dt>
+<dd>The websocket thread has passed an exception. The passed exception is raised by this method.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_task(self) -&gt; bool:
+    &#34;&#34;&#34;Checks whether the server has any tasks available.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
+
+    Asks the server to check whether it has any tasks that should be processed.
+    This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
+    of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+
+    Returns:
+        True if and only if there is a task to be processed.
+
+    Raises:
+        Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+    &#34;&#34;&#34;
+    if self.use_websocket:
+        self._checkout_websocket()
+    uri_unmatched = self._request_paths[&#39;unmatched&#39;]
+    uri_offensive = self._request_paths[&#39;offensive&#39;]
+    # print(&#34;using websocket:&#34;, self.use_websocket)
+    if self.use_websocket:
+        return len(self._tasks) &gt; 0
+    else:
+        return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)</code></pre>
+</details>
+</dd>
+<dt id="cluster.connector.Connector.reply"><code class="name flex">
+<span>def <span class="ident">reply</span></span>(<span>self, response)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sends the given response to the server.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>response</code></strong></dt>
+<dd>A dictionary built like a JSON object.</dd>
+</dl>
+<p>The effect of replying with a response that doesn't follow one of the below mentioned structures
+is undefined. As a response argument, currently two possible structures are allowed:</p>
+<ol>
+<li>
+<p>A reply to a <code>match_question</code> containing a top x of comparable questions:</p>
+<pre><code>{
+    "question_id": 123,
+    "possible_matches": [
+        {
+            "question_id": 111,
+            "prob": 0.789
+        },
+        {
+            "question_id": 333,
+            "prob": 0.654
+        }
+    ],
+    "msg_id": 1234567890
+}
+</code></pre>
+</li>
+<li>
+<p>A reply to an <code>estimate_offensiveness</code>:</p>
+<pre><code>{
+    "question_id": 100,
+    "prob": 0.123,
+    "msg_id": 1234567890
+}
+</code></pre>
+</li>
+</ol>
+<p>The <code>msg_id</code> is always used to include in the reply so that the server knows to
+which task the reply belongs. It corresponds to the <code>msg_id</code> from a task from
+the <code>get_next_task()</code> method.</p>
+<h2 id="raises">Raises</h2>
+<dl>
+<dt><strong><code>Exception</code></strong></dt>
+<dd>Something went wrong while sending the reply to the server.
+This exception may become more specific in a future release, but for now it is kept as general as
+possible, so any implementation changes don't effect these specifications.</dd>
+</dl></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reply(self, response: dict) -&gt; dict:
+    &#34;&#34;&#34;Sends the given response to the server.
+
+    .. versionadded::0.1.0
+
+    Args:
+        response: A dictionary built like a JSON object.
+
+        The effect of replying with a response that doesn&#39;t follow one of the below mentioned structures
+        is undefined. As a response argument, currently two possible structures are allowed:
+
+        1. A reply to a `match_question` containing a top x of comparable questions:
+
+                {
+                    &#34;question_id&#34;: 123,
+                    &#34;possible_matches&#34;: [
+                        {
+                            &#34;question_id&#34;: 111,
+                            &#34;prob&#34;: 0.789
+                        },
+                        {
+                            &#34;question_id&#34;: 333,
+                            &#34;prob&#34;: 0.654
+                        }
+                    ],
+                    &#34;msg_id&#34;: 1234567890
+                }
+
+        2. A reply to an `estimate_offensiveness`:
+
+                {
+                    &#34;question_id&#34;: 100,
+                    &#34;prob&#34;: 0.123,
+                    &#34;msg_id&#34;: 1234567890
+                }
+
+        The `msg_id` is always used to include in the reply so that the server knows to
+        which task the reply belongs. It corresponds to the `msg_id` from a task from
+        the `get_next_task()` method.
+
+    Raises:
+        Exception: Something went wrong while sending the reply to the server.
+            This exception may become more specific in a future release, but for now it is kept as general as
+            possible, so any implementation changes don&#39;t effect these specifications.
+    &#34;&#34;&#34;
+
+    action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
+    if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
+        request_uri = self._base_request_uri
+        if action == Actions.MATCH_QUESTIONS.value:
+            request_uri += self._post_paths[&#39;matched&#39;]
+        elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
+            request_uri += self._post_paths[&#39;offensive&#39;]
+        del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+        data = self._parse_request(response)
+        if self.use_websocket:
+            self._reply_queue.append(json.dumps(data))
+        else:
+            request = self._session.post(request_uri, json=data)
+            return request.json()</code></pre>
+</details>
+</dd>
+<dt id="cluster.connector.Connector.reset_connection"><code class="name flex">
+<span>def <span class="ident">reset_connection</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Resets the websocket thread.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def reset_connection(self):
+    &#34;&#34;&#34;Resets the websocket thread.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+    self._init_websocket_thread()</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="cluster" href="index.html">cluster</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="cluster.connector.Actions" href="#cluster.connector.Actions">Actions</a></code></h4>
+<ul class="">
+<li><code><a title="cluster.connector.Actions.ESTIMATE_OFFENSIVENESS" href="#cluster.connector.Actions.ESTIMATE_OFFENSIVENESS">ESTIMATE_OFFENSIVENESS</a></code></li>
+<li><code><a title="cluster.connector.Actions.MATCH_QUESTIONS" href="#cluster.connector.Actions.MATCH_QUESTIONS">MATCH_QUESTIONS</a></code></li>
+<li><code><a title="cluster.connector.Actions.NO_WORK" href="#cluster.connector.Actions.NO_WORK">NO_WORK</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="cluster.connector.Connector" href="#cluster.connector.Connector">Connector</a></code></h4>
+<ul class="two-column">
+<li><code><a title="cluster.connector.Connector.close" href="#cluster.connector.Connector.close">close</a></code></li>
+<li><code><a title="cluster.connector.Connector.get_next_task" href="#cluster.connector.Connector.get_next_task">get_next_task</a></code></li>
+<li><code><a title="cluster.connector.Connector.has_task" href="#cluster.connector.Connector.has_task">has_task</a></code></li>
+<li><code><a title="cluster.connector.Connector.is_valid_task" href="#cluster.connector.Connector.is_valid_task">is_valid_task</a></code></li>
+<li><code><a title="cluster.connector.Connector.necessary_task_keys" href="#cluster.connector.Connector.necessary_task_keys">necessary_task_keys</a></code></li>
+<li><code><a title="cluster.connector.Connector.reply" href="#cluster.connector.Connector.reply">reply</a></code></li>
+<li><code><a title="cluster.connector.Connector.reset_connection" href="#cluster.connector.Connector.reset_connection">reset_connection</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
