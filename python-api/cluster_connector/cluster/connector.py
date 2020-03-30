@@ -52,6 +52,18 @@ class Connector(object):
             additional time to fetch when no tasks are available immediately. To improve performance you may want to
             leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
             is required when requesting the next task using `get_next_task()`.
+
+        use_websocket: A boolean enabling the usage of a websocket connection to get tasks from the server and send
+            responses back. Usage of websockets is now still under development and will be enabled by default in a next
+            release. For now it is disabled by default.
+
+    Raises:
+        Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
+            mostly focused on `OSError` and `websockets.exceptions.InvalidMessage`, but is not limited to those.
+
+    Debugging: To start log debugging messages, use the following statements:
+        >> import logging, sys
+        >> logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
     """
 
     necessary_task_keys = {"msg_id", "action"}
