@@ -41,6 +41,8 @@ from enum import Enum
 class Actions(Enum):
     &#34;&#34;&#34;Enumeration of recognized actions.
 
+    .. versionadded::0.1.0
+
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
 
@@ -67,6 +69,9 @@ class Connector(object):
 
     This Connector class allows communication with the Cluster API server by returning NLP tasks
     from the server whenever any are available and by replying with a response.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
 
     Attributes:
         prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
@@ -96,7 +101,12 @@ class Connector(object):
     &#34;&#34;&#34;
 
     necessary_task_keys = {&#34;msg_id&#34;, &#34;action&#34;}
-    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.&#34;&#34;&#34;
+    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.
+    
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
 
     def __init__(self, use_websocket: bool = False,
                  websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
@@ -141,7 +151,10 @@ class Connector(object):
             self._init_websocket_thread()
 
     def reset_connection(self):
-        &#34;&#34;&#34;Resets the websocket thread.&#34;&#34;&#34;
+        &#34;&#34;&#34;Resets the websocket thread.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         self._init_websocket_thread()
 
     def _init_websocket_thread(self):
@@ -205,6 +218,9 @@ class Connector(object):
     def has_task(self) -&gt; bool:
         &#34;&#34;&#34;Checks whether the server has any tasks available.
 
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
         Asks the server to check whether it has any tasks that should be processed.
         This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
         of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
@@ -230,6 +246,9 @@ class Connector(object):
         Waits for the next task from the server and returns it as a dictionary.
 
         Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -298,7 +317,10 @@ class Connector(object):
         return task
 
     def close(self):
-        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.&#34;&#34;&#34;
+        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         self._websocket_thread.stop = True
 
     def _get_next_task_by_request(self, timeout=None) -&gt; bool:
@@ -401,7 +423,10 @@ class Connector(object):
     @classmethod
     def is_valid_task(cls, task: dict):
         &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
-        set.&#34;&#34;&#34;
+        set.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
 
     @classmethod
@@ -464,6 +489,8 @@ class Connector(object):
     def reply(self, response: dict) -&gt; dict:
         &#34;&#34;&#34;Sends the given response to the server.
 
+        .. versionadded::0.1.0
+
         Args:
             response: A dictionary built like a JSON object.
 
@@ -500,7 +527,7 @@ class Connector(object):
             the `get_next_task()` method.
 
         Raises:
-            Exception: something went wrong while sending the reply to the server.
+            Exception: Something went wrong while sending the reply to the server.
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
@@ -536,6 +563,9 @@ class Connector(object):
 </code></dt>
 <dd>
 <section class="desc"><p>Enumeration of recognized actions.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
 <p>The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
 To loop through all of the actions in this enumeration, simply use</p>
 <pre><code>for action in Actions:
@@ -547,6 +577,8 @@ To loop through all of the actions in this enumeration, simply use</p>
 </summary>
 <pre><code class="python">class Actions(Enum):
     &#34;&#34;&#34;Enumeration of recognized actions.
+
+    .. versionadded::0.1.0
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -596,6 +628,12 @@ To loop through all of the actions in this enumeration, simply use</p>
 <section class="desc"><p>Allows communication with Cluster API server.</p>
 <p>This Connector class allows communication with the Cluster API server by returning NLP tasks
 from the server whenever any are available and by replying with a response.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>prefetch</code></strong></dt>
@@ -644,6 +682,9 @@ default set to 10 seconds.</dd>
     This Connector class allows communication with the Cluster API server by returning NLP tasks
     from the server whenever any are available and by replying with a response.
 
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
+
     Attributes:
         prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
             only one task will be fetched at a time. To improve performance you may want to leave this set to True,
@@ -672,7 +713,12 @@ default set to 10 seconds.</dd>
     &#34;&#34;&#34;
 
     necessary_task_keys = {&#34;msg_id&#34;, &#34;action&#34;}
-    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.&#34;&#34;&#34;
+    &#34;&#34;&#34;Set of keys that have to be in a task dictionary to be a valid task.
+    
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
 
     def __init__(self, use_websocket: bool = False,
                  websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
@@ -717,7 +763,10 @@ default set to 10 seconds.</dd>
             self._init_websocket_thread()
 
     def reset_connection(self):
-        &#34;&#34;&#34;Resets the websocket thread.&#34;&#34;&#34;
+        &#34;&#34;&#34;Resets the websocket thread.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         self._init_websocket_thread()
 
     def _init_websocket_thread(self):
@@ -781,6 +830,9 @@ default set to 10 seconds.</dd>
     def has_task(self) -&gt; bool:
         &#34;&#34;&#34;Checks whether the server has any tasks available.
 
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
         Asks the server to check whether it has any tasks that should be processed.
         This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
         of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
@@ -806,6 +858,9 @@ default set to 10 seconds.</dd>
         Waits for the next task from the server and returns it as a dictionary.
 
         Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -874,7 +929,10 @@ default set to 10 seconds.</dd>
         return task
 
     def close(self):
-        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.&#34;&#34;&#34;
+        &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         self._websocket_thread.stop = True
 
     def _get_next_task_by_request(self, timeout=None) -&gt; bool:
@@ -977,7 +1035,10 @@ default set to 10 seconds.</dd>
     @classmethod
     def is_valid_task(cls, task: dict):
         &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
-        set.&#34;&#34;&#34;
+        set.
+
+        .. versionadded::0.2.0
+        &#34;&#34;&#34;
         return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
 
     @classmethod
@@ -1040,6 +1101,8 @@ default set to 10 seconds.</dd>
     def reply(self, response: dict) -&gt; dict:
         &#34;&#34;&#34;Sends the given response to the server.
 
+        .. versionadded::0.1.0
+
         Args:
             response: A dictionary built like a JSON object.
 
@@ -1076,7 +1139,7 @@ default set to 10 seconds.</dd>
             the `get_next_task()` method.
 
         Raises:
-            Exception: something went wrong while sending the reply to the server.
+            Exception: Something went wrong while sending the reply to the server.
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
@@ -1100,7 +1163,10 @@ default set to 10 seconds.</dd>
 <dl>
 <dt id="cluster.connector.Connector.necessary_task_keys"><code class="name">var <span class="ident">necessary_task_keys</span></code></dt>
 <dd>
-<section class="desc"><p>Set of keys that have to be in a task dictionary to be a valid task.</p></section>
+<section class="desc"><p>Set of keys that have to be in a task dictionary to be a valid task.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
 </dd>
 </dl>
 <h3>Static methods</h3>
@@ -1110,7 +1176,10 @@ default set to 10 seconds.</dd>
 </code></dt>
 <dd>
 <section class="desc"><p>Returns True if and only if the given dictionary contains the keys that are in the <code>cls.necessary_task_keys</code>
-set.</p></section>
+set.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1118,7 +1187,10 @@ set.</p></section>
 <pre><code class="python">@classmethod
 def is_valid_task(cls, task: dict):
     &#34;&#34;&#34;Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
-    set.&#34;&#34;&#34;
+    set.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
     return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys</code></pre>
 </details>
 </dd>
@@ -1129,13 +1201,19 @@ def is_valid_task(cls, task: dict):
 <span>def <span class="ident">close</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Sends a stop signal to the thread running the websocket connection of this connector.</p></section>
+<section class="desc"><p>Sends a stop signal to the thread running the websocket connection of this connector.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def close(self):
-    &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.&#34;&#34;&#34;
+    &#34;&#34;&#34;Sends a stop signal to the thread running the websocket connection of this connector.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
     self._websocket_thread.stop = True</code></pre>
 </details>
 </dd>
@@ -1145,6 +1223,12 @@ def is_valid_task(cls, task: dict):
 <dd>
 <section class="desc"><p>Waits for the next task from the server and returns it as a dictionary.</p>
 <p>Waits until the server has delivered a task or until timeout if a timeout is set.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>timeout</code></strong></dt>
@@ -1205,6 +1289,9 @@ then the method will only return upon receiving a task from the server.</dd>
     Waits for the next task from the server and returns it as a dictionary.
 
     Waits until the server has delivered a task or until timeout if a timeout is set.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
 
     Args:
         timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -1278,6 +1365,12 @@ then the method will only return upon receiving a task from the server.</dd>
 </code></dt>
 <dd>
 <section class="desc"><p>Checks whether the server has any tasks available.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;0.2.0</p>
+</div>
 <p>Asks the server to check whether it has any tasks that should be processed.
 This method should only be used when there is no reason to use <code>get_next_task()</code> afterwards. Because that kind
 of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.</p>
@@ -1294,6 +1387,9 @@ of situations seems to be quite uncommon, this method will likely be removed in 
 </summary>
 <pre><code class="python">def has_task(self) -&gt; bool:
     &#34;&#34;&#34;Checks whether the server has any tasks available.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
 
     Asks the server to check whether it has any tasks that should be processed.
     This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
@@ -1321,6 +1417,9 @@ of situations seems to be quite uncommon, this method will likely be removed in 
 </code></dt>
 <dd>
 <section class="desc"><p>Sends the given response to the server.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.1.0</p>
+</div>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>response</code></strong></dt>
@@ -1363,7 +1462,7 @@ the <code>get_next_task()</code> method.</p>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><strong><code>Exception</code></strong></dt>
-<dd>something went wrong while sending the reply to the server.
+<dd>Something went wrong while sending the reply to the server.
 This exception may become more specific in a future release, but for now it is kept as general as
 possible, so any implementation changes don't effect these specifications.</dd>
 </dl></section>
@@ -1373,6 +1472,8 @@ possible, so any implementation changes don't effect these specifications.</dd>
 </summary>
 <pre><code class="python">def reply(self, response: dict) -&gt; dict:
     &#34;&#34;&#34;Sends the given response to the server.
+
+    .. versionadded::0.1.0
 
     Args:
         response: A dictionary built like a JSON object.
@@ -1410,7 +1511,7 @@ possible, so any implementation changes don't effect these specifications.</dd>
         the `get_next_task()` method.
 
     Raises:
-        Exception: something went wrong while sending the reply to the server.
+        Exception: Something went wrong while sending the reply to the server.
             This exception may become more specific in a future release, but for now it is kept as general as
             possible, so any implementation changes don&#39;t effect these specifications.
     &#34;&#34;&#34;
@@ -1435,13 +1536,19 @@ possible, so any implementation changes don't effect these specifications.</dd>
 <span>def <span class="ident">reset_connection</span></span>(<span>self)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Resets the websocket thread.</p></section>
+<section class="desc"><p>Resets the websocket thread.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div></section>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">def reset_connection(self):
-    &#34;&#34;&#34;Resets the websocket thread.&#34;&#34;&#34;
+    &#34;&#34;&#34;Resets the websocket thread.
+
+    .. versionadded::0.2.0
+    &#34;&#34;&#34;
     self._init_websocket_thread()</code></pre>
 </details>
 </dd>
