@@ -80,11 +80,6 @@ class Connector(object):
 
             websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
                 default set to 10 seconds.
-
-        Raises:
-            Exception: Something went wrong while communicating with the server.
-                This exception may become more specific in a future release, but for now it is kept as general as
-                possible, so any implementation changes don't effect these specifications.
         """
         self.prefetch = True
         self._tasks = list()  # store non processed received tasks
