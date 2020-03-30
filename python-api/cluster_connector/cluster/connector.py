@@ -102,6 +102,29 @@ class Connector(object):
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
 
+    def _init_websocket_thread(self):
+        """Initialize a new thread running a websocket connection.
+
+        Post:
+            In case a websocket thread had been assigned before, the previous websocket thread is stopped and a new
+            websocket thread is started.
+            `self._websocket_thread` equals the newly assigned websocket thread.
+        """
+        if self._websocket_thread is not None:
+            self._websocket_thread.stop = True
+        # Clear exceptions in case any are still in the queue
+        logging.debug("Clearing exception queue.")
+        with self._websocket_exceptions.mutex:
+            self._websocket_exceptions.queue.clear()
+        # Let asynchronous websocket run in separate thread, so it doesn't block
+        logging.debug("Starting new thread.")
+        self._websocket_thread = websocket_thread.WebsocketThread(self._websocket_uri, self._websocket_exceptions,
+                                                                  self._add_tasks,
+                                                                  self._reply_queue, asyncio.get_event_loop(),
+                                                                  self._websocket_connection_timeout)
+        self._websocket_thread.start()
+        logging.debug("Thread " + self._websocket_thread.getName() + " started.")
+
     def _add_tasks(self, message):
         """Parses a given response and adds tasks from message to the queue if needed."""
         received_tasks = Connector._parse_response(message)
