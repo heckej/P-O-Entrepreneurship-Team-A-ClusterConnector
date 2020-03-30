@@ -240,71 +240,85 @@ class Connector(object):
              A task to be processed as a JSON object or None when no task was received before timeout.
 
         Raises:
-            Exception: something went wrong while communicating with the server.
-                This exception may become more specific in a future release, but for now it is kept as general as
-                possible, so any implementation changes don't effect these specifications.
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         """
-        """
-        TODO(Joren) 1st iteration:
-            Send a simple HTTP request to API server requesting task to be performed.
-            Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
-            possible, because this method only ends when a task has been received and appended to _tasks).
+        if self.use_websocket:
+            logging.debug("Get task using websocket")
+            tasks_found = len(self._tasks) > 0
+            start_time = time.time()
+            time_passed = 0
+            while not tasks_found and (timeout is None or (time_passed < timeout)):
+                self._checkout_websocket()
+                tasks_found = len(self._tasks) > 0
+                time_passed = time.time() - start_time  # keep track of the passed time
+        else:
+            tasks_found = self._get_next_task_by_request(timeout)
+        if tasks_found:
+            # Remove task from task list and add it to the tasks in progress list.
+            task = self._tasks.pop(0)
+            self._tasks_in_progress[task['msg_id']] = task
+        else:
+            task = None
+        return task
 
     def close(self):
         """Sends a stop signal to the thread running the websocket connection of this connector."""
         self._websocket_thread.stop = True
 
-        TODO(Joren) 2nd-3rd iteration:
-            Connect to server using web socket, so a permanent connection is made. This way the server
-            can push directly any tasks without this client having to poll every now and then.
-        """
+    def _get_next_task_by_request(self, timeout=None) -> bool:
+        """Requests tasks using GET requests.
 
-        tasks_found = False
+        Args: timeout: the time to wait before returning False without having received a response from the server.
+
+        If timeout is set to None, then the method won't return until a response has been received.
+
+        If a task is immediately available from the task list, that task is returned and a separate thread is started
+        to send a request to check for new tasks in the background.
+        If no tasks are immediately available from the task list, a request is send to check for new tasks.
+
+        Returns: - True if a task was available from the task list.
+                 - True if new tasks were received from the request before timeout.
+                 - False if no tasks were available from the task list and a timeout occurred.
+        """
+        tasks_found = len(self._tasks) > 0
         path_unmatched = self._request_paths['unmatched']
         path_offensive = self._request_paths['offensive']
-        if len(self._tasks) == 0:
-            # no tasks left, ask the server
-            if timeout is None or timeout > 0:
-                time_passed = 0
-                start_time = time.time()
-                sleep = False
-                sleep_start = 0
-                while not tasks_found and (timeout is None or (time_passed < timeout)):
-                    if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
-                        # only try when not sleeping and when no tasks are being requested in a background already
-                        if timeout is not None:
-                            time_left = timeout - time_passed
-                            # equally divide the given timeout
-                            timeout_offensive = time_left / 2
-                            timeout_unmatched = time_left - timeout_offensive
-                        else:
-                            timeout_unmatched = None
-                            timeout_offensive = None
-                        tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
+        # no tasks left, ask the server
+        if not tasks_found and (timeout is None or timeout > 0):
+            time_passed = 0
+            start_time = time.time()
+            sleep = False
+            sleep_start = 0
+            while not tasks_found and (timeout is None or (time_passed < timeout)):
+                if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
+                    # only try when not sleeping and when no tasks are being requested in a background already
+                    if timeout is not None:
+                        time_left = timeout - time_passed
+                        # equally divide the given timeout
+                        timeout_offensive = time_left / 2
+                        timeout_unmatched = time_left - timeout_offensive
+                    else:
+                        timeout_unmatched = None
+                        timeout_offensive = None
+                    tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
 
-                        if self.prefetch or not tasks_found:
-                            # request questions of which the offensiveness has to be tested
-                            # if prefetching disabled and already task found, then don't look for another task
-                            tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
-                        sleep_start = time.time()  # start sleeping
-                    time_passed = start_time - time.time()  # keep track of the passed time
-                    # stay asleep until 'time_until_retry' seconds passed and
-                    # there is more time left than 'time_until_retry' seconds
-                    sleep = (time.time() - sleep_start < self._time_until_retry) and \
-                            (timeout is None or self._time_until_retry < timeout - time_passed)
+                    if self.prefetch or not tasks_found:
+                        # request questions of which the offensiveness has to be tested
+                        # if prefetching disabled and already task found, then don't look for another task
+                        tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
+                    sleep_start = time.time()  # start sleeping
+                time_passed = time.time() - start_time  # keep track of the passed time
+                # stay asleep until 'time_until_retry' seconds passed and
+                # there is more time left than 'time_until_retry' seconds
+                sleep = (time.time() - sleep_start < self._time_until_retry) and \
+                        (timeout is None or self._time_until_retry < timeout - time_passed)
 
-            if not tasks_found:
-                return None
-        else:
+        elif self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
             # still tasks left, but there might be new ones to be fetched
-            if self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
-                self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
-                                                        args=([path_unmatched, path_offensive], self._server_timeout))
-                self._request_thread.start()
-        task = self._tasks.pop(0)
-        self._tasks_in_progress[task['msg_id']] = task
-
-        return task
+            self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
+                                                    args=([path_unmatched, path_offensive], self._server_timeout))
+            self._request_thread.start()
+        return tasks_found
 
     def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
         """Requests tasks from the server at all given paths."""
