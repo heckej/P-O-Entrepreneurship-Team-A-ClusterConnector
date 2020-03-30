@@ -11,12 +11,17 @@ class WebsocketThread(threading.Thread):
     """Initiates a thread to run a websocket connection, send messages from a `reply_queue` and receive tasks, saving
         them in a `tasks_queue`.
 
+    .. versionadded::0.2.0
+
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
             interrupted, the websocket is closed if it was open and the `run()` method returns.
             When stop is set to True by a method of this thread, an exception is added to the `exception_queue` provided
             at initialisation.
     """
+
+    __version__ = '0.2.0'
+
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
                  reply_queue: collections.deque, loop, connection_timeout: float):
         """
