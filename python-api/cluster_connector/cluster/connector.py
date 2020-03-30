@@ -61,9 +61,12 @@ class Connector(object):
         Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
             mostly focused on `OSError` and `websockets.exceptions.InvalidMessage`, but is not limited to those.
 
-    Debugging: To start log debugging messages, use the following statements:
-        >> import logging, sys
-        >> logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    Debugging:
+        To enable logging of debugging messages, use the following statements:
+        ```
+            >> import logging, sys
+            >> logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+        ```
     """
 
     necessary_task_keys = {"msg_id", "action"}
