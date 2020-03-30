@@ -80,7 +80,7 @@ class WebsocketThread(threading.Thread):
     async def _send_handler(self):
         """Sends replies from reply queue.
 
-        Waits 0.5s if reply could not be sent.
+        Waits 0.5s if reply could not be sent. Waits 0.05s if no replies are available.
 
         Post: `self.stop` equals True
         """
@@ -95,7 +95,7 @@ class WebsocketThread(threading.Thread):
             except RuntimeError as e2:
                 logging.debug(e2)
                 logging.debug("Can't handle StopAsyncIteration.")
-                await asyncio.sleep(0.5)
+                await asyncio.sleep(0.05)
             except Exception as e:
                 logging.debug("Reply not sent.")
                 logging.exception(e)
