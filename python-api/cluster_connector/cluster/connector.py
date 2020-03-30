@@ -131,6 +131,23 @@ class Connector(object):
         self._websocket_thread.start()
         logging.debug("Thread " + self._websocket_thread.getName() + " started.")
 
+    def _checkout_websocket(self):
+        """Checks whether the websocket thread is still alive and whether it has passed exceptions.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
+        """
+        # check if websocket still alive and hasn't thrown any exceptions
+        if not self._websocket_exceptions.empty():
+            # Websocket thread passed an exception.
+            exception = self._websocket_exceptions.get()
+            self._websocket_thread.stop = True
+            logging.debug("An exception occurred in the websocket thread.")
+            raise exception
+        elif self._websocket_thread is None or not self._websocket_thread.is_alive():
+            logging.debug("Reinitializing websocket thread.")
+            self._init_websocket_thread()
+
     def _add_tasks(self, message):
         """Parses a given response and adds tasks from message to the queue if needed."""
         received_tasks = Connector._parse_response(message)
