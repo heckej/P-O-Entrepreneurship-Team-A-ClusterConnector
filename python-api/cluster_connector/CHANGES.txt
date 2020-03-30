@@ -2,6 +2,22 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
+v0.2.0
+---------------------------------------
+* Usage of websockets added as connection method instead of GET/POST requests. This is officially still under development,
+  so it is disabled by default, but it is greatly encouraged to enable this feature, because future releases will quite
+  probably drop support for GET/POST requests.
+* New class WebsocketThread added. This class is used in the Connection class and should not be used elsewhere in normal
+  circumstances.
+* Problems while parsing tasks from the server have been fixed.
+* A method to test the validity of a task has been added.
+* The method `has_item()` may throw websocket related exceptions from now on.
+* Logging debugging information is now available. Use the following statements to enable this:
+    ```
+        >> import logging, sys
+        >> logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    ```
+
 v0.1.2
 ---------------------------------------
 * Bug solved: `KeyError` occurred because of case sensitiveness in dictionary keys.
