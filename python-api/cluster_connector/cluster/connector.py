@@ -250,9 +250,9 @@ class Connector(object):
             Append received tasks to _tasks and return first item of list if not empty (shouldn`t be 
             possible, because this method only ends when a task has been received and appended to _tasks).
 
-        TODO(Joren) 1st-2nd iteration: 
-            Return first element of _tasks and update _tasks in background without causing delay in case _tasks is not
-            empty.
+    def close(self):
+        """Sends a stop signal to the thread running the websocket connection of this connector."""
+        self._websocket_thread.stop = True
 
         TODO(Joren) 2nd-3rd iteration:
             Connect to server using web socket, so a permanent connection is made. This way the server
