@@ -37,12 +37,17 @@ class WebsocketThread(threading.Thread):
     &#34;&#34;&#34;Initiates a thread to run a websocket connection, send messages from a `reply_queue` and receive tasks, saving
         them in a `tasks_queue`.
 
+    .. versionadded::0.2.0
+
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
             interrupted, the websocket is closed if it was open and the `run()` method returns.
             When stop is set to True by a method of this thread, an exception is added to the `exception_queue` provided
             at initialisation.
     &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
                  reply_queue: collections.deque, loop, connection_timeout: float):
         &#34;&#34;&#34;
@@ -212,6 +217,9 @@ class WebsocketThread(threading.Thread):
 <dd>
 <section class="desc"><p>Initiates a thread to run a websocket connection, send messages from a <code>reply_queue</code> and receive tasks, saving
 them in a <code>tasks_queue</code>.</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div>
 <h2 id="attributes">Attributes</h2>
 <dl>
 <dt><strong><code>stop</code></strong></dt>
@@ -244,12 +252,17 @@ caller of this thread.</dd>
     &#34;&#34;&#34;Initiates a thread to run a websocket connection, send messages from a `reply_queue` and receive tasks, saving
         them in a `tasks_queue`.
 
+    .. versionadded::0.2.0
+
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
             interrupted, the websocket is closed if it was open and the `run()` method returns.
             When stop is set to True by a method of this thread, an exception is added to the `exception_queue` provided
             at initialisation.
     &#34;&#34;&#34;
+
+    __version__ = &#39;0.2.0&#39;
+
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
                  reply_queue: collections.deque, loop, connection_timeout: float):
         &#34;&#34;&#34;

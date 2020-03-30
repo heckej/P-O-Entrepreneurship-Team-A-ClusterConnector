@@ -18,10 +18,10 @@ namespace ClusterAPI.Controllers.NLP
 {
     public class WSQuestionMatchController : ApiController
     {
-        private static readonly String DEFAULT_ACTION = "Answers.MATCH_QUESTIONS";
+        private static readonly String DEFAULT_ACTION = "match_questions";
 
         [HttpGet]
-        [Route("api/NLP/WS/QuestionMatch")]
+        [Route("api/NLP/WS")]
         public HttpResponseMessage GetMessage()
 
         {

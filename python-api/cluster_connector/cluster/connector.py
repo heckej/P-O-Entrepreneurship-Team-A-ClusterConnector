@@ -15,6 +15,8 @@ from enum import Enum
 class Actions(Enum):
     """Enumeration of recognized actions.
 
+    .. versionadded::0.1.0
+
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
 
@@ -41,6 +43,9 @@ class Connector(object):
 
     This Connector class allows communication with the Cluster API server by returning NLP tasks
     from the server whenever any are available and by replying with a response.
+
+    .. versionadded::0.1.0
+    .. versionchanged::0.2.0
 
     Attributes:
         prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
@@ -70,7 +75,12 @@ class Connector(object):
     """
 
     necessary_task_keys = {"msg_id", "action"}
-    """Set of keys that have to be in a task dictionary to be a valid task."""
+    """Set of keys that have to be in a task dictionary to be a valid task.
+    
+    .. versionadded::0.2.0
+    """
+
+    __version__ = '0.2.0'
 
     def __init__(self, use_websocket: bool = False,
                  websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
@@ -115,7 +125,10 @@ class Connector(object):
             self._init_websocket_thread()
 
     def reset_connection(self):
-        """Resets the websocket thread."""
+        """Resets the websocket thread.
+
+        .. versionadded::0.2.0
+        """
         self._init_websocket_thread()
 
     def _init_websocket_thread(self):
@@ -179,6 +192,9 @@ class Connector(object):
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
 
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
+
         Asks the server to check whether it has any tasks that should be processed.
         This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
         of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
@@ -204,6 +220,9 @@ class Connector(object):
         Waits for the next task from the server and returns it as a dictionary.
 
         Waits until the server has delivered a task or until timeout if a timeout is set.
+
+        .. versionadded::0.1.0
+        .. versionchanged::0.2.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -272,7 +291,10 @@ class Connector(object):
         return task
 
     def close(self):
-        """Sends a stop signal to the thread running the websocket connection of this connector."""
+        """Sends a stop signal to the thread running the websocket connection of this connector.
+
+        .. versionadded::0.2.0
+        """
         self._websocket_thread.stop = True
 
     def _get_next_task_by_request(self, timeout=None) -> bool:
@@ -375,7 +397,10 @@ class Connector(object):
     @classmethod
     def is_valid_task(cls, task: dict):
         """Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
-        set."""
+        set.
+
+        .. versionadded::0.2.0
+        """
         return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
 
     @classmethod
@@ -438,6 +463,8 @@ class Connector(object):
     def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
 
+        .. versionadded::0.1.0
+
         Args:
             response: A dictionary built like a JSON object.
 
@@ -474,7 +501,7 @@ class Connector(object):
             the `get_next_task()` method.
 
         Raises:
-            Exception: something went wrong while sending the reply to the server.
+            Exception: Something went wrong while sending the reply to the server.
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don't effect these specifications.
         """
