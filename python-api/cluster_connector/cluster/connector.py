@@ -101,6 +101,12 @@ class Connector(object):
         self._reply_queue = collections.deque()  # keep list of replies to send
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
+        if self.use_websocket:
+            self._init_websocket_thread()
+
+    def reset_connection(self):
+        """Resets the websocket thread."""
+        self._init_websocket_thread()
 
     def _init_websocket_thread(self):
         """Initialize a new thread running a websocket connection.
