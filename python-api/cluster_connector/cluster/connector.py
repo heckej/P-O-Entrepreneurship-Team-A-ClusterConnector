@@ -400,10 +400,10 @@ class Connector(object):
             logging.debug(e)
         if type(response) == list:
             for task in response:
-                task = Connector._parse_response_dict(task)
+                task = cls._parse_response_dict(task)
                 parsed_response.append(task)
         elif type(response) == dict:
-            task = Connector._parse_response_dict(response)
+            task = cls._parse_response_dict(response)
             parsed_response.append(task)
         return parsed_response
 
