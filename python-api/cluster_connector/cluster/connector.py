@@ -490,5 +490,8 @@ class Connector(object):
                 request_uri += self._post_paths['offensive']
             del self._tasks_in_progress[response['msg_id']]
             data = self._parse_request(response)
-            request = self._session.post(request_uri, json=data)
-            return request.json()
+            if self.use_websocket:
+                self._reply_queue.append(json.dumps(data))
+            else:
+                request = self._session.post(request_uri, json=data)
+                return request.json()
