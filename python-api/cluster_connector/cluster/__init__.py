@@ -1,1 +1,2 @@
-from cluster import connector
+from . import connector
+from . import websocket_thread
