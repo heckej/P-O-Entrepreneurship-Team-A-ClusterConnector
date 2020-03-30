@@ -175,11 +175,19 @@ class Connector(object):
 
         Returns:
             True if and only if there is a task to be processed.
+
+        Raises:
+            Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         """
+        if self.use_websocket:
+            self._checkout_websocket()
         uri_unmatched = self._request_paths['unmatched']
         uri_offensive = self._request_paths['offensive']
-        return len(self._tasks) > 0 or self._request_tasks(uri_unmatched, 0.25, False) or \
-            self._request_tasks(uri_offensive, 0.25, False)
+        # print("using websocket:", self.use_websocket)
+        if self.use_websocket:
+            return len(self._tasks) > 0
+        else:
+            return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)
 
     def get_next_task(self, timeout: float = None) -> any:
         """
