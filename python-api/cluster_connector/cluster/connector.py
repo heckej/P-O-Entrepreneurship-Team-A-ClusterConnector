@@ -393,6 +393,11 @@ class Connector(object):
             information of the given `response` as far as the structure allows it.
         """
         parsed_response = list()
+        try:
+            response = json.loads(response)
+        except json.decoder.JSONDecodeError as e:
+            response = ""
+            logging.debug(e)
         if type(response) == list:
             for task in response:
                 task = Connector._parse_response_dict(task)
