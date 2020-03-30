@@ -54,16 +54,30 @@ class Connector(object):
             is required when requesting the next task using `get_next_task()`.
     """
 
-    def __init__(self):
+    necessary_task_keys = {"msg_id", "action"}
+    """Set of keys that have to be in a task dictionary to be a valid task."""
+
+    def __init__(self, use_websocket: bool = False,
+                 websocket_uri="wss://https://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
+                 websocket_connection_timeout=10):
         """
+        Args:
+            use_websocket: A boolean that enables usage of websockets. See `use_websocket` under Attributes.
+
+            websocket_uri: A custom uri referencing the websocket host that should be used.
+
+            websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
+                default set to 10 seconds.
+
         Raises:
-            Exception: Something went wrong while sending the reply to the server.
+            Exception: Something went wrong while communicating with the server.
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don't effect these specifications.
         """
         self.prefetch = True
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
+
         self._server_timeout = 4  # timeout used while checking for server messages
         self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
         self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
@@ -71,8 +85,22 @@ class Connector(object):
         self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
         self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
         self._session.headers.update({'Accept': 'application/json'})  # make sure to request json only
+
         self._request_thread = None
         self.fetch_in_background = True
+        self.use_websocket = use_websocket
+        self._websocket_connection_timeout = websocket_connection_timeout
+        if use_websocket:
+            logging.warning("The use of websockets is currently still under development. Make sure to close the "
+                            "connection when done using `close()`. To print debugging statements, "
+                            "use\n>> import logging, sys\n>> logging.basicConfig(stream=sys.stderr, "
+                            "level=logging.DEBUG)")
+        else:
+            logging.warning("In the next release websockets will be enabled by default.")
+        self._websocket_uri = websocket_uri
+        self._reply_queue = collections.deque()  # keep list of replies to send
+        self._websocket_thread = None
+        self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
 
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
