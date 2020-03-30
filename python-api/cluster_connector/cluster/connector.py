@@ -338,7 +338,13 @@ class Connector(object):
             self._request_tasks(path, timeout, append)
 
     def _request_tasks(self, path: str, timeout: float, append: bool = True):
-        """Sends a request to the server to receive tasks."""
+        """Sends a request to the server to receive tasks.
+
+        Post: - If tasks were available from the server and `prefetch` is set to True, all tasks from the server are
+                added to the task list if they are not in the task or tasks in progress list.
+              - If tasks were available from the server and `prefetch` is set to False, only the first task that wasn't
+                in the task or tasks in progress list already is added to the task list.
+        """
         request_uri = self._base_request_uri + path
         request = self._session.get(request_uri, timeout=timeout)
         if request.status_code == 200:
