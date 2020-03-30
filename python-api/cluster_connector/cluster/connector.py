@@ -204,7 +204,7 @@ class Connector(object):
         1. The server asks to match a question with an undefined number of questions:
 
                 {
-                    "action": Answers.MATCH_QUESTIONS,
+                    "action": Actions.MATCH_QUESTIONS,
                     "question_id": 123,
                     "question": "XXX",
                     "compare_questions": [
@@ -228,7 +228,7 @@ class Connector(object):
         2. The server asks to estimate the offensiveness of a sentence:
 
                  {
-                    "action": Answers.ESTIMATE_OFFENSIVENESS,
+                    "action": Actions.ESTIMATE_OFFENSIVENESS,
                     "question_id": 100,
                     "question": "XXX",
                     "msg_id": 1234567890
