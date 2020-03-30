@@ -102,6 +102,24 @@ class Connector(object):
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
 
+    def _add_tasks(self, message):
+        """Parses a given response and adds tasks from message to the queue if needed."""
+        received_tasks = Connector._parse_response(message)
+        for task in received_tasks:
+            self._add_task(task)
+
+    def _add_task(self, task):
+        """Adds the given task to the task queue if it is valid and not yet in the task or tasks in progress queue."""
+        if not Connector.is_valid_task(task):
+            logging.debug("Task with invalid structure received: " + str(task))
+        elif task not in self._tasks and task['msg_id'] not in self._tasks_in_progress:
+            # only add task if valid and not in the (progress) task list already
+            self._tasks.append(task)
+            logging.debug("Task added: " + str(task))
+        else:
+            # task already received
+            logging.debug("Message id " + str(task['msg_id']) + " already in task or tasks in progress queue.")
+
     def has_task(self) -> bool:
         """Checks whether the server has any tasks available.
 
@@ -269,6 +287,12 @@ class Connector(object):
                 # all available tasks have been fetched before
                 return False
         return False
+
+    @classmethod
+    def is_valid_task(cls, task: dict):
+        """Returns True if and only if the given dictionary contains the keys that are in the `cls.necessary_task_keys`
+        set."""
+        return set(task.keys()).intersection(cls.necessary_task_keys) == cls.necessary_task_keys
 
     @classmethod
     def _parse_response(cls, response) -> list:
