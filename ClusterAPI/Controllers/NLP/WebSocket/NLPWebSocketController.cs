@@ -15,6 +15,7 @@ using System.Web.Http;
 using System.Web.WebSockets;
 using ClusterLogic.Models;
 using ClusterLogic.NLPHandler;
+using ClusterAPI.Controllers.Security;
 
 namespace ClusterAPI.Controllers.NLP
 {
@@ -30,6 +31,10 @@ namespace ClusterAPI.Controllers.NLP
         public HttpResponseMessage GetMessage()
 
         {
+            if (!new NLPSecurity().Authenticate(Request.Headers.GetValues("Authorization")))
+            {
+                return new HttpResponseMessage(HttpStatusCode.Forbidden);
+            }
 
             if (HttpContext.Current.IsWebSocketRequest)
             {
@@ -46,6 +51,26 @@ namespace ClusterAPI.Controllers.NLP
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
                 await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("YO!"), 0, "YO!".Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        public async static void SendQuestionMatchRequest(params Object[] args)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                String json = new QuestionMatchRequestGen().GenerateRequest(args);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        public async static void SendQuestionOffenseRequest(params Object[] args)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                String json = new QuestionOffenseRequestGen().GenerateRequest(args);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 
@@ -78,7 +103,7 @@ namespace ClusterAPI.Controllers.NLP
                 }
             }
 
-            await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes("Hello")), WebSocketMessageType.Text, true, CancellationToken.None);
+            await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes("Hello NLP")), WebSocketMessageType.Text, true, CancellationToken.None);
 
             ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[2048]);
             while (true)
@@ -103,19 +128,6 @@ namespace ClusterAPI.Controllers.NLP
 
                 HandleResponse(ProcessResponse(jsonResponse));
 
-                NLPActionQuestionMatch[] actions = new NLPActionQuestionMatch[1];
-                NLPActionQuestionMatch nLPAction = new NLPActionQuestionMatch();
-                nLPAction.Action = DEFAULT_ACTION;
-                nLPAction.Question_id = -1;
-                nLPAction.Question = "ROSES ARE RED, VIOLETS ARE BLUE, GANDALF IS A WIZARD, NOW FLY YOU FOOL!";
-                nLPAction.Compare_questions = new List<ClusterConnector.Models.NLP.NLPQuestion>() { new NLPQuestion() { Question = "TEST QUESTION1", Question_id = -1 } };
-                nLPAction.Msg_id = -1;
-
-                actions[0] = nLPAction;
-
-                string jsonString = JsonSerializer.Serialize(actions);
-
-
                 if (retVal.CloseStatus != null)
                 {
                     await socket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Bye", CancellationToken.None);
@@ -123,7 +135,7 @@ namespace ClusterAPI.Controllers.NLP
                 }
 
                 //await socket.SendAsync(new ArraySegment<byte>(buffer.Array, 0, retVal.Count), retVal.MessageType, retVal.EndOfMessage, CancellationToken.None);
-                await socket.SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(jsonString), 0, jsonString.Length), retVal.MessageType, retVal.EndOfMessage, CancellationToken.None);
+                await socket.SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("\r\n"), 0, "\r\n".Length), retVal.MessageType, retVal.EndOfMessage, CancellationToken.None);
             }
         }
 
@@ -137,6 +149,10 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<MatchQuestionModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION, new List<BaseModel>() { result });
             }
             catch {
@@ -146,6 +162,13 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<MatchQuestionModel[]>(jsonResponse);
+                foreach (var item in result)
+                {
+                    if (!item.IsComplete())
+                    {
+                        throw new Exception();
+                    }
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION, result.ToList<BaseModel>());
             }
             catch
@@ -156,6 +179,10 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<OffensivenessModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS, new List<BaseModel>() { result });
             }
             catch
@@ -166,6 +193,13 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var result = JsonSerializer.Deserialize<OffensivenessModel[]>(jsonResponse);
+                foreach (var item in result)
+                {
+                    if (!item.IsComplete())
+                    {
+                        throw new Exception();
+                    }
+                }
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS, result.ToList<BaseModel>());
             }
             catch
