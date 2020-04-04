@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ClusterClient
 {
-    class Class1
+    class WebsocketThread
     {
     }
 }
