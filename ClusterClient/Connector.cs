@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -11,36 +12,40 @@ namespace ClusterClient
     /// <summary>
     /// The class <c>Connector</c> allows communication with the Cluster API server by retrieving and sending questions and answers.
     /// </summary>
-    ///
     public class Connector
     {
         /// <summary>
         /// Initializes a new connector instance with the given websocket host URI used for its websocket connection and the given timeout set as the timeout
         /// before giving up on trying to connect to the server.
         /// </summary>
-        /// <param name="websocketHostURI">The URI referencing the server address to which a websocket connection should be made.</param>
-        /// <param name="websocketConnectionTimeout">The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</param>
-        public Connector(string websocketHostURI= "wss://clusterapi20200320113808.azurewebsites.net/api/bot/WS", int websocketConnectionTimeout = 10)
+        /// <param name="webSocketHostURI">The URI referencing the server address to which a websocket connection should be made.</param>
+        /// <param name="webSocketConnectionTimeout">The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</param>
+        public Connector(string webSocketHostURI= "wss://clusterapi20200320113808.azurewebsites.net/api/bot/WS", int webSocketConnectionTimeout = 10)
         {
-            this.websocketHostURI = websocketHostURI;
-            this.websocketConnectionTimeout = websocketConnectionTimeout;
-
+            this.webSocketHostURI = new Uri(webSocketHostURI);
+            this.webSocketConnectionTimeout = webSocketConnectionTimeout;
+            this.cancellationTokenSource = new CancellationTokenSource();
         }
 
         /// <summary>
         /// The URI to be used to make a websocket connection to the server
         /// </summary>
-        private string websocketHostURI;
+        private Uri webSocketHostURI;
 
         /// <summary>
         /// The timeout to be set in seconds for the websocket connection before giving up on trying to connect to the server.
         /// </summary>
-        private int websocketConnectionTimeout = 10;
+        private int webSocketConnectionTimeout = 10;
 
         /// <summary>
-        /// Variable referencing the thread in which the websocket connection runs.
+        /// Variable referencing the websocket communicator instance in which the websocket connection runs.
         /// </summary>
-        private WebsocketThread websocketThread;
+        private WebSocketCommunicator webSocketCommunicator;
+
+        /// <summary>
+        /// Variable referencing the thread in which the websocket communicator runs.
+        /// </summary>
+        private Thread webSocketConnectionThread;
 
         /// <summary>
         /// Variable referencing the queue in which messages that are waiting to be sent are stored
@@ -55,7 +60,12 @@ namespace ClusterClient
         /// <summary>
         /// Variable referencing a queue in which exceptions thrown by the websocket thread are passed to this <c>Connector</c> instance.
         /// </summary>
-        private readonly Queue<Exception> exceptionsFromWebsocketThread = new Queue<Exception>();
+        private readonly Queue<Exception> exceptionsFromWebSocketCommunicator = new Queue<Exception>();
+
+        /// <summary>
+        /// Variable referencing a cancelation token source used to control tasks.
+        /// </summary>
+        private readonly CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
         /// Resets the websocket thread by stopping the current thread and starting a new one.
@@ -82,10 +92,22 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// </summary>
-        /// 
         private void InitializeWebsocketThread()
         {
-            this.websocketThread = new WebsocketThread();
+            if (this.webSocketCommunicator != null)
+            {
+                this.cancellationTokenSource.Cancel();
+                // Might not be necessary.
+                this.webSocketCommunicator.Stop = true;
+            }
+            Debug.WriteLine("Clearing exception queue.");
+            this.exceptionsFromWebSocketCommunicator.Clear();
+            Debug.WriteLine("Starting new thread.");
+            this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
+                                                        this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
+            this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
+            this.webSocketConnectionThread.Start();
+
         }
 
         /// <summary>
@@ -101,6 +123,15 @@ namespace ClusterClient
         /// Sends a stop signal to the thread running the websocket connection of this connector to close the connection and stop the thread.
         /// </summary>
         public void CloseWebsocketConnection()
+        {
+
+        }
+
+        /// <summary>
+        /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
+        /// </summary>
+        /// <param name="serverMessage">A message from the server that should be stored.</param>
+        public void StoreMessageFromServer(string serverMessage)
         {
 
         }
@@ -123,7 +154,7 @@ namespace ClusterClient
         /// <param name="chatbotRequest">The request from the chatbot as a ...</param>
         /// <returns>A dictionary that complies to the structure understood by the server containing the information of the given <paramref name="chatbotRequest" /> 
         /// as far as the structure allows it.</returns>
-        private static string parseChatbotRequest(string chatbotRequest)
+        private static string ParseChatbotRequest(string chatbotRequest)
         {
             return "";
         }
