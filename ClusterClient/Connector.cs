@@ -145,7 +145,7 @@ namespace ClusterClient
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
         /// </summary>
         /// <param name="serverMessage">A message from the server that should be stored.</param>
-        public void StoreMessageFromServer(string serverMessage)
+        protected internal void StoreMessageFromServer(string serverMessage)
         {
 
         }
