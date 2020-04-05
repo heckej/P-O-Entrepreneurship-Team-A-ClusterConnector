@@ -53,6 +53,11 @@ namespace ClusterClient
         private readonly List<string> receivedMessages = new List<string>();
 
         /// <summary>
+        /// Variable referencing a queue in which exceptions thrown by the websocket thread are passed to this <c>Connector</c> instance.
+        /// </summary>
+        private readonly Queue<Exception> exceptionsFromWebsocketThread = new Queue<Exception>();
+
+        /// <summary>
         /// Resets the websocket thread by stopping the current thread and starting a new one.
         /// <list type="table">
         ///     <item>
