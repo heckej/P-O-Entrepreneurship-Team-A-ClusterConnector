@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.WebSockets;
@@ -114,9 +114,21 @@ namespace ClusterClient
         /// Checks whether the websocket thread is still alive and whether it has passed exceptions.
         /// <exception>The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         /// </summary>
-        private void CheckoutWebsocket()
+        private void CheckoutWebSocket()
         {
-
+            if (this.exceptionsFromWebSocketCommunicator.Count > 0)
+            {
+                if (!this.cancellationTokenSource.Token.IsCancellationRequested)
+                    this.cancellationTokenSource.Cancel();
+                Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
+                Debug.WriteLine("An exception occurred in the websocket thread.");
+                throw exception;
+            }
+            else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
+            {
+                Debug.WriteLine("Reinitializing websocket thread.");
+                this.InitializeWebsocketThread();
+            }
         }
 
         /// <summary>
