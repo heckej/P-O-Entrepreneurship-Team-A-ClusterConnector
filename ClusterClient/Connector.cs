@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.WebSockets;
@@ -79,7 +79,7 @@ namespace ClusterClient
         /// </summary>
         public void ResetConnection()
         {
-            this.InitializeWebsocketThread();
+            this.InitializeWebSocketThread();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// </summary>
-        private void InitializeWebsocketThread()
+        private void InitializeWebSocketThread()
         {
             if (this.webSocketCommunicator != null)
             {
@@ -107,7 +107,7 @@ namespace ClusterClient
                                                         this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
             this.webSocketConnectionThread.Start();
-
+            Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
         }
 
         /// <summary>
@@ -127,16 +127,18 @@ namespace ClusterClient
             else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
-                this.InitializeWebsocketThread();
+                this.InitializeWebSocketThread();
             }
         }
 
         /// <summary>
         /// Sends a stop signal to the thread running the websocket connection of this connector to close the connection and stop the thread.
         /// </summary>
-        public void CloseWebsocketConnection()
+        public void CloseWebSocketConnection()
         {
-
+            this.cancellationTokenSource.Cancel();
+            // Probabily not needed:
+            this.webSocketCommunicator.Stop = true;
         }
 
         /// <summary>
@@ -177,13 +179,23 @@ namespace ClusterClient
         /// <param name="userID">The ID of the user for whom an answer is required.</param>
         /// <param name="question">The question to which an answer is required.</param>
         /// <returns>A question ID assigned to this question by the server.</returns>
-        public string SendQuestion(int userID, string question) => ""; // ForumQuestion() return questionID
+        public string SendQuestion(int userID, string question) // ForumQuestion() return questionID
+        {
+            // parse request -> message
+            // add message to queue
+            // set timeout and wait for QuestionID and/or answer
+            // return QuestionID / answer?
+            return "";
+        }
 
         /// <summary>
         /// Returns all answers received from the server.
         /// </summary>
         /// <returns>A set containing all answers received from the server.</returns>
-        public ISet<string> GetNewResponses() => new HashSet<string>();
+        public ISet<string> GetNewResponses()
+        {
+            return new HashSet<string>();
+        }
 
         /// <summary>
         /// Returns all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.
@@ -220,7 +232,11 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
         /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<string> GetQuestionsAddressedToUser(int userID) => new HashSet<string>();
+        public ISet<string> GetQuestionsAddressedToUser(int userID)
+        {
+            // look up user in message 
+            return new HashSet<string>();
+        }
 
         /// <summary>
         /// 
@@ -229,8 +245,8 @@ namespace ClusterClient
         /// <param name="questionID"></param>
         public void AnswerQuestion(int userID, int questionID)
         {
-            Console.WriteLine(userID);
-            Console.WriteLine(questionID);
+            // design message
+            // add message to send queue
         }
 
         /// <summary>
@@ -245,8 +261,8 @@ namespace ClusterClient
         /// <returns></returns>
         public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
         {
-            Console.WriteLine(answerID);
-            Console.WriteLine(questionID);
+            // design message
+            // add message to send queue
         }
     }
 
