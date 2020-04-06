@@ -1,6 +1,4 @@
-﻿using ClusterConnector.Models.NLP;
-using System.Text.Json;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +20,7 @@ namespace ClusterAPI.Controllers.NLP
     public class NLPWebSocketController : ApiController
     {
         private static readonly String DEFAULT_ACTION = "match_questions";
-        private enum WEBSOCKET_RESPONSE_TYPE { OFFENSIVENESS, MATCH_QUESTION, NONE }
+        private enum WEBSOCKET_RESPONSE_TYPE { OFFENSIVENESS, NONSENSE, MATCH_QUESTION, NONE }
         private static readonly Encoding usedEncoding = Encoding.UTF8;
         private static readonly Dictionary<String, WebSocket> connections = new Dictionary<string, WebSocket>();
 
@@ -148,7 +146,7 @@ namespace ClusterAPI.Controllers.NLP
 
             try
             {
-                var result = JsonSerializer.Deserialize<MatchQuestionModel>(jsonResponse);
+                var result = JsonSerializer.Deserialize<MatchQuestionModelResponse>(jsonResponse);
                 if (!result.IsComplete())
                 {
                     throw new Exception();
@@ -159,26 +157,11 @@ namespace ClusterAPI.Controllers.NLP
 
             }
 
-            try
-            {
-                var result = JsonSerializer.Deserialize<MatchQuestionModel[]>(jsonResponse);
-                foreach (var item in result)
-                {
-                    if (!item.IsComplete())
-                    {
-                        throw new Exception();
-                    }
-                }
-                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION, result.ToList<BaseModel>());
-            }
-            catch
-            {
 
-            }
 
             try
             {
-                var result = JsonSerializer.Deserialize<OffensivenessModel>(jsonResponse);
+                var result = JsonSerializer.Deserialize<OffensivenessModelResponse>(jsonResponse);
                 if (!result.IsComplete())
                 {
                     throw new Exception();
@@ -192,15 +175,12 @@ namespace ClusterAPI.Controllers.NLP
 
             try
             {
-                var result = JsonSerializer.Deserialize<OffensivenessModel[]>(jsonResponse);
-                foreach (var item in result)
+                var result = JsonSerializer.Deserialize<NonsenseModelResponse>(jsonResponse);
+                if (!result.IsComplete())
                 {
-                    if (!item.IsComplete())
-                    {
-                        throw new Exception();
-                    }
+                    throw new Exception();
                 }
-                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS, result.ToList<BaseModel>());
+                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NONSENSE, new List<BaseModel>() { result });
             }
             catch
             {
@@ -221,10 +201,13 @@ namespace ClusterAPI.Controllers.NLP
             switch (model.Key)
             {
                 case WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION:
-                    ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModel>().ToList());
+                    ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList());
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS:
-                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModel>().ToList());
+                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList());
+                    break;
+                case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
+                    ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList());
                     break;
             }
         }
