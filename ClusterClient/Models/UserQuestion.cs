@@ -9,6 +9,6 @@ namespace ClusterClient.Models
     class UserQuestion : UserMessage
     {
         public string Question { get; set; }
-        public int QuestionID { get; set; }
+        public int TempChatbotID { get; set; }
     }
 }
