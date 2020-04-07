@@ -53,9 +53,14 @@ namespace ClusterClient
         private readonly Queue<string> messagesToBeSent = new Queue<string>();
 
         /// <summary>
-        /// Variable referencing the list in which messages from the server are stored until they are read
+        /// Variable referencing the dictionary in which messages from the server are stored by message action until they are read.
         /// </summary>
-        private readonly List<string> receivedMessages = new List<string>();
+        private readonly IDictionary<string, Dictionary<int, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<int, ISet<ServerMessage>>>()
+            {
+                { Actions.Default, new Dictionary<int, ISet<ServerMessage>>() },
+                { Actions.Questions, new Dictionary<int, ISet<ServerMessage>>() },
+                { Actions.Answer, new Dictionary<int, ISet<ServerMessage>>() }
+            };
 
         /// <summary>
         /// Variable referencing a queue in which exceptions thrown by the websocket thread are passed to this <c>Connector</c> instance.
