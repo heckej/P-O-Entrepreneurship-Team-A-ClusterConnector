@@ -349,19 +349,17 @@ namespace ClusterClient
         /// <param name="questionID">The question ID related to the question-answer pair for which feedback is sent.</param>
         /// <param name="feedback">A feedback code related to the feedback. This could be as simple as 'good' = 1 and 'bad' = 0, 
         /// or more advanced using feelings like 'happy' = 0, 'angry' = 1, 'sad' = 2 ...  as long as the server understands it well.</param>
-        /// <returns></returns>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
         {
-            // design message
-            // add message to send queue
+            UserFeedback userFeedback = new UserFeedback
+            {
+                UserID = userID,
+                AnswerID = answerID,
+                QuestionID = questionID,
+                FeedbackCode = feedback
+            };
+            this.AddMessageToSendQueue(userFeedback);
         }
     }
-
-
-    /*class UserConnector : Connector
-    {
-    }*/
-
-
-
 }
