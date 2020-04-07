@@ -27,7 +27,7 @@ namespace ClusterClient
         /// </summary>
         /// <param name="webSocketHostURI">The URI referencing the server address to which a websocket connection should be made.</param>
         /// <param name="webSocketConnectionTimeout">The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</param>
-        public Connector(string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/bot/WS", int webSocketConnectionTimeout = 10)
+        public Connector(string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS", int webSocketConnectionTimeout = 10)
         {
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
