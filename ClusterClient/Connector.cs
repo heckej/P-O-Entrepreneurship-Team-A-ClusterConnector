@@ -156,27 +156,58 @@ namespace ClusterClient
         }
 
         /// <summary>
-        /// Processes a dictionary or a list of dictionaries received from the server and returns a list of dictionaries 
-        /// that comply to the structure of the result of ...            
+        /// Processes a json string received from the server and returns a server message object.
         /// </summary>
-        /// <param name="serverMessage">The message from the server as a ... or a list of ....</param>
-        /// <returns>A list of ... that comply to the structure of the result of ... containing the
-        /// information of the given <paramref name="serverMessage" /> as far as the structure allows it.</returns>
-        private static string ParseServerMessage(string serverMessage)
+        /// <param name="serverMessage">The message from the server as a json string.</param>
+        /// <returns>A server message object containing the information of the given 
+        /// <paramref name="serverMessage" /> as far as the structure allows it.</returns>
+        private static ServerMessage ParseServerMessage(string serverMessage)
         {
-            return "";
+            // check which type of server message
+            ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
+            // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
+            switch (message.Action)
+            {
+                case Actions.Answer:
+                    message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
+                    break;
+                case Actions.Questions:
+                    message = JsonSerializer.Deserialize<ServerQuestionsMessage>(serverMessage);
+                    break;
+                default:
+                    break;
+            }
+            return message;
         }
 
         /// <summary>
-        /// Processes a ... received from the chatbot and returns a ... that complies to structure that can be understood by the server.
+        /// Processes a user message received from the chatbot and returns a json string that complies 
+        /// to structure that can be understood by the server.
         /// </summary>
-        /// <param name="chatbotRequest">The request from the chatbot as a ...</param>
-        /// <returns>A dictionary that complies to the structure understood by the server containing the information of the given <paramref name="chatbotRequest" /> 
-        /// as far as the structure allows it.</returns>
-        private static string ParseChatbotRequest(string chatbotRequest)
+        /// <param name="chatbotRequest">The request from the chatbot as a user message object.</param>
+        /// <returns>A json string that complies to the structure understood by the server containing the information of the given 
+        /// <paramref name="chatbotRequest" /> as far as the structure allows it.</returns>
+        private static string ParseChatbotRequest(UserMessage chatbotRequest)
         {
-            return "";
+            return JsonSerializer.Serialize(chatbotRequest);
         }
+
+        /// <summary>
+        /// Parses a user message from the chatbot and adds it to the send queue.
+        /// </summary>
+        /// <param name="chatbotRequest">A message from the chatbot to be sent to the server.</param>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        private void AddMessageToSendQueue(UserMessage chatbotRequest)
+        {
+            this.CheckoutWebSocket();
+            string message = ParseChatbotRequest(chatbotRequest);
+            this.messagesToBeSent.Enqueue(message);
+        }
+
+
+        /*********************************************
+         * Questions from user to server
+         ********************************************/
 
         /// <summary>
         /// Sends a given question from a given user to the server.
