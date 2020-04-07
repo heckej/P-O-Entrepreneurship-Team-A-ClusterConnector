@@ -14,18 +14,27 @@ namespace ClusterClient
     /// </summary>
     public class Connector
     {
+        /*********************************************
+         * Constructors
+         ********************************************/
+
         /// <summary>
         /// Initializes a new connector instance with the given websocket host URI used for its websocket connection and the given timeout set as the timeout
         /// before giving up on trying to connect to the server.
         /// </summary>
         /// <param name="webSocketHostURI">The URI referencing the server address to which a websocket connection should be made.</param>
         /// <param name="webSocketConnectionTimeout">The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</param>
-        public Connector(string webSocketHostURI= "wss://clusterapi20200320113808.azurewebsites.net/api/bot/WS", int webSocketConnectionTimeout = 10)
+        public Connector(string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/bot/WS", int webSocketConnectionTimeout = 10)
         {
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
             this.cancellationTokenSource = new CancellationTokenSource();
         }
+
+
+        /*********************************************
+         * WebSocket
+         ********************************************/
 
         /// <summary>
         /// The URI to be used to make a websocket connection to the server
@@ -146,6 +155,11 @@ namespace ClusterClient
             this.webSocketCommunicator.Stop = true;
         }
 
+
+        /*********************************************
+         * Message parsing
+         ********************************************/
+
         /// <summary>
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
         /// </summary>
@@ -253,6 +267,11 @@ namespace ClusterClient
         {
             return false;
         }
+
+
+        /*********************************************
+         * Questions for user from server
+         ********************************************/
 
         /// <summary>
         /// Returns all available questions that should be answered.
