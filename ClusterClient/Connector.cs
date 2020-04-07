@@ -377,6 +377,31 @@ namespace ClusterClient
             return false;
         }
 
+        /// <summary>
+        /// Checks whether the server has an answer to the question of the given user, identified by its <paramref name="chatbotTempID"/> 
+        /// and <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="chatbotTempID">The <c>ChatbotTempID</c> of the question for which is checked whether an answer is available.</param>
+        /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
+        /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
+        /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>ChatbotTempID</c>.
+        /// Else, null is returned.</returns>
+        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
+        {
+            foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                try
+                {
+                    if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
+                        return (ServerAnswer) answer;
+                }
+                catch (InvalidCastException)
+                {
+                    Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                        " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                }
+            return null;
+        }
+
 
         /*********************************************
          * Questions for user from server
