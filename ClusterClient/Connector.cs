@@ -66,6 +66,13 @@ namespace ClusterClient
         /// <summary>
         /// Variable referencing the dictionary in which messages from the server are stored by message action until they are read.
         /// </summary>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Invar</term>
+        ///         <description>The set belonging to a certain Action can only contain instances of the ServerMessage subclass related to that
+        ///         Action. E.g. Questions can contain instances of ServerQuestionsMessage, Answer of ServerAnswer.</description>
+        ///     </item>
+        /// </list>
         private readonly IDictionary<string, Dictionary<int, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<int, ISet<ServerMessage>>>()
             {
                 { Actions.Default, new Dictionary<int, ISet<ServerMessage>>() },
