@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -107,6 +108,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Initializes a new websocket thread.
+        /// </summary>
         /// <list type="table">
         ///     <item>
         ///         <term>Post</term>
