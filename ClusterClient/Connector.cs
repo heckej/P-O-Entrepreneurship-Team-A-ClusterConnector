@@ -175,7 +175,37 @@ namespace ClusterClient
         /// <param name="serverMessage">A message from the server that should be stored.</param>
         protected internal void StoreMessageFromServer(string serverMessage)
         {
+            ServerMessage parsedMessage = ParseServerMessage(serverMessage);
+            string action;
+            if (Actions.GetActions().Contains(parsedMessage.Action))
+                action = parsedMessage.Action;
+            else
+                action = Actions.Default;
+            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.UserID);
+            this.receivedMessages[action][parsedMessage.UserID].Add(parsedMessage);
+        }
 
+        /// <summary>
+        /// Creates a server message set in the received message dictionary at a key equal to the value of the given <paramref name="action"/>
+        /// for the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="action">The key of the dictionary where a server message set must be initialized. The value of this action must be in 
+        /// the value collection provided by <c>Actions.GetActions()</c>.</param>
+        /// <param name="userID">The ID of the user for whom a set must be initialized.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If the given <paramref name="userID"/> wasn't in the message list under the given <paramref name="action"/>, then
+        ///         a new server message set is added under <paramref name="action"/> at a key equal to the given <paramref name="userID"/>.
+        ///         Else the received message dictionary has been left unchanged.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void InitializeReceivedMessagesActionForUser(string action, int userID)
+        {
+            if (!this.receivedMessages[action].ContainsKey(userID))
+                this.receivedMessages[action].Add(userID, new HashSet<ServerMessage>());
         }
 
         /// <summary>
