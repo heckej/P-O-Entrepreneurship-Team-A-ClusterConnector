@@ -51,6 +51,7 @@
     <Compile Include="Models\ChatbotModels\ChatbotUserModel.cs" />
     <Compile Include="Models\NLP\MatchQuestionModel.cs" />
     <Compile Include="Models\NLP\OffensivenessModel.cs" />
+    <Compile Include="NLPHandler\ProcessNLPRequest.cs" />
     <Compile Include="NLPHandler\ProcessNLPResponse.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

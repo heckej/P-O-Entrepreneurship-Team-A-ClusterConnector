@@ -1,5 +1,6 @@
 ﻿using ClusterAPI.Utilities.WebSockets;
 using ClusterLogic.Models;
+using ClusterLogic.NLPHandler;
 using System;
 using System.Text.Json;
 
@@ -11,6 +12,8 @@ namespace ClusterAPI.Controllers.NLP
 
         public string GenerateRequest(params object[] args)
         {
+            OffensivenessModelRequest[] actions_new = ProcessNLPRequest.ProcessNLPQuestionOffenseRequest(args);
+
             OffensivenessModelRequest[] actions = new OffensivenessModelRequest[1];
             OffensivenessModelRequest nLPAction = new OffensivenessModelRequest();
             nLPAction.action = DEFAULT_ACTION_OFFENSE;

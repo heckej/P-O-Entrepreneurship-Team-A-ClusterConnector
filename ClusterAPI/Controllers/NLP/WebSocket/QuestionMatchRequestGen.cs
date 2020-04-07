@@ -1,5 +1,6 @@
 ﻿using ClusterAPI.Utilities.WebSockets;
 using ClusterLogic.Models;
+using ClusterLogic.NLPHandler;
 using System;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -12,6 +13,8 @@ namespace ClusterAPI.Controllers.NLP
 
         public string GenerateRequest(params object[] args)
         {
+            MatchQuestionModelRequest[] actions_new = ProcessNLPRequest.ProcessNLPMatchQuestionsRequest(args);
+
             MatchQuestionModelRequest[] actions = new MatchQuestionModelRequest[1];
             MatchQuestionModelRequest nLPAction = new MatchQuestionModelRequest();
             nLPAction.action = DEFAULT_ACTION_MATCH;
