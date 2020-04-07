@@ -44,7 +44,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Models\NLP\NLPActionOffenseRating.cs" />
     <Compile Include="Processors\DBUserProcessor.cs" />
     <Compile Include="Processors\DBQuestionProcessor.cs" />
     <Compile Include="Processors\DBOpenAnswerProcessor.cs" />
@@ -57,8 +56,6 @@
     <Compile Include="Models\Database\DBQuestion.cs" />
     <Compile Include="Models\Database\DBUser.cs" />
     <Compile Include="Models\Database\DBOpenAnswer.cs" />
-    <Compile Include="Models\NLP\NLPActionQuestionMatch.cs" />
-    <Compile Include="Models\NLP\NLPQuestion.cs" />
     <Compile Include="Models\TestQuestion.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
