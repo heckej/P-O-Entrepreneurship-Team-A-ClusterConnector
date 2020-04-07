@@ -265,18 +265,73 @@ namespace ClusterClient
          ********************************************/
 
         /// <summary>
-        /// Sends a given question from a given user to the server.
+        /// A temporarily ID assigned to questions asked by users, so the answer from the server can be identified.
+        /// </summary>
+        private int tempChatbotID = 0;
+
+        /// <summary>
+        /// Updates the <c>tempChatbotID</c> modulo 5000 and returns the updated value.
+        /// </summary>
+        private int GetNextTempChatbotID()
+        {
+            this.tempChatbotID = (tempChatbotID + 1) % 5000;
+            return this.tempChatbotID;
+        }
+
+        /// <summary>
+        /// Sends a given question from a given user to the server and returns the answer from the server.
         /// </summary>
         /// <param name="userID">The ID of the user for whom an answer is required.</param>
         /// <param name="question">The question to which an answer is required.</param>
-        /// <returns>A question ID assigned to this question by the server.</returns>
-        public string SendQuestion(int userID, string question) // ForumQuestion() return questionID
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A server answer object with a question ID assigned to the given question by the server.
+        /// In case the <c>Answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// question ID to the given question, but it hasn't found an answer yet.</returns>
+        /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
+        /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
+        public async Task<ServerAnswer> SendQuestion(int userID, string question, int timeout=5)
         {
-            // parse request -> message
-            // add message to queue
-            // set timeout and wait for QuestionID and/or answer
-            // return QuestionID / answer?
-            return "";
+            UserQuestion request = new UserQuestion
+            {
+                UserID = userID,
+                Question = question,
+                TempChatbotID = this.GetNextTempChatbotID()
+            };
+            this.AddMessageToSendQueue(request);
+            var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+            return answer;
+        }
+
+        /// <summary>
+        /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
+        /// by the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="tempChatbotID"></param>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A server answer object with a question ID assigned to the given question by the server.</returns>
+        /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server 
+        /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
+        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, long timeout)
+        {
+            // set timeout and wait for answer
+            // convert timeout to milliseconds
+            timeout *= 1000;
+            ServerAnswer answer = this.GetAnswerToQuestionOfUserByTempChatbotID(tempChatbotID, userID);
+            bool found = answer != null;
+            var watch = Stopwatch.StartNew();
+            long elapsedMs = 0;
+            while (!found & !(elapsedMs > timeout))
+            {
+                elapsedMs = watch.ElapsedMilliseconds;
+                answer = this.GetAnswerToQuestionOfUserByTempChatbotID(tempChatbotID, userID);
+                found = answer != null;
+            }
+            watch.Stop();
+            if (!found)
+                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned." +
+                    "Try again later or use a higher timeout.");
+            return answer;
         }
 
         /// <summary>
