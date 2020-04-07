@@ -1,10 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace ClusterClient.Models
 {
-    class UserAnswersMessage : UserMessage
+    public class UserAnswersMessage : UserMessage
     {
         private readonly List<UserAnswer> AnswerQuestions = new List<UserAnswer>();
 
