@@ -7,7 +7,7 @@ namespace ClusterAPI.Controllers.NLP
     {
         
         [Route("api/NLP/QuestionsMatch")]
-        public IHttpActionResult PostResult(MatchQuestionModel model)
+        public IHttpActionResult PostResult(MatchQuestionModelResponse model)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");

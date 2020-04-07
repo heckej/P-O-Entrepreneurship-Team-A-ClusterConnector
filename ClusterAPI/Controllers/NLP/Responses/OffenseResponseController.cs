@@ -12,7 +12,7 @@ namespace ClusterAPI.Controllers.NLP
     {
 
         [Route("api/NLP/QuestionOffensivesness")]
-        public IHttpActionResult PostResult(OffensivenessModel offensiveModel)
+        public IHttpActionResult PostResult(OffensivenessModelResponse offensiveModel)
         {
             if (!ModelState.IsValid)
                 return BadRequest("Invalid data.");
