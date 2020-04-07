@@ -238,19 +238,110 @@ namespace ClusterClient
             return new HashSet<string>();
         }
 
+
+        /*********************************************
+         * Answers from user to server questions
+         ********************************************/
+
         /// <summary>
-        /// 
+        /// Sends an <paramref name="answer"/> provided by a user identified by the given <paramref name="userID"/> to a question identified by
+        /// the given <paramref name="questionID"/>.
         /// </summary>
-        /// <param name="userID"></param>
-        /// <param name="questionID"></param>
-        public void AnswerQuestion(int userID, int questionID)
+        /// <param name="userID">The user ID identifying the user who submitted the answer.</param>
+        /// <param name="questionID">The question ID identifying the question for which an <paramref name="answer"/> is given.</param>
+        /// <param name="answer">An answer to the question identified by the given <paramref name="questionID"/>.</param>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        public void AnswerQuestion(int userID, int questionID, string answer)
         {
-            // design message
-            // add message to send queue
+            UserAnswer userAnswer = new UserAnswer
+            {
+                QuestionID = questionID,
+                Answer = answer
+            };
+            this.AnswerQuestion(userID, userAnswer);
         }
 
         /// <summary>
-        /// Handles a feedback response from a user identified by the given <paramref name="userID"/> concerning 
+        /// Sends an <paramref name="answer"/> provided by a user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user ID identifying the user who submitted the answer.</param>
+        /// <param name="answer">The answer to be sent.</param>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        public void AnswerQuestion(int userID, UserAnswer answer)
+        {
+            UserAnswersMessage answers = new UserAnswersMessage
+            {
+                UserID = userID
+            };
+            answers.AddAnswer(answer);
+            this.AddMessageToSendQueue(answers);
+        }
+
+        /// <summary>
+        /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user id of the user who wants to send answers to questions.</param>
+        /// <param name="questionIDAnswerPairs">A collection containing pairs consisting of a question ID and the answer
+        /// provided by the user to the question belonging to the given question ID.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Pre</term>
+        ///         <description>Every question ID only occurs once in the given collection.</description>
+        ///     </item>
+        /// </list>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        public void AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
+        {
+            UserAnswersMessage answers = new UserAnswersMessage
+            {
+                UserID = userID
+            };
+            foreach(Tuple<int, string> questionIDAnswerPair in questionIDAnswerPairs)
+            {
+                int questionID = questionIDAnswerPair.Item1;
+                string answer = questionIDAnswerPair.Item2;
+                UserAnswer userAnswer = new UserAnswer
+                {
+                    QuestionID = questionID,
+                    Answer = answer
+                };
+                answers.AddAnswer(userAnswer);
+            }
+            this.AddMessageToSendQueue(answers);
+        }
+
+
+
+        /// <summary>
+        /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user id of the user who wants to send answers to questions.</param>
+        /// <param name="questionIDAnswerPairs">A collection containing pairs consisting of a question ID and the answer
+        /// provided by the user to the question belonging to the given question ID.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Pre</term>
+        ///         <description>Every answer in the given collection has a unique question ID among the answers in that collection.</description>
+        ///     </item>
+        /// </list>
+        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        public void AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
+        {
+            UserAnswersMessage answers = new UserAnswersMessage
+            {
+                UserID = userID
+            };
+            answers.AddAnswers(userAnswers);
+            this.AddMessageToSendQueue(answers);
+        }
+
+
+        /*********************************************
+         * Feedback
+         ********************************************/
+
+        /// <summary>
+        /// Processes a feedback response from a user identified by the given <paramref name="userID"/> concerning 
         /// the question-answer pair identified by <paramref name="questionID"/> and <paramref name="answerID"/>.
         /// </summary>
         /// <param name="userID">The user id of the user who wants to send feedback.</param>
