@@ -280,10 +280,10 @@ namespace ClusterClient
         /// <summary>
         /// Returns all answers received from the server.
         /// </summary>
-        /// <returns>A set containing all answers received from the server.</returns>
-        public ISet<string> GetNewResponses()
+        /// <returns>A set containing all answers received from the serverin response to questions from this client.</returns>
+        public ISet<ServerAnswer> GetNewResponses()
         {
-            return new HashSet<string>();
+            return (ISet<ServerAnswer>) this.receivedMessages[Actions.Answer].SelectMany(d => d.Value);
         }
 
         /// <summary>
@@ -291,19 +291,32 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user who wants to receive answers to previously asked questions.</param>
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<string> GetNewAnswersForUser(int userID)
+        public ISet<ServerAnswer> GetNewAnswersForUser(int userID)
         {
-            return new HashSet<string>();
+            return new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
         }
 
         /// <summary>
-        /// Checks whether the server has an answer to the question of the given user, identified by its <paramref name="questionID"/> and <paramref name="userID"/>.
+        /// Checks whether the server has an answer to the question of the given user, identified by its <paramref name="questionID"/> 
+        /// and <paramref name="userID"/>.
         /// </summary>
         /// <param name="questionID">The question ID of the question for which is checked whether an answer is available.</param>
         /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
-        /// <returns></returns>
+        /// <returns>True if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
+        /// among the received messages which has the given <paramref name="questionID"/> as its question ID.</returns>
         public bool HasAnswerToQuestionOfUser(int questionID, int userID)
         {
+            foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                try
+                {
+                    if (((ServerAnswer)answer).QuestionID == questionID)
+                        return true;
+                } 
+                catch(InvalidCastException)
+                {
+                    Debug.WriteLine("Illegal server message added to server answers for user with id " + userID + 
+                        " when looking for question with ID " + questionID + ": " + answer);
+                }
             return false;
         }
 
@@ -316,9 +329,9 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
-        public ISet<string> GetQuestionsToBeAnswered()
+        public ISet<ServerQuestionsMessage> GetQuestionsToBeAnswered()
         {
-            return new HashSet<string>();
+            return (ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions].SelectMany(d => d.Value);
         }
 
         /// <summary>
@@ -326,10 +339,9 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
         /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<string> GetQuestionsAddressedToUser(int userID)
+        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
         {
-            // look up user in message 
-            return new HashSet<string>();
+            return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions][userID]);
         }
 
 
