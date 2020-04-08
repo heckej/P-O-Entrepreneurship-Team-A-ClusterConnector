@@ -458,9 +458,9 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
-        public ISet<ServerQuestionsMessage> GetQuestionsToBeAnswered()
+        public List<ServerMessage> GetQuestionsToBeAnswered()
         {
-            return (ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions].SelectMany(d => d.Value);
+            return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
         }
 
         /// <summary>
