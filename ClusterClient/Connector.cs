@@ -122,20 +122,30 @@ namespace ClusterClient
         {
             if (this.webSocketCommunicator != null)
             {
+                Console.WriteLine("Thread state at initialize thread in null check: " + this.webSocketConnectionThread.ThreadState);
+                Console.WriteLine("Stop websocket.");
                 this.cancellationTokenSource.Cancel();
                 // Might not be necessary.
                 this.webSocketCommunicator.Stop = true;
             }
+            // create new cancellation token source
             this.cancellationTokenSource = new CancellationTokenSource();
+            Console.WriteLine("Exception queue length: " + this.exceptionsFromWebSocketCommunicator.Count);
+            Console.WriteLine("Clearing exception queue.");
             Debug.WriteLine("Clearing exception queue.");
             this.exceptionsFromWebSocketCommunicator.Clear();
+            Console.WriteLine("Starting new thread.");
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
                                                         this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
+            
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
             this.webSocketConnectionThread.IsBackground = true;
             this.webSocketConnectionThread.Start();
+
+            Console.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
             Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
+            Console.WriteLine("Thread state at initialize thread end: " + this.webSocketConnectionThread.ThreadState);
         }
 
         /// <summary>
@@ -144,17 +154,23 @@ namespace ClusterClient
         /// </summary>
         private void CheckoutWebSocket()
         {
+            Console.WriteLine("Checkout web socket.");
             if (this.exceptionsFromWebSocketCommunicator.Count > 0)
             {
                 if (!this.cancellationTokenSource.Token.IsCancellationRequested)
                     this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
                 Debug.WriteLine("An exception occurred in the websocket thread.");
+                Console.WriteLine("An exception occurred in the websocket thread.");
                 throw exception;
             }
             else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
+                Console.WriteLine("Reinitializing websocket thread. Alive: " + this.webSocketConnectionThread.IsAlive);
+                Console.WriteLine("Thread stopped by variable: " + this.webSocketCommunicator.Stop);
+                Console.WriteLine("Cancellation requested: " + this.cancellationTokenSource.Token.IsCancellationRequested);
+                Console.WriteLine("Thread state: " + this.webSocketConnectionThread.ThreadState);
                 this.InitializeWebSocketThread();
             }
         }
@@ -180,6 +196,7 @@ namespace ClusterClient
         /// <param name="serverMessage">A message from the server that should be stored.</param>
         protected internal void StoreMessageFromServer(string serverMessage)
         {
+            Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
             string action;
             if (parsedMessage == null)
@@ -260,6 +277,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         private void AddMessageToSendQueue(UserMessage chatbotRequest)
         {
+            Console.WriteLine("Adding message to send queue: " + chatbotRequest);
             this.CheckoutWebSocket();
             string message = ParseChatbotRequest(chatbotRequest);
             this.messagesToBeSent.Enqueue(message);
@@ -297,6 +315,7 @@ namespace ClusterClient
         /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
         public async Task<ServerAnswer> SendQuestion(int userID, string question, int timeout=5)
         {
+            Console.WriteLine("Send question method called.");
             UserQuestion request = new UserQuestion
             {
                 UserID = userID,
@@ -320,6 +339,7 @@ namespace ClusterClient
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
         private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, long timeout)
         {
+            Console.WriteLine("Waiting for answer from server.");
             // set timeout and wait for answer
             // convert timeout to milliseconds
             timeout *= 1000;
@@ -334,6 +354,7 @@ namespace ClusterClient
                 found = answer != null;
             }
             watch.Stop();
+            Console.WriteLine("Found anwser: " + answer);
             if (!found)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned." +
                     "Try again later or use a higher timeout.");
@@ -447,6 +468,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(int userID, int questionID, string answer)
         {
+            Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
             {
                 QuestionID = questionID,
@@ -463,6 +485,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(int userID, UserAnswer answer)
         {
+            Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
             {
                 UserID = userID
@@ -546,6 +569,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
         {
+            Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
             {
                 UserID = userID,
