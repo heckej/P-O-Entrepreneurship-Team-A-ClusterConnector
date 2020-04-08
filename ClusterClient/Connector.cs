@@ -182,6 +182,9 @@ namespace ClusterClient
         {
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
             string action;
+            if (parsedMessage == null)
+                // Ignore useless messages.
+                return;
             if (Actions.GetActions().Contains(parsedMessage.Action))
                 action = parsedMessage.Action;
             else
