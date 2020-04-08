@@ -245,11 +245,16 @@ namespace ClusterClient
                         }
                         await this.HandleSendReceiveTasksAsync();
                     }
-                } catch(Exception e)
+                } 
+                catch(OperationCanceledException)
                 {
-                    // Add the exception to the queue if it was not caused by the calling class instance.
-                    if (!(e is OperationCanceledException))
-                        this.exceptionQueue.Enqueue(e);
+                    Console.WriteLine("Web socket connection closed by calling class instance.");
+                }
+                catch (Exception e)
+                {
+                    // Add the exception to the queue
+                    this.exceptionQueue.Enqueue(e);
+                    Console.WriteLine("An exception occurred in websocket thread: " + e);
                 }
                 finally
                 {
