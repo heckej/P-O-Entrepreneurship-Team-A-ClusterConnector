@@ -129,8 +129,8 @@ namespace ClusterClient
                 }
 
             }
-            Console.WriteLine("Thread state at receive end: " + Thread.CurrentThread.ThreadState);
-            Console.WriteLine("End of receive messages.");
+            // Console.WriteLine("Thread state at receive end: " + Thread.CurrentThread.ThreadState);
+            // Console.WriteLine("End of receive messages.");
         }
 
         /// <summary>
@@ -186,8 +186,8 @@ namespace ClusterClient
                 }
                 await Task.Delay(10, this.cancellationToken);
             }
-            Console.WriteLine("Thread state at send end: " + Thread.CurrentThread.ThreadState);
-            Console.WriteLine("End of send messages.");
+            // Console.WriteLine("Thread state at send end: " + Thread.CurrentThread.ThreadState);
+            // Console.WriteLine("End of send messages.");
         }
 
         /// <summary>
