@@ -128,6 +128,10 @@ namespace ClusterClient
                 {
                     Debug.WriteLine("Received message contains invalid unicode code points and will be ignored.");
                 }
+                catch(Exception e)
+                {
+                    Console.WriteLine("Unexpected: " + e);
+                }
                 
             }
         }
