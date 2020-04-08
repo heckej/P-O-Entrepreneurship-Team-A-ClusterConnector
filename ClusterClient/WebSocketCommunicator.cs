@@ -103,8 +103,11 @@ namespace ClusterClient
                 Console.WriteLine("No cancellation exception thrown. Waiting for result.");
                 // Reserve 1 kB buffer to store received message.
                 ArraySegment<byte> bytesReceived = new ArraySegment<byte>(new byte[1024]);
-                WebSocketReceiveResult result = await this.webSocket.ReceiveAsync(
+                var task = this.webSocket.ReceiveAsync(
                             bytesReceived, this.cancellationToken);
+                Console.WriteLine("Awaiting receive async.");
+                await task;
+                WebSocketReceiveResult result = task.Result;
                 Console.WriteLine("Result received: " + result);
                 try
                 {
@@ -201,8 +204,10 @@ namespace ClusterClient
             var receiveTask = this.ReceiveMessagesAsync();
 
             var allTasks = new List<Task> { sendTask, receiveTask };
-
-            var finished = await Task.WhenAny(allTasks);
+            Console.WriteLine("Creating task with all tasks in handler.");
+            var finished = Task.WhenAny(allTasks);
+            Console.WriteLine("Awaiting tasks in handler.");
+            await finished;
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
@@ -259,6 +264,7 @@ namespace ClusterClient
                             await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
                             Console.WriteLine("Confirmation message sent.");
                         }
+                        Console.WriteLine("Awaiting handler in communicate.");
                         await this.HandleSendReceiveTasksAsync();
                         Console.WriteLine("Still alive.");
                     }
