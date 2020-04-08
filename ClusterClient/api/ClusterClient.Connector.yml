@@ -1,0 +1,1542 @@
+### YamlMime:ManagedReference
+items:
+- uid: ClusterClient.Connector
+  commentId: T:ClusterClient.Connector
+  id: Connector
+  parent: ClusterClient
+  children:
+  - ClusterClient.Connector.#ctor(System.String,System.String,System.Int32)
+  - ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
+  - ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)
+  - ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  - ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
+  - ClusterClient.Connector.CloseWebSocketConnection
+  - ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
+  - ClusterClient.Connector.GetNewResponses
+  - ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
+  - ClusterClient.Connector.GetQuestionsToBeAnswered
+  - ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)
+  - ClusterClient.Connector.ResetConnection
+  - ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
+  - ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)
+  - ClusterClient.Connector.StoreMessageFromServer(System.String)
+  langs:
+  - csharp
+  - vb
+  name: Connector
+  nameWithType: Connector
+  fullName: ClusterClient.Connector
+  type: Class
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: Connector
+    path: Connector.cs
+    startLine: 17
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nThe class <code>Connector</code> allows communication with the Cluster API server by retrieving and sending questions and answers.\n"
+  example: []
+  syntax:
+    content: public class Connector
+    content.vb: Public Class Connector
+  inheritance:
+  - System.Object
+  inheritedMembers:
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: ClusterClient.Connector.#ctor(System.String,System.String,System.Int32)
+  commentId: M:ClusterClient.Connector.#ctor(System.String,System.String,System.Int32)
+  id: '#ctor(System.String,System.String,System.Int32)'
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: Connector(String, String, Int32)
+  nameWithType: Connector.Connector(String, String, Int32)
+  fullName: ClusterClient.Connector.Connector(System.String, System.String, System.Int32)
+  type: Constructor
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: .ctor
+    path: Connector.cs
+    startLine: 30
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nInitializes a new connector instance with the given websocket host URI used for its websocket connection and the given timeout set as the timeout\nbefore giving up on trying to connect to the server.\n"
+  example: []
+  syntax:
+    content: public Connector(string authorization, string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS", int webSocketConnectionTimeout = 10)
+    parameters:
+    - id: authorization
+      type: System.String
+      description: The value to be set for the Authorization header in the initial web socket connection request.
+    - id: webSocketHostURI
+      type: System.String
+      description: The URI referencing the server address to which a websocket connection should be made.
+    - id: webSocketConnectionTimeout
+      type: System.Int32
+      description: The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.
+    content.vb: Public Sub New(authorization As String, webSocketHostURI As String = "wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS", webSocketConnectionTimeout As Integer = 10)
+  overload: ClusterClient.Connector.#ctor*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.ResetConnection
+  commentId: M:ClusterClient.Connector.ResetConnection
+  id: ResetConnection
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: ResetConnection()
+  nameWithType: Connector.ResetConnection()
+  fullName: ClusterClient.Connector.ResetConnection()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: ResetConnection
+    path: Connector.cs
+    startLine: 111
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nResets the websocket thread by stopping the current thread and starting a new one.\n<table><tbody><tr><td>Post</td><td>If a websocket thread was running, it is stopped and replaced by a new websocket thread running a new connection.\n        If no websocket thread was running, a new one is initialized running a connection.</td></tr></tbody></table>\n"
+  example: []
+  syntax:
+    content: public void ResetConnection()
+    content.vb: Public Sub ResetConnection
+  overload: ClusterClient.Connector.ResetConnection*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.CloseWebSocketConnection
+  commentId: M:ClusterClient.Connector.CloseWebSocketConnection
+  id: CloseWebSocketConnection
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: CloseWebSocketConnection()
+  nameWithType: Connector.CloseWebSocketConnection()
+  fullName: ClusterClient.Connector.CloseWebSocketConnection()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: CloseWebSocketConnection
+    path: Connector.cs
+    startLine: 169
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nSends a stop signal to the thread running the websocket connection of this connector to close the connection and stop the thread.\n"
+  example: []
+  syntax:
+    content: public void CloseWebSocketConnection()
+    content.vb: Public Sub CloseWebSocketConnection
+  overload: ClusterClient.Connector.CloseWebSocketConnection*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.StoreMessageFromServer(System.String)
+  commentId: M:ClusterClient.Connector.StoreMessageFromServer(System.String)
+  id: StoreMessageFromServer(System.String)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: StoreMessageFromServer(String)
+  nameWithType: Connector.StoreMessageFromServer(String)
+  fullName: ClusterClient.Connector.StoreMessageFromServer(System.String)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: StoreMessageFromServer
+    path: Connector.cs
+    startLine: 183
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nParses and stores a message received from the server, so it can be retrieved by another method later on.\n"
+  example: []
+  syntax:
+    content: protected void StoreMessageFromServer(string serverMessage)
+    parameters:
+    - id: serverMessage
+      type: System.String
+      description: A message from the server that should be stored.
+    content.vb: Protected Sub StoreMessageFromServer(serverMessage As String)
+  overload: ClusterClient.Connector.StoreMessageFromServer*
+  modifiers.csharp:
+  - protected
+  modifiers.vb:
+  - Protected
+- uid: ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)
+  commentId: M:ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)
+  id: SendQuestion(System.Int32,System.String,System.Double)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: SendQuestion(Int32, String, Double)
+  nameWithType: Connector.SendQuestion(Int32, String, Double)
+  fullName: ClusterClient.Connector.SendQuestion(System.Int32, System.String, System.Double)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: SendQuestion
+    path: Connector.cs
+    startLine: 309
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nSends a given question from a given user to the server and returns the answer from the server.\n"
+  example: []
+  syntax:
+    content: public Task<ServerAnswer> SendQuestion(int userID, string question, double timeout = 5)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The ID of the user for whom an answer is required.
+    - id: question
+      type: System.String
+      description: The question to which an answer is required.
+    - id: timeout
+      type: System.Double
+      description: The timeout to be set in seconds before throwing an exception.
+    return:
+      type: System.Threading.Tasks.Task{ClusterClient.Models.ServerAnswer}
+      description: "A server answer object with a question ID assigned to the given question by the server.\nIn case the <code>Answer</code> property of the returned server answer is <code>null</code>, then the server the server has assigned a \nquestion ID to the given question, but it hasn&apos;t found an answer yet."
+    content.vb: Public Function SendQuestion(userID As Integer, question As String, timeout As Double = 5) As Task(Of ServerAnswer)
+  overload: ClusterClient.Connector.SendQuestion*
+  exceptions:
+  - type: System.TimeoutException
+    commentId: T:System.TimeoutException
+    description: "A timeout occurred and no response has been received from the server to this question, \nso no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this."
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.GetNewResponses
+  commentId: M:ClusterClient.Connector.GetNewResponses
+  id: GetNewResponses
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: GetNewResponses()
+  nameWithType: Connector.GetNewResponses()
+  fullName: ClusterClient.Connector.GetNewResponses()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: GetNewResponses
+    path: Connector.cs
+    startLine: 360
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nReturns all answers received from the server.\n"
+  example: []
+  syntax:
+    content: public ISet<ServerAnswer> GetNewResponses()
+    return:
+      type: System.Collections.Generic.ISet{ClusterClient.Models.ServerAnswer}
+      description: A set containing all answers received from the serverin response to questions from this client.
+    content.vb: Public Function GetNewResponses As ISet(Of ServerAnswer)
+  overload: ClusterClient.Connector.GetNewResponses*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
+  commentId: M:ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
+  id: GetNewAnswersForUser(System.Int32)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: GetNewAnswersForUser(Int32)
+  nameWithType: Connector.GetNewAnswersForUser(Int32)
+  fullName: ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: GetNewAnswersForUser
+    path: Connector.cs
+    startLine: 370
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nReturns all answers received from the server and addressed to the user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public ISet<ServerAnswer> GetNewAnswersForUser(int userID)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user ID of the user who wants to receive answers to previously asked questions.
+    return:
+      type: System.Collections.Generic.ISet{ClusterClient.Models.ServerAnswer}
+      description: A set containing all answers received from the server and addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.
+    content.vb: Public Function GetNewAnswersForUser(userID As Integer) As ISet(Of ServerAnswer)
+  overload: ClusterClient.Connector.GetNewAnswersForUser*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)
+  commentId: M:ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)
+  id: HasAnswerToQuestionOfUser(System.Int32,System.Int32)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: HasAnswerToQuestionOfUser(Int32, Int32)
+  nameWithType: Connector.HasAnswerToQuestionOfUser(Int32, Int32)
+  fullName: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: HasAnswerToQuestionOfUser
+    path: Connector.cs
+    startLine: 383
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nChecks whether the server has an answer to the question of the given user, identified by its <code data-dev-comment-type=\"paramref\" class=\"paramref\">questionID</code> \nand <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public bool HasAnswerToQuestionOfUser(int questionID, int userID)
+    parameters:
+    - id: questionID
+      type: System.Int32
+      description: The question ID of the question for which is checked whether an answer is available.
+    - id: userID
+      type: System.Int32
+      description: The user ID of the user for whom it is checked whether an answer is available.
+    return:
+      type: System.Boolean
+      description: "True if and only if there is a server answer for the user identified with the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code> \namong the received messages which has the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">questionID</code> as its question ID."
+    content.vb: Public Function HasAnswerToQuestionOfUser(questionID As Integer, userID As Integer) As Boolean
+  overload: ClusterClient.Connector.HasAnswerToQuestionOfUser*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.GetQuestionsToBeAnswered
+  commentId: M:ClusterClient.Connector.GetQuestionsToBeAnswered
+  id: GetQuestionsToBeAnswered
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: GetQuestionsToBeAnswered()
+  nameWithType: Connector.GetQuestionsToBeAnswered()
+  fullName: ClusterClient.Connector.GetQuestionsToBeAnswered()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: GetQuestionsToBeAnswered
+    path: Connector.cs
+    startLine: 442
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nReturns all available questions that should be answered.\n"
+  example: []
+  syntax:
+    content: public List<ServerMessage> GetQuestionsToBeAnswered()
+    return:
+      type: System.Collections.Generic.List{ClusterClient.Models.ServerMessage}
+      description: A set containing questions that should be answered.
+    content.vb: Public Function GetQuestionsToBeAnswered As List(Of ServerMessage)
+  overload: ClusterClient.Connector.GetQuestionsToBeAnswered*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
+  commentId: M:ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
+  id: GetQuestionsAddressedToUser(System.Int32)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: GetQuestionsAddressedToUser(Int32)
+  nameWithType: Connector.GetQuestionsAddressedToUser(Int32)
+  fullName: ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: GetQuestionsAddressedToUser
+    path: Connector.cs
+    startLine: 452
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nReturns all available questions addressed to the user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user ID of the user to whom the returned questions should be addressed.
+    return:
+      type: System.Collections.Generic.ISet{ClusterClient.Models.ServerQuestionsMessage}
+      description: A set containing questions addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.
+    content.vb: Public Function GetQuestionsAddressedToUser(userID As Integer) As ISet(Of ServerQuestionsMessage)
+  overload: ClusterClient.Connector.GetQuestionsAddressedToUser*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)
+  commentId: M:ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)
+  id: AnswerQuestion(System.Int32,System.Int32,System.String)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: AnswerQuestion(Int32, Int32, String)
+  nameWithType: Connector.AnswerQuestion(Int32, Int32, String)
+  fullName: ClusterClient.Connector.AnswerQuestion(System.Int32, System.Int32, System.String)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: AnswerQuestion
+    path: Connector.cs
+    startLine: 470
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nSends an <code data-dev-comment-type=\"paramref\" class=\"paramref\">answer</code> provided by a user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code> to a question identified by\nthe given <code data-dev-comment-type=\"paramref\" class=\"paramref\">questionID</code>.\n"
+  example: []
+  syntax:
+    content: public void AnswerQuestion(int userID, int questionID, string answer)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user ID identifying the user who submitted the answer.
+    - id: questionID
+      type: System.Int32
+      description: The question ID identifying the question for which an <code data-dev-comment-type="paramref" class="paramref">answer</code> is given.
+    - id: answer
+      type: System.String
+      description: An answer to the question identified by the given <code data-dev-comment-type="paramref" class="paramref">questionID</code>.
+    content.vb: Public Sub AnswerQuestion(userID As Integer, questionID As Integer, answer As String)
+  overload: ClusterClient.Connector.AnswerQuestion*
+  exceptions:
+  - type: System.Exception
+    commentId: T:System.Exception
+    description: An exception has been passed by the web socket thread.
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
+  commentId: M:ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
+  id: AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: AnswerQuestion(Int32, UserAnswer)
+  nameWithType: Connector.AnswerQuestion(Int32, UserAnswer)
+  fullName: ClusterClient.Connector.AnswerQuestion(System.Int32, ClusterClient.Models.UserAnswer)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: AnswerQuestion
+    path: Connector.cs
+    startLine: 486
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nSends an <code data-dev-comment-type=\"paramref\" class=\"paramref\">answer</code> provided by a user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public void AnswerQuestion(int userID, UserAnswer answer)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user ID identifying the user who submitted the answer.
+    - id: answer
+      type: ClusterClient.Models.UserAnswer
+      description: The answer to be sent.
+    content.vb: Public Sub AnswerQuestion(userID As Integer, answer As UserAnswer)
+  overload: ClusterClient.Connector.AnswerQuestion*
+  exceptions:
+  - type: System.Exception
+    commentId: T:System.Exception
+    description: An exception has been passed by the web socket thread.
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
+  commentId: M:ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
+  id: AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: AnswerQuestions(Int32, ICollection<Tuple<Int32, String>>)
+  nameWithType: Connector.AnswerQuestions(Int32, ICollection<Tuple<Int32, String>>)
+  fullName: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection<System.Tuple<System.Int32, System.String>>)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: AnswerQuestions
+    path: Connector.cs
+    startLine: 509
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nProcesses a series of questionID-answer pairs from a user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public void AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user id of the user who wants to send answers to questions.
+    - id: questionIDAnswerPairs
+      type: System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}}
+      description: >-
+        A collection containing pairs consisting of a question ID and the answer
+
+        provided by the user to the question belonging to the given question ID.
+    content.vb: Public Sub AnswerQuestions(userID As Integer, questionIDAnswerPairs As ICollection(Of Tuple(Of Integer, String)))
+  overload: ClusterClient.Connector.AnswerQuestions*
+  exceptions:
+  - type: System.Exception
+    commentId: T:System.Exception
+    description: An exception has been passed by the web socket thread.
+  nameWithType.vb: Connector.AnswerQuestions(Int32, ICollection(Of Tuple(Of Int32, String)))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection(Of System.Tuple(Of System.Int32, System.String)))
+  name.vb: AnswerQuestions(Int32, ICollection(Of Tuple(Of Int32, String)))
+- uid: ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  commentId: M:ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  id: AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: AnswerQuestions(Int32, ICollection<UserAnswer>)
+  nameWithType: Connector.AnswerQuestions(Int32, ICollection<UserAnswer>)
+  fullName: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection<ClusterClient.Models.UserAnswer>)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: AnswerQuestions
+    path: Connector.cs
+    startLine: 544
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nProcesses a series of questionID-answer pairs from a user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code>.\n"
+  example: []
+  syntax:
+    content: public void AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user id of the user who wants to send answers to questions.
+    - id: userAnswers
+      type: System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer}
+    content.vb: Public Sub AnswerQuestions(userID As Integer, userAnswers As ICollection(Of UserAnswer))
+  overload: ClusterClient.Connector.AnswerQuestions*
+  exceptions:
+  - type: System.Exception
+    commentId: T:System.Exception
+    description: An exception has been passed by the web socket thread.
+  nameWithType.vb: Connector.AnswerQuestions(Int32, ICollection(Of UserAnswer))
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+  fullName.vb: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection(Of ClusterClient.Models.UserAnswer))
+  name.vb: AnswerQuestions(Int32, ICollection(Of UserAnswer))
+- uid: ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
+  commentId: M:ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
+  id: SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: SendFeedbackOnAnswer(Int32, Int32, Int32, Int32)
+  nameWithType: Connector.SendFeedbackOnAnswer(Int32, Int32, Int32, Int32)
+  fullName: ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32, System.Int32, System.Int32, System.Int32)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: SendFeedbackOnAnswer
+    path: Connector.cs
+    startLine: 569
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nProcesses a feedback response from a user identified by the given <code data-dev-comment-type=\"paramref\" class=\"paramref\">userID</code> concerning \nthe question-answer pair identified by <code data-dev-comment-type=\"paramref\" class=\"paramref\">questionID</code> and <code data-dev-comment-type=\"paramref\" class=\"paramref\">answerID</code>.\n"
+  example: []
+  syntax:
+    content: public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
+    parameters:
+    - id: userID
+      type: System.Int32
+      description: The user id of the user who wants to send feedback.
+    - id: answerID
+      type: System.Int32
+      description: The answer ID related to the question-answer pair for which feedback is sent.
+    - id: questionID
+      type: System.Int32
+      description: The question ID related to the question-answer pair for which feedback is sent.
+    - id: feedback
+      type: System.Int32
+      description: "A feedback code related to the feedback. This could be as simple as &apos;good&apos; = 1 and &apos;bad&apos; = 0, \nor more advanced using feelings like &apos;happy&apos; = 0, &apos;angry&apos; = 1, &apos;sad&apos; = 2 ...  as long as the server understands it well."
+    content.vb: Public Sub SendFeedbackOnAnswer(userID As Integer, answerID As Integer, questionID As Integer, feedback As Integer)
+  overload: ClusterClient.Connector.SendFeedbackOnAnswer*
+  exceptions:
+  - type: System.Exception
+    commentId: T:System.Exception
+    description: An exception has been passed by the web socket thread.
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
+references:
+- uid: ClusterClient
+  commentId: N:ClusterClient
+  name: ClusterClient
+  nameWithType: ClusterClient
+  fullName: ClusterClient
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: ClusterClient.Connector.#ctor*
+  commentId: Overload:ClusterClient.Connector.#ctor
+  name: Connector
+  nameWithType: Connector.Connector
+  fullName: ClusterClient.Connector.Connector
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: System.Int32
+  commentId: T:System.Int32
+  parent: System
+  isExternal: true
+  name: Int32
+  nameWithType: Int32
+  fullName: System.Int32
+- uid: ClusterClient.Connector.ResetConnection*
+  commentId: Overload:ClusterClient.Connector.ResetConnection
+  name: ResetConnection
+  nameWithType: Connector.ResetConnection
+  fullName: ClusterClient.Connector.ResetConnection
+- uid: ClusterClient.Connector.CloseWebSocketConnection*
+  commentId: Overload:ClusterClient.Connector.CloseWebSocketConnection
+  name: CloseWebSocketConnection
+  nameWithType: Connector.CloseWebSocketConnection
+  fullName: ClusterClient.Connector.CloseWebSocketConnection
+- uid: ClusterClient.Connector.StoreMessageFromServer*
+  commentId: Overload:ClusterClient.Connector.StoreMessageFromServer
+  name: StoreMessageFromServer
+  nameWithType: Connector.StoreMessageFromServer
+  fullName: ClusterClient.Connector.StoreMessageFromServer
+- uid: System.TimeoutException
+  commentId: T:System.TimeoutException
+  isExternal: true
+- uid: ClusterClient.Connector.SendQuestion*
+  commentId: Overload:ClusterClient.Connector.SendQuestion
+  name: SendQuestion
+  nameWithType: Connector.SendQuestion
+  fullName: ClusterClient.Connector.SendQuestion
+- uid: System.Double
+  commentId: T:System.Double
+  parent: System
+  isExternal: true
+  name: Double
+  nameWithType: Double
+  fullName: System.Double
+- uid: System.Threading.Tasks.Task{ClusterClient.Models.ServerAnswer}
+  commentId: T:System.Threading.Tasks.Task{ClusterClient.Models.ServerAnswer}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<ServerAnswer>
+  nameWithType: Task<ServerAnswer>
+  fullName: System.Threading.Tasks.Task<ClusterClient.Models.ServerAnswer>
+  nameWithType.vb: Task(Of ServerAnswer)
+  fullName.vb: System.Threading.Tasks.Task(Of ClusterClient.Models.ServerAnswer)
+  name.vb: Task(Of ServerAnswer)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.ServerAnswer
+    name: ServerAnswer
+    nameWithType: ServerAnswer
+    fullName: ClusterClient.Models.ServerAnswer
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.ServerAnswer
+    name: ServerAnswer
+    nameWithType: ServerAnswer
+    fullName: ClusterClient.Models.ServerAnswer
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
+- uid: ClusterClient.Connector.GetNewResponses*
+  commentId: Overload:ClusterClient.Connector.GetNewResponses
+  name: GetNewResponses
+  nameWithType: Connector.GetNewResponses
+  fullName: ClusterClient.Connector.GetNewResponses
+- uid: System.Collections.Generic.ISet{ClusterClient.Models.ServerAnswer}
+  commentId: T:System.Collections.Generic.ISet{ClusterClient.Models.ServerAnswer}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.ISet`1
+  name: ISet<ServerAnswer>
+  nameWithType: ISet<ServerAnswer>
+  fullName: System.Collections.Generic.ISet<ClusterClient.Models.ServerAnswer>
+  nameWithType.vb: ISet(Of ServerAnswer)
+  fullName.vb: System.Collections.Generic.ISet(Of ClusterClient.Models.ServerAnswer)
+  name.vb: ISet(Of ServerAnswer)
+  spec.csharp:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.ServerAnswer
+    name: ServerAnswer
+    nameWithType: ServerAnswer
+    fullName: ClusterClient.Models.ServerAnswer
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.ServerAnswer
+    name: ServerAnswer
+    nameWithType: ServerAnswer
+    fullName: ClusterClient.Models.ServerAnswer
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ISet`1
+  commentId: T:System.Collections.Generic.ISet`1
+  isExternal: true
+  name: ISet<T>
+  nameWithType: ISet<T>
+  fullName: System.Collections.Generic.ISet<T>
+  nameWithType.vb: ISet(Of T)
+  fullName.vb: System.Collections.Generic.ISet(Of T)
+  name.vb: ISet(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic
+- uid: ClusterClient.Connector.GetNewAnswersForUser*
+  commentId: Overload:ClusterClient.Connector.GetNewAnswersForUser
+  name: GetNewAnswersForUser
+  nameWithType: Connector.GetNewAnswersForUser
+  fullName: ClusterClient.Connector.GetNewAnswersForUser
+- uid: ClusterClient.Connector.HasAnswerToQuestionOfUser*
+  commentId: Overload:ClusterClient.Connector.HasAnswerToQuestionOfUser
+  name: HasAnswerToQuestionOfUser
+  nameWithType: Connector.HasAnswerToQuestionOfUser
+  fullName: ClusterClient.Connector.HasAnswerToQuestionOfUser
+- uid: System.Boolean
+  commentId: T:System.Boolean
+  parent: System
+  isExternal: true
+  name: Boolean
+  nameWithType: Boolean
+  fullName: System.Boolean
+- uid: ClusterClient.Connector.GetQuestionsToBeAnswered*
+  commentId: Overload:ClusterClient.Connector.GetQuestionsToBeAnswered
+  name: GetQuestionsToBeAnswered
+  nameWithType: Connector.GetQuestionsToBeAnswered
+  fullName: ClusterClient.Connector.GetQuestionsToBeAnswered
+- uid: System.Collections.Generic.List{ClusterClient.Models.ServerMessage}
+  commentId: T:System.Collections.Generic.List{ClusterClient.Models.ServerMessage}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<ServerMessage>
+  nameWithType: List<ServerMessage>
+  fullName: System.Collections.Generic.List<ClusterClient.Models.ServerMessage>
+  nameWithType.vb: List(Of ServerMessage)
+  fullName.vb: System.Collections.Generic.List(Of ClusterClient.Models.ServerMessage)
+  name.vb: List(Of ServerMessage)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.ServerMessage
+    name: ServerMessage
+    nameWithType: ServerMessage
+    fullName: ClusterClient.Models.ServerMessage
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.ServerMessage
+    name: ServerMessage
+    nameWithType: ServerMessage
+    fullName: ClusterClient.Models.ServerMessage
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: ClusterClient.Connector.GetQuestionsAddressedToUser*
+  commentId: Overload:ClusterClient.Connector.GetQuestionsAddressedToUser
+  name: GetQuestionsAddressedToUser
+  nameWithType: Connector.GetQuestionsAddressedToUser
+  fullName: ClusterClient.Connector.GetQuestionsAddressedToUser
+- uid: System.Collections.Generic.ISet{ClusterClient.Models.ServerQuestionsMessage}
+  commentId: T:System.Collections.Generic.ISet{ClusterClient.Models.ServerQuestionsMessage}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.ISet`1
+  name: ISet<ServerQuestionsMessage>
+  nameWithType: ISet<ServerQuestionsMessage>
+  fullName: System.Collections.Generic.ISet<ClusterClient.Models.ServerQuestionsMessage>
+  nameWithType.vb: ISet(Of ServerQuestionsMessage)
+  fullName.vb: System.Collections.Generic.ISet(Of ClusterClient.Models.ServerQuestionsMessage)
+  name.vb: ISet(Of ServerQuestionsMessage)
+  spec.csharp:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.ServerQuestionsMessage
+    name: ServerQuestionsMessage
+    nameWithType: ServerQuestionsMessage
+    fullName: ClusterClient.Models.ServerQuestionsMessage
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ISet`1
+    name: ISet
+    nameWithType: ISet
+    fullName: System.Collections.Generic.ISet
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.ServerQuestionsMessage
+    name: ServerQuestionsMessage
+    nameWithType: ServerQuestionsMessage
+    fullName: ClusterClient.Models.ServerQuestionsMessage
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Exception
+  commentId: T:System.Exception
+  isExternal: true
+- uid: ClusterClient.Connector.AnswerQuestion*
+  commentId: Overload:ClusterClient.Connector.AnswerQuestion
+  name: AnswerQuestion
+  nameWithType: Connector.AnswerQuestion
+  fullName: ClusterClient.Connector.AnswerQuestion
+- uid: ClusterClient.Models.UserAnswer
+  commentId: T:ClusterClient.Models.UserAnswer
+  parent: ClusterClient.Models
+  name: UserAnswer
+  nameWithType: UserAnswer
+  fullName: ClusterClient.Models.UserAnswer
+- uid: ClusterClient.Models
+  commentId: N:ClusterClient.Models
+  name: ClusterClient.Models
+  nameWithType: ClusterClient.Models
+  fullName: ClusterClient.Models
+- uid: ClusterClient.Connector.AnswerQuestions*
+  commentId: Overload:ClusterClient.Connector.AnswerQuestions
+  name: AnswerQuestions
+  nameWithType: Connector.AnswerQuestions
+  fullName: ClusterClient.Connector.AnswerQuestions
+- uid: System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}}
+  commentId: T:System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.ICollection`1
+  name: ICollection<Tuple<Int32, String>>
+  nameWithType: ICollection<Tuple<Int32, String>>
+  fullName: System.Collections.Generic.ICollection<System.Tuple<System.Int32, System.String>>
+  nameWithType.vb: ICollection(Of Tuple(Of Int32, String))
+  fullName.vb: System.Collections.Generic.ICollection(Of System.Tuple(Of System.Int32, System.String))
+  name.vb: ICollection(Of Tuple(Of Int32, String))
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Tuple`2
+    name: Tuple
+    nameWithType: Tuple
+    fullName: System.Tuple
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Tuple`2
+    name: Tuple
+    nameWithType: Tuple
+    fullName: System.Tuple
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Int32
+    name: Int32
+    nameWithType: Int32
+    fullName: System.Int32
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.String
+    name: String
+    nameWithType: String
+    fullName: System.String
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection`1
+  commentId: T:System.Collections.Generic.ICollection`1
+  isExternal: true
+  name: ICollection<T>
+  nameWithType: ICollection<T>
+  fullName: System.Collections.Generic.ICollection<T>
+  nameWithType.vb: ICollection(Of T)
+  fullName.vb: System.Collections.Generic.ICollection(Of T)
+  name.vb: ICollection(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer}
+  commentId: T:System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.ICollection`1
+  name: ICollection<UserAnswer>
+  nameWithType: ICollection<UserAnswer>
+  fullName: System.Collections.Generic.ICollection<ClusterClient.Models.UserAnswer>
+  nameWithType.vb: ICollection(Of UserAnswer)
+  fullName.vb: System.Collections.Generic.ICollection(Of ClusterClient.Models.UserAnswer)
+  name.vb: ICollection(Of UserAnswer)
+  spec.csharp:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.UserAnswer
+    name: UserAnswer
+    nameWithType: UserAnswer
+    fullName: ClusterClient.Models.UserAnswer
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.ICollection`1
+    name: ICollection
+    nameWithType: ICollection
+    fullName: System.Collections.Generic.ICollection
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.UserAnswer
+    name: UserAnswer
+    nameWithType: UserAnswer
+    fullName: ClusterClient.Models.UserAnswer
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: ClusterClient.Connector.SendFeedbackOnAnswer*
+  commentId: Overload:ClusterClient.Connector.SendFeedbackOnAnswer
+  name: SendFeedbackOnAnswer
+  nameWithType: Connector.SendFeedbackOnAnswer
+  fullName: ClusterClient.Connector.SendFeedbackOnAnswer

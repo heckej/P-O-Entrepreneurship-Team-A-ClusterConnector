@@ -1,0 +1,72 @@
+### YamlMime:ManagedReference
+items:
+- uid: ClusterClient.Models
+  commentId: N:ClusterClient.Models
+  id: ClusterClient.Models
+  children:
+  - ClusterClient.Models.Actions
+  - ClusterClient.Models.ServerAnswer
+  - ClusterClient.Models.ServerMessage
+  - ClusterClient.Models.ServerQuestion
+  - ClusterClient.Models.ServerQuestionsMessage
+  - ClusterClient.Models.UserAnswer
+  - ClusterClient.Models.UserAnswersMessage
+  - ClusterClient.Models.UserMessage
+  langs:
+  - csharp
+  - vb
+  name: ClusterClient.Models
+  nameWithType: ClusterClient.Models
+  fullName: ClusterClient.Models
+  type: Namespace
+  assemblies:
+  - ClusterClient
+references:
+- uid: ClusterClient.Models.Actions
+  commentId: T:ClusterClient.Models.Actions
+  name: Actions
+  nameWithType: Actions
+  fullName: ClusterClient.Models.Actions
+- uid: ClusterClient.Models.ServerAnswer
+  commentId: T:ClusterClient.Models.ServerAnswer
+  name: ServerAnswer
+  nameWithType: ServerAnswer
+  fullName: ClusterClient.Models.ServerAnswer
+- uid: ClusterClient.Models.ServerMessage
+  commentId: T:ClusterClient.Models.ServerMessage
+  parent: ClusterClient.Models
+  name: ServerMessage
+  nameWithType: ServerMessage
+  fullName: ClusterClient.Models.ServerMessage
+- uid: ClusterClient.Models.ServerQuestion
+  commentId: T:ClusterClient.Models.ServerQuestion
+  name: ServerQuestion
+  nameWithType: ServerQuestion
+  fullName: ClusterClient.Models.ServerQuestion
+- uid: ClusterClient.Models.ServerQuestionsMessage
+  commentId: T:ClusterClient.Models.ServerQuestionsMessage
+  name: ServerQuestionsMessage
+  nameWithType: ServerQuestionsMessage
+  fullName: ClusterClient.Models.ServerQuestionsMessage
+- uid: ClusterClient.Models.UserAnswer
+  commentId: T:ClusterClient.Models.UserAnswer
+  parent: ClusterClient.Models
+  name: UserAnswer
+  nameWithType: UserAnswer
+  fullName: ClusterClient.Models.UserAnswer
+- uid: ClusterClient.Models.UserAnswersMessage
+  commentId: T:ClusterClient.Models.UserAnswersMessage
+  name: UserAnswersMessage
+  nameWithType: UserAnswersMessage
+  fullName: ClusterClient.Models.UserAnswersMessage
+- uid: ClusterClient.Models.UserMessage
+  commentId: T:ClusterClient.Models.UserMessage
+  parent: ClusterClient.Models
+  name: UserMessage
+  nameWithType: UserMessage
+  fullName: ClusterClient.Models.UserMessage
+- uid: ClusterClient.Models
+  commentId: N:ClusterClient.Models
+  name: ClusterClient.Models
+  nameWithType: ClusterClient.Models
+  fullName: ClusterClient.Models
