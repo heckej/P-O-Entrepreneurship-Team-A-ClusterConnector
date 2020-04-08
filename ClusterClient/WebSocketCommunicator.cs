@@ -231,6 +231,7 @@ namespace ClusterClient
         {
             using (this.webSocket = new ClientWebSocket())
             {
+                this.webSocket.Options.SetRequestHeader("Authorization", null);
                 try
                 {
                     while (!this.Stop)
