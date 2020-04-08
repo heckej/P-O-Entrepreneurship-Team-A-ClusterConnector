@@ -49,10 +49,14 @@ namespace ClusterConnector.Models
         public static List<TestQuestion> TestConnection(int id)
         {
             List<TestQuestion> questions = new List<TestQuestion>();
-            using (SqlConnection connection = new SqlConnection("Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=BerndWeckx;Password=Bubbi100@3751;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+#if DEBUG
+            SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster_Copy;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+#endif
+
+            using (SqlConnection connection = new SqlConnection(SQLSource))
             {
-                String sqlCommand = "Select * From dbo.TestTable test Where test.ID = " + id +";";
-                sqlCommand = "Select * From dbo.TestTable ;";
+                String sqlCommand = "Select * From dbo.TestTable test Where test.Id = " + id + ";";
                 SqlCommand command = new SqlCommand(sqlCommand, connection);
                 command.Connection.Open();
                 command.ExecuteNonQuery();
