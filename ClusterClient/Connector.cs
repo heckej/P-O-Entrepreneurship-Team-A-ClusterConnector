@@ -125,8 +125,6 @@ namespace ClusterClient
                 Console.WriteLine("Thread state at initialize thread in null check: " + this.webSocketConnectionThread.ThreadState);
                 Console.WriteLine("Stop websocket.");
                 this.cancellationTokenSource.Cancel();
-                // Might not be necessary.
-                this.webSocketCommunicator.Stop = true;
             }
             // create new cancellation token source
             this.cancellationTokenSource = new CancellationTokenSource();
@@ -168,7 +166,6 @@ namespace ClusterClient
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
                 Console.WriteLine("Reinitializing websocket thread. Alive: " + this.webSocketConnectionThread.IsAlive);
-                Console.WriteLine("Thread stopped by variable: " + this.webSocketCommunicator.Stop);
                 Console.WriteLine("Cancellation requested: " + this.cancellationTokenSource.Token.IsCancellationRequested);
                 Console.WriteLine("Thread state: " + this.webSocketConnectionThread.ThreadState);
                 this.InitializeWebSocketThread();
@@ -181,8 +178,6 @@ namespace ClusterClient
         public void CloseWebSocketConnection()
         {
             this.cancellationTokenSource.Cancel();
-            // Probabily not needed:
-            this.webSocketCommunicator.Stop = true;
         }
 
 
