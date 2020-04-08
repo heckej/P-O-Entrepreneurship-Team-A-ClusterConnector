@@ -89,7 +89,6 @@ namespace ClusterClient
         /// </summary>
         public void Run()
         {
-            Console.WriteLine("Running thread.");
             Task task = this.CommunicateWithServerAsync();
             task.Wait();
         }
@@ -122,7 +121,7 @@ namespace ClusterClient
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine("Unexpected: " + e);
+                    Debug.WriteLine("Unexpected exception while receiving task: " + e);
                 }
                 
             }
