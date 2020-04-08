@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -92,9 +92,6 @@ namespace ClusterClient
             Console.WriteLine("Running thread.");
             Task task = this.CommunicateWithServerAsync();
             task.Wait();
-            Console.WriteLine("End of run method. Thread should return.");
-            Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Thread state at run end: " + Thread.CurrentThread.ThreadState);
         }
 
         /// <summary>
@@ -105,39 +102,30 @@ namespace ClusterClient
         {
             while (true)
             {
-                Console.WriteLine("Thread state at receive begin: " + Thread.CurrentThread.ThreadState);
-                Console.WriteLine("Cancellation requested (receive): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
-                Console.WriteLine("No cancellation exception thrown. Waiting for result.");
                 // Reserve 1 kB buffer to store received message.
                 ArraySegment<byte> bytesReceived = new ArraySegment<byte>(new byte[1024]);
                 WebSocketReceiveResult result = await this.webSocket.ReceiveAsync(
                             bytesReceived, this.cancellationToken);
-                Console.WriteLine("Result received: " + result);
                 try
                 {
                     string message = Encoding.UTF8.GetString(bytesReceived.Array, 0, result.Count);
                     this.ProcessReceivedMessage(message);
-                    Console.WriteLine("Message processed: " + message);
                 }
                 catch (ArgumentNullException)
                 {
                     Debug.WriteLine("Websocket returned null message.");
-                    Console.WriteLine("Websocket returned null message.");
                 }   
                 catch (ArgumentException)
                 {
                     Debug.WriteLine("Received message contains invalid unicode code points and will be ignored.");
-                    Console.WriteLine("Received message contains invalid unicode code points and will be ignored.");
                 }
                 catch(Exception e)
                 {
                     Console.WriteLine("Unexpected: " + e);
                 }
-
+                
             }
-            // Console.WriteLine("Thread state at receive end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of receive messages.");
         }
 
         /// <summary>
@@ -147,7 +135,6 @@ namespace ClusterClient
         /// <returns></returns>
         private void ProcessReceivedMessage(string message)
         {
-            Console.WriteLine("Processing received message: " + message);
             this.PassMessageToClient(message);
         }
 
@@ -179,8 +166,6 @@ namespace ClusterClient
         {
             while (true)
             {
-                //Console.WriteLine("Thread state at send begin: " + Thread.CurrentThread.ThreadState);
-                //Console.WriteLine("Cancellation requested (send): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
                 foreach(string message in this.MessagesToSend)
                 {
@@ -193,8 +178,6 @@ namespace ClusterClient
                 }
                 await Task.Delay(10, this.cancellationToken);
             }
-            // Console.WriteLine("Thread state at send end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of send messages.");
         }
 
         /// <summary>
@@ -203,27 +186,16 @@ namespace ClusterClient
         /// <returns></returns>
         private async Task HandleSendReceiveTasksAsync()
         {
-            Console.WriteLine("Handling sending and receiving messages.");
-            Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
 
             var allTasks = new List<Task> { sendTask, receiveTask };
 
-            var finished = await Task.WhenAny(allTasks);
+            await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
                 task.Dispose();*/
-            if (finished == sendTask)
-                Console.WriteLine("Finished handling task: sending.");
-            if (finished == receiveTask)
-                Console.WriteLine("Finished handling task: receiving.");
-            else
-                Console.WriteLine("Finished handling task: unknown.");
-            Console.WriteLine("Handling finished.");
-            Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Thread state at handler end: " + Thread.CurrentThread.ThreadState);
         }
 
         /// <summary>
@@ -249,28 +221,19 @@ namespace ClusterClient
         {
             using (this.webSocket = new ClientWebSocket())
             {
-
-                //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
                 this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
-                Console.WriteLine("Using websocket.");
                 try
                 {
                     while (true)
                     {
-                        Console.WriteLine("Communicate loop.");
                         this.cancellationToken.ThrowIfCancellationRequested();
-                        Console.WriteLine("No cancellation exception thrown.");
                         if (this.webSocket == null | this.webSocket.State != WebSocketState.Open)
                         {
-                            Console.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
                             Debug.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
                             await this.ConnectToServerAsync();
-                            Console.WriteLine("Connection established.");
                             await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
-                            Console.WriteLine("Confirmation message sent.");
                         }
                         await this.HandleSendReceiveTasksAsync();
-                        Console.WriteLine("Still alive.");
                     }
                 } 
                 catch(OperationCanceledException)
@@ -288,7 +251,6 @@ namespace ClusterClient
                     //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
                     // close websocket, now handled by 'using'
                     Debug.WriteLine("Communication with server ended.");
-                    Console.WriteLine("Communication with server ended.");
                 }
             }
         }
@@ -301,11 +263,7 @@ namespace ClusterClient
         private async Task ConnectToServerAsync()
         {
             CancellationTokenSource tempCancellationSource = new CancellationTokenSource(this.connectionTimeoutSeconds*1000);
-            Console.WriteLine("Trying to connect during " + this.connectionTimeoutSeconds * 1000 + "ms.");
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
-            Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
-            Console.WriteLine("Connected.");
-            Console.WriteLine("Thread state at connect: " + Thread.CurrentThread.ThreadState);
         }
 
 
