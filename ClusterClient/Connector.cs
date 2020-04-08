@@ -90,7 +90,7 @@ namespace ClusterClient
         /// <summary>
         /// Variable referencing a cancelation token source used to control tasks.
         /// </summary>
-        private readonly CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
         /// Resets the websocket thread by stopping the current thread and starting a new one.
@@ -126,12 +126,14 @@ namespace ClusterClient
                 // Might not be necessary.
                 this.webSocketCommunicator.Stop = true;
             }
+            this.cancellationTokenSource = new CancellationTokenSource();
             Debug.WriteLine("Clearing exception queue.");
             this.exceptionsFromWebSocketCommunicator.Clear();
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
                                                         this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
+            this.webSocketConnectionThread.IsBackground = true;
             this.webSocketConnectionThread.Start();
             Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
         }
