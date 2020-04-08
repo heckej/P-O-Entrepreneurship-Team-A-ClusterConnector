@@ -332,7 +332,10 @@ namespace ClusterClient
                 TempChatbotID = this.GetNextTempChatbotID()
             };
             this.AddMessageToSendQueue(request);
-            var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+            if (answer == null)
+                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
+                    "Try again later or use a higher timeout.");
             return answer;
         }
 
@@ -365,8 +368,7 @@ namespace ClusterClient
             watch.Stop();
             Console.WriteLine("Found anwser: " + answer);
             if (!found)
-                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
-                    "Try again later or use a higher timeout.");
+                return null;
             return answer;
         }
 
