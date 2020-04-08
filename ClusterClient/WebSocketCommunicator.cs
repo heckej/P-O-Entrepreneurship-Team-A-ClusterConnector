@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.WebSockets;
@@ -90,7 +90,9 @@ namespace ClusterClient
         /// </summary>
         public void Run()
         {
-            this.CommunicateWithServerAsync();
+            Console.WriteLine("Running thread.");
+            Task task = this.CommunicateWithServerAsync();
+            task.Wait();
         }
 
         /// <summary>
