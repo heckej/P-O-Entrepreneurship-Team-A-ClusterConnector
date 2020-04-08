@@ -1,9 +1,5 @@
-﻿using ClusterConnector.Models.NLP;
+﻿using ClusterLogic.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
 using System.Web.Http;
 
 namespace ClusterAPI.Controllers.NLP.Requests
@@ -15,12 +11,12 @@ namespace ClusterAPI.Controllers.NLP.Requests
         [Route("api/NLP/questionOffensive")]
         public IHttpActionResult GetTestQuestion()
         {
-            NLPActionOffenseRating[] actions = new NLPActionOffenseRating[1];
-            NLPActionOffenseRating nLPAction = new NLPActionOffenseRating();
-            nLPAction.Action = DEFAULT_ACTION;
-            nLPAction.Question_id = -1;
-            nLPAction.Question = "ROSES ARE RED, VIOLETS ARE BLUE, GANDALF IS A WIZARD, NOW FLY YOU FOOL!";
-            nLPAction.Msg_id = -1;
+            OffensivenessModelRequest[] actions = new OffensivenessModelRequest[1];
+            OffensivenessModelRequest nLPAction = new OffensivenessModelRequest();
+            nLPAction.action = DEFAULT_ACTION;
+            nLPAction.question_id = -1;
+            nLPAction.question = "ROSES ARE RED, VIOLETS ARE BLUE, GANDALF IS A WIZARD, NOW FLY YOU FOOL!";
+            nLPAction.msg_id = -1;
 
             if (nLPAction == null)
             {

@@ -26,6 +26,7 @@ namespace ClusterLogic.Models
         }
     }
 
+    [Serializable]
     public class NLPQuestionModelInfo : BaseModel
     {
         private int _question_id = -1;

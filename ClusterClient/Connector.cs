@@ -31,7 +31,8 @@ namespace ClusterClient
         {
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
-            this.cancellationTokenSource = new CancellationTokenSource();
+            Console.WriteLine("Initialize websocket.");
+            this.InitializeWebSocketThread();
         }
 
 
@@ -89,7 +90,7 @@ namespace ClusterClient
         /// <summary>
         /// Variable referencing a cancelation token source used to control tasks.
         /// </summary>
-        private readonly CancellationTokenSource cancellationTokenSource;
+        private CancellationTokenSource cancellationTokenSource;
 
         /// <summary>
         /// Resets the websocket thread by stopping the current thread and starting a new one.
@@ -121,18 +122,28 @@ namespace ClusterClient
         {
             if (this.webSocketCommunicator != null)
             {
+                Console.WriteLine("Thread state at initialize thread in null check: " + this.webSocketConnectionThread.ThreadState);
+                Console.WriteLine("Stop websocket.");
                 this.cancellationTokenSource.Cancel();
-                // Might not be necessary.
-                this.webSocketCommunicator.Stop = true;
             }
+            // create new cancellation token source
+            this.cancellationTokenSource = new CancellationTokenSource();
+            Console.WriteLine("Exception queue length: " + this.exceptionsFromWebSocketCommunicator.Count);
+            Console.WriteLine("Clearing exception queue.");
             Debug.WriteLine("Clearing exception queue.");
             this.exceptionsFromWebSocketCommunicator.Clear();
+            Console.WriteLine("Starting new thread.");
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
                                                         this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
+            
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
+            this.webSocketConnectionThread.IsBackground = true;
             this.webSocketConnectionThread.Start();
+
+            Console.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
             Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
+            Console.WriteLine("Thread state at initialize thread end: " + this.webSocketConnectionThread.ThreadState);
         }
 
         /// <summary>
@@ -141,17 +152,22 @@ namespace ClusterClient
         /// </summary>
         private void CheckoutWebSocket()
         {
+            Console.WriteLine("Checkout web socket.");
             if (this.exceptionsFromWebSocketCommunicator.Count > 0)
             {
                 if (!this.cancellationTokenSource.Token.IsCancellationRequested)
                     this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
                 Debug.WriteLine("An exception occurred in the websocket thread.");
+                Console.WriteLine("An exception occurred in the websocket thread.");
                 throw exception;
             }
             else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
+                Console.WriteLine("Reinitializing websocket thread. Alive: " + this.webSocketConnectionThread.IsAlive);
+                Console.WriteLine("Cancellation requested: " + this.cancellationTokenSource.Token.IsCancellationRequested);
+                Console.WriteLine("Thread state: " + this.webSocketConnectionThread.ThreadState);
                 this.InitializeWebSocketThread();
             }
         }
@@ -162,8 +178,6 @@ namespace ClusterClient
         public void CloseWebSocketConnection()
         {
             this.cancellationTokenSource.Cancel();
-            // Probabily not needed:
-            this.webSocketCommunicator.Stop = true;
         }
 
 
@@ -177,8 +191,12 @@ namespace ClusterClient
         /// <param name="serverMessage">A message from the server that should be stored.</param>
         protected internal void StoreMessageFromServer(string serverMessage)
         {
+            Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
             string action;
+            if (parsedMessage == null)
+                // Ignore useless messages.
+                return;
             if (Actions.GetActions().Contains(parsedMessage.Action))
                 action = parsedMessage.Action;
             else
@@ -215,24 +233,33 @@ namespace ClusterClient
         /// </summary>
         /// <param name="serverMessage">The message from the server as a json string.</param>
         /// <returns>A server message object containing the information of the given 
-        /// <paramref name="serverMessage" /> as far as the structure allows it.</returns>
+        /// <paramref name="serverMessage" /> as far as the structure allows it.
+        /// <c>null</c> in case the given message couldn't be parsed.</returns>
         private static ServerMessage ParseServerMessage(string serverMessage)
         {
-            // check which type of server message
-            ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
-            // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
-            switch (message.Action)
+            try
             {
-                case Actions.Answer:
-                    message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
-                    break;
-                case Actions.Questions:
-                    message = JsonSerializer.Deserialize<ServerQuestionsMessage>(serverMessage);
-                    break;
-                default:
-                    break;
+                // check which type of server message
+                ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
+                // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
+                switch (message.Action)
+                {
+                    case Actions.Answer:
+                        message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
+                        break;
+                    case Actions.Questions:
+                        message = JsonSerializer.Deserialize<ServerQuestionsMessage>(serverMessage);
+                        break;
+                    default:
+                        break;
+                }
+                return message;
+            } 
+            catch(JsonException e)
+            {
+                Console.WriteLine("Message not in Json format: " + serverMessage);
+                return null;
             }
-            return message;
         }
 
         /// <summary>
@@ -254,6 +281,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         private void AddMessageToSendQueue(UserMessage chatbotRequest)
         {
+            Console.WriteLine("Adding message to send queue: " + chatbotRequest);
             this.CheckoutWebSocket();
             string message = ParseChatbotRequest(chatbotRequest);
             this.messagesToBeSent.Enqueue(message);
@@ -289,8 +317,9 @@ namespace ClusterClient
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
         /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(int userID, string question, int timeout=5)
+        public async Task<ServerAnswer> SendQuestion(int userID, string question, double timeout=5)
         {
+            Console.WriteLine("Send question method called.");
             UserQuestion request = new UserQuestion
             {
                 UserID = userID,
@@ -298,7 +327,10 @@ namespace ClusterClient
                 TempChatbotID = this.GetNextTempChatbotID()
             };
             this.AddMessageToSendQueue(request);
-            var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+            if (answer == null)
+                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
+                    "Try again later or use a higher timeout.");
             return answer;
         }
 
@@ -312,15 +344,16 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server 
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, long timeout)
+        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, double timeout)
         {
+            Console.WriteLine("Waiting for answer from server.");
             // set timeout and wait for answer
             // convert timeout to milliseconds
             timeout *= 1000;
             ServerAnswer answer = this.GetAnswerToQuestionOfUserByTempChatbotID(tempChatbotID, userID);
             bool found = answer != null;
             var watch = Stopwatch.StartNew();
-            long elapsedMs = 0;
+            double elapsedMs = 0;
             while (!found & !(elapsedMs > timeout))
             {
                 elapsedMs = watch.ElapsedMilliseconds;
@@ -328,9 +361,9 @@ namespace ClusterClient
                 found = answer != null;
             }
             watch.Stop();
+            Console.WriteLine("Found anwser: " + answer);
             if (!found)
-                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned." +
-                    "Try again later or use a higher timeout.");
+                return null;
             return answer;
         }
 
@@ -388,17 +421,26 @@ namespace ClusterClient
         /// Else, null is returned.</returns>
         private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
         {
-            foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
-                try
-                {
-                    if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
-                        return (ServerAnswer) answer;
-                }
-                catch (InvalidCastException)
-                {
-                    Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
-                        " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
-                }
+            try
+            {
+                foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                    try
+                    {
+                        if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
+                            return (ServerAnswer) answer;
+                    }
+                    catch (InvalidCastException)
+                    {
+                        Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                        Console.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                    }
+            }
+            catch(KeyNotFoundException)
+            {
+                // userID not in message dictionary under Answer key.
+            }
             return null;
         }
 
@@ -411,9 +453,9 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
-        public ISet<ServerQuestionsMessage> GetQuestionsToBeAnswered()
+        public List<ServerMessage> GetQuestionsToBeAnswered()
         {
-            return (ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions].SelectMany(d => d.Value);
+            return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
         }
 
         /// <summary>
@@ -441,6 +483,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(int userID, int questionID, string answer)
         {
+            Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
             {
                 QuestionID = questionID,
@@ -457,6 +500,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(int userID, UserAnswer answer)
         {
+            Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
             {
                 UserID = userID
@@ -540,6 +584,7 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
         {
+            Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
             {
                 UserID = userID,
