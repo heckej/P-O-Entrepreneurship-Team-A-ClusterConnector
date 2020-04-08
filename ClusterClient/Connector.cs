@@ -31,8 +31,6 @@ namespace ClusterClient
         {
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
-            Console.WriteLine("Initialize websocket.");
-            this.InitializeWebSocketThread();
         }
 
 
@@ -54,11 +52,6 @@ namespace ClusterClient
         /// Variable referencing the websocket communicator instance in which the websocket connection runs.
         /// </summary>
         private WebSocketCommunicator webSocketCommunicator;
-
-        /// <summary>
-        /// Variable referencing the thread in which the websocket communicator runs.
-        /// </summary>
-        private Thread webSocketConnectionThread;
 
         /// <summary>
         /// Variable referencing the queue in which messages that are waiting to be sent are stored
@@ -102,9 +95,14 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// </summary>
-        public void ResetConnection()
+        public async Task ResetConnection()
         {
-            this.InitializeWebSocketThread();
+            await this.InitializeWebSocketCommunicator();
+        }
+
+        public async Task StartWebSocketConnection()
+        {
+            await this.InitializeWebSocketCommunicator();
         }
 
         /// <summary>
@@ -118,11 +116,10 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// </summary>
-        private void InitializeWebSocketThread()
+        private async Task InitializeWebSocketCommunicator()
         {
             if (this.webSocketCommunicator != null)
             {
-                Console.WriteLine("Thread state at initialize thread in null check: " + this.webSocketConnectionThread.ThreadState);
                 Console.WriteLine("Stop websocket.");
                 this.cancellationTokenSource.Cancel();
             }
@@ -132,25 +129,18 @@ namespace ClusterClient
             Console.WriteLine("Clearing exception queue.");
             Debug.WriteLine("Clearing exception queue.");
             this.exceptionsFromWebSocketCommunicator.Clear();
-            Console.WriteLine("Starting new thread.");
-            Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
                                                         this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
-            
-            this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
-            this.webSocketConnectionThread.IsBackground = true;
-            this.webSocketConnectionThread.Start();
-
-            Console.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
-            Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
-            Console.WriteLine("Thread state at initialize thread end: " + this.webSocketConnectionThread.ThreadState);
+            Console.WriteLine("Awaiting web socket communicator run.");
+            Debug.WriteLine("Awaiting web socket communicator run.");
+            await this.webSocketCommunicator.Run();
         }
 
         /// <summary>
         /// Checks whether the websocket thread is still alive and whether it has passed exceptions.
         /// <exception>The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         /// </summary>
-        private void CheckoutWebSocket()
+        private async Task CheckoutWebSocket()
         {
             Console.WriteLine("Checkout web socket.");
             if (this.exceptionsFromWebSocketCommunicator.Count > 0)
@@ -162,13 +152,11 @@ namespace ClusterClient
                 Console.WriteLine("An exception occurred in the websocket thread.");
                 throw exception;
             }
-            else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
+            else if (this.cancellationTokenSource.IsCancellationRequested)
             {
-                Debug.WriteLine("Reinitializing websocket thread.");
-                Console.WriteLine("Reinitializing websocket thread. Alive: " + this.webSocketConnectionThread.IsAlive);
+                Debug.WriteLine("Reinitializing websocket.");
                 Console.WriteLine("Cancellation requested: " + this.cancellationTokenSource.Token.IsCancellationRequested);
-                Console.WriteLine("Thread state: " + this.webSocketConnectionThread.ThreadState);
-                this.InitializeWebSocketThread();
+                await this.InitializeWebSocketCommunicator();
             }
         }
 
@@ -279,10 +267,10 @@ namespace ClusterClient
         /// </summary>
         /// <param name="chatbotRequest">A message from the chatbot to be sent to the server.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        private void AddMessageToSendQueue(UserMessage chatbotRequest)
+        private async Task AddMessageToSendQueue(UserMessage chatbotRequest)
         {
             Console.WriteLine("Adding message to send queue: " + chatbotRequest);
-            this.CheckoutWebSocket();
+            await this.CheckoutWebSocket();
             string message = ParseChatbotRequest(chatbotRequest);
             this.messagesToBeSent.Enqueue(message);
         }
@@ -326,7 +314,7 @@ namespace ClusterClient
                 Question = question,
                 TempChatbotID = this.GetNextTempChatbotID()
             };
-            this.AddMessageToSendQueue(request);
+            await this.AddMessageToSendQueue(request);
                 var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
             if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
@@ -481,7 +469,7 @@ namespace ClusterClient
         /// <param name="questionID">The question ID identifying the question for which an <paramref name="answer"/> is given.</param>
         /// <param name="answer">An answer to the question identified by the given <paramref name="questionID"/>.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, int questionID, string answer)
+        public async Task AnswerQuestion(int userID, int questionID, string answer)
         {
             Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
@@ -489,7 +477,7 @@ namespace ClusterClient
                 QuestionID = questionID,
                 Answer = answer
             };
-            this.AnswerQuestion(userID, userAnswer);
+            await this.AnswerQuestion(userID, userAnswer);
         }
 
         /// <summary>
@@ -498,7 +486,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID identifying the user who submitted the answer.</param>
         /// <param name="answer">The answer to be sent.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, UserAnswer answer)
+        public async Task AnswerQuestion(int userID, UserAnswer answer)
         {
             Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
@@ -506,7 +494,7 @@ namespace ClusterClient
                 UserID = userID
             };
             answers.AddAnswer(answer);
-            this.AddMessageToSendQueue(answers);
+            await this.AddMessageToSendQueue(answers);
         }
 
         /// <summary>
@@ -522,7 +510,7 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
+        public async Task AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
@@ -539,7 +527,7 @@ namespace ClusterClient
                 };
                 answers.AddAnswer(userAnswer);
             }
-            this.AddMessageToSendQueue(answers);
+            await this.AddMessageToSendQueue(answers);
         }
 
 
@@ -557,14 +545,14 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
+        public async Task AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
                 UserID = userID
             };
             answers.AddAnswers(userAnswers);
-            this.AddMessageToSendQueue(answers);
+            await this.AddMessageToSendQueue(answers);
         }
 
 
@@ -582,7 +570,7 @@ namespace ClusterClient
         /// <param name="feedback">A feedback code related to the feedback. This could be as simple as 'good' = 1 and 'bad' = 0, 
         /// or more advanced using feelings like 'happy' = 0, 'angry' = 1, 'sad' = 2 ...  as long as the server understands it well.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
+        public async Task SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
         {
             Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
@@ -592,7 +580,7 @@ namespace ClusterClient
                 QuestionID = questionID,
                 FeedbackCode = feedback
             };
-            this.AddMessageToSendQueue(userFeedback);
+            await this.AddMessageToSendQueue(userFeedback);
         }
     }
 }
