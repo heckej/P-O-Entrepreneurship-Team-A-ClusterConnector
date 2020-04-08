@@ -80,11 +80,10 @@ namespace ClusterClient
         /// <summary>
         /// Starts communication with the websocket host.
         /// </summary>
-        public void Run()
+        public async Task Run()
         {
             Console.WriteLine("Running thread.");
-            Task task = this.CommunicateWithServerAsync();
-            task.Wait();
+            await this.CommunicateWithServerAsync();
             Console.WriteLine("End of run method. Thread should return.");
             Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
             Console.WriteLine("Thread state at run end: " + Thread.CurrentThread.ThreadState);
