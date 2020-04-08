@@ -152,6 +152,11 @@ namespace ClusterClient
                 Console.WriteLine("An exception occurred in the websocket thread.");
                 throw exception;
             }
+            else if (this.cancellationTokenSource == null)
+            {
+                Debug.WriteLine("Reinitializing websocket.");
+                await this.InitializeWebSocketCommunicator();
+            }
             else if (this.cancellationTokenSource.IsCancellationRequested)
             {
                 Debug.WriteLine("Reinitializing websocket.");
