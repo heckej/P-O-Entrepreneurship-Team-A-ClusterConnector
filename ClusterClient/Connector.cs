@@ -31,7 +31,8 @@ namespace ClusterClient
         {
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
-            this.cancellationTokenSource = new CancellationTokenSource();
+            Console.WriteLine("Initialize websocket.");
+            this.InitializeWebSocketThread();
         }
 
 
