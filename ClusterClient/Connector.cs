@@ -424,17 +424,26 @@ namespace ClusterClient
         /// Else, null is returned.</returns>
         private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
         {
-            foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
-                try
-                {
-                    if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
-                        return (ServerAnswer) answer;
-                }
-                catch (InvalidCastException)
-                {
-                    Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
-                        " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
-                }
+            try
+            {
+                foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                    try
+                    {
+                        if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
+                            return (ServerAnswer) answer;
+                    }
+                    catch (InvalidCastException)
+                    {
+                        Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                        Console.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                    }
+            }
+            catch(KeyNotFoundException)
+            {
+                // userID not in message dictionary under Answer key.
+            }
             return null;
         }
 
