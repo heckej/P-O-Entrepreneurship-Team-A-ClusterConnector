@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <UserSecretsId>1062b6d7-a0b4-4604-8c53-edb65d01155c</UserSecretsId>
+    <PackageId>ClusterClient</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>heckej</Authors>
+    <Company>P&amp;O CW Entrepreneurship - Team A</Company>
+    <PackageDescription>A package that provides methods to communicate with a Cluster Connector Server.</PackageDescription>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageReleaseNotes>New in this version: everything.</PackageReleaseNotes>
+    <RepositoryUrl>https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector</RepositoryUrl>
+
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="docfx.console" Version="2.51.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="System.Text.Json" Version="4.7.1" />
+  </ItemGroup>
+
+</Project>
