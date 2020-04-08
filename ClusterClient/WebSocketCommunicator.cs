@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Net;
 using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
@@ -25,7 +26,7 @@ namespace ClusterClient
         /// <param name="connectionTimeout">The timeout to be set when connecting to the websocket host.</param>
         /// <param name="cancellationToken">The cancellation token to be used to stop this thread from running.</param>
         public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, MethodToPassMessageToClient passMessageToClient,
-            Queue<string> sendQueue, int connectionTimeout, CancellationToken cancellationToken)
+            Queue<string> sendQueue, int connectionTimeout, CancellationToken cancellationToken, string authorization)
         {
             this.webSocketURI = webSocketURI;
             this.exceptionQueue = exceptionQueue;
@@ -33,6 +34,7 @@ namespace ClusterClient
             this.sendQueue = sendQueue;
             this.connectionTimeoutSeconds = connectionTimeout;
             this.cancellationToken = cancellationToken;
+            this.authorization = authorization;
         }
 
         /// <summary>
@@ -42,9 +44,14 @@ namespace ClusterClient
         private CancellationToken cancellationToken;
 
         /// <summary>
-        /// A string containing the uri of the websocket host with which a connection should be made.
+        /// The uri of the websocket host with which a connection should be made.
         /// </summary>
         private Uri webSocketURI;
+
+        /// <summary>
+        /// The value to be set for the Authorization header in the initial web socket connection request.
+        /// </summary>
+        private readonly string authorization;
 
         /// <summary>
         /// Variable referencing the websocket connection of this thread.
@@ -242,7 +249,9 @@ namespace ClusterClient
         {
             using (this.webSocket = new ClientWebSocket())
             {
-                this.webSocket.Options.SetRequestHeader("Authorization", null);
+
+                //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
+                this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
                 Console.WriteLine("Using websocket.");
                 try
                 {

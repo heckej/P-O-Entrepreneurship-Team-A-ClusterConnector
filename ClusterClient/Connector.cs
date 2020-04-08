@@ -27,8 +27,10 @@ namespace ClusterClient
         /// </summary>
         /// <param name="webSocketHostURI">The URI referencing the server address to which a websocket connection should be made.</param>
         /// <param name="webSocketConnectionTimeout">The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</param>
-        public Connector(string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS", int webSocketConnectionTimeout = 10)
+        /// <param name="authorization">The value to be set for the Authorization header in the initial web socket connection request.</param>
+        public Connector(string authorization, string webSocketHostURI = "wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS", int webSocketConnectionTimeout = 10)
         {
+            this.authorization = authorization;
             this.webSocketHostURI = new Uri(webSocketHostURI);
             this.webSocketConnectionTimeout = webSocketConnectionTimeout;
             Console.WriteLine("Initialize websocket.");
@@ -49,6 +51,11 @@ namespace ClusterClient
         /// The timeout to be set in seconds for the websocket connection before giving up on trying to connect to the server.
         /// </summary>
         private int webSocketConnectionTimeout = 10;
+
+        /// <summary>
+        /// The value to be set for the Authorization header in the initial web socket connection request.
+        /// </summary>
+        private readonly string authorization;
 
         /// <summary>
         /// Variable referencing the websocket communicator instance in which the websocket connection runs.
@@ -135,7 +142,7 @@ namespace ClusterClient
             Console.WriteLine("Starting new thread.");
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
-                                                        this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token);
+                                                        this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token, this.authorization);
             
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
             this.webSocketConnectionThread.IsBackground = true;
@@ -255,7 +262,7 @@ namespace ClusterClient
                 }
                 return message;
             } 
-            catch(JsonException e)
+            catch(JsonException)
             {
                 Console.WriteLine("Message not in Json format: " + serverMessage);
                 return null;
