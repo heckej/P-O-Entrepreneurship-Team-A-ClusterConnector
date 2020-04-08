@@ -365,7 +365,7 @@ namespace ClusterClient
             watch.Stop();
             Console.WriteLine("Found anwser: " + answer);
             if (!found)
-                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned." +
+                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
                     "Try again later or use a higher timeout.");
             return answer;
         }
