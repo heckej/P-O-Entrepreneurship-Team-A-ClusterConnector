@@ -27,7 +27,6 @@ namespace ClusterClient
         public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, MethodToPassMessageToClient passMessageToClient,
             Queue<string> sendQueue, int connectionTimeout, CancellationToken cancellationToken)
         {
-            this.Stop = false;
             this.webSocketURI = webSocketURI;
             this.exceptionQueue = exceptionQueue;
             this.PassMessageToClient = passMessageToClient;
@@ -35,13 +34,6 @@ namespace ClusterClient
             this.connectionTimeoutSeconds = connectionTimeout;
             this.cancellationToken = cancellationToken;
         }
-
-        /// <summary>
-        /// A boolean controlling the running state of this thread. When <c>Stop</c> is set to <c>true</c>, running tasks are interrupted, the 
-        /// websocket is closed if it was open and the thread returns. When <c>Stop</c> is set to <c>true</c> by a method of this thread, 
-        /// an exception is added to the <c>exceptionQueue</c> provided at initialization of this thread.
-        /// </summary>
-        public bool Stop { get; set; }
 
         /// <summary>
         /// A cancellation token controlling the running state of this thread. When it is cancelled, running tasks are interrupted, the 
@@ -95,24 +87,16 @@ namespace ClusterClient
             task.Wait();
             Console.WriteLine("End of run method. Thread should return.");
             Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Stopped by variable: " + this.Stop);
             Console.WriteLine("Thread state at run end: " + Thread.CurrentThread.ThreadState);
         }
 
         /// <summary>
         /// Checks for new messages from server and processes them.
-        /// Sets <c>this.Stop</c> to <c>true</c> when the websocket raises a ... exception.
         /// </summary>
         /// <returns>null if the websocket raises a ... exception.</returns>
-        /// <list type="table">
-        ///     <item>
-        ///         <term>Post</term>
-        ///         <description><c>this.Stop</c> equals <c>true</c></description>
-        ///     </item>
-        /// </list>
         private async Task ReceiveMessagesAsync()
         {
-            while (!this.Stop)
+            while (true)
             {
                 Console.WriteLine("Thread state at receive begin: " + Thread.CurrentThread.ThreadState);
                 Console.WriteLine("Cancellation requested (receive): " + this.cancellationToken.IsCancellationRequested);
@@ -186,7 +170,7 @@ namespace ClusterClient
         /// <returns></returns>
         private async Task SendMessagesAsync()
         {
-            while (!this.Stop)
+            while (true)
             {
                 //Console.WriteLine("Thread state at send begin: " + Thread.CurrentThread.ThreadState);
                 //Console.WriteLine("Cancellation requested (send): " + this.cancellationToken.IsCancellationRequested);
@@ -232,7 +216,6 @@ namespace ClusterClient
                 Console.WriteLine("Finished handling task: unknown.");
             Console.WriteLine("Handling finished.");
             Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Stopped by variable: " + this.Stop);
             Console.WriteLine("Thread state at handler end: " + Thread.CurrentThread.ThreadState);
         }
 
@@ -247,10 +230,8 @@ namespace ClusterClient
         /// Tries to connect to the websocket server. When the connection 
         /// has been established a 'Connection established' message is sent to the host. 
         /// If a ... exception is thrown for the first time, the method waits 1.5s asynchronously and 
-        /// retries once afterwards. <c>this.Stop</c> is set to <c>true</c> when ... exception occurs a 
-        /// second time or when another <c>Exception</c> is thrown.
+        /// retries once afterwards. 
         /// </summary>
-        /// <returns><c>null</c> when <c>this.Stop</c> equals <c>true</c>.</returns>
         /// <list type="table">
         ///     <item>
         ///         <term>Post</term>
@@ -265,7 +246,7 @@ namespace ClusterClient
                 Console.WriteLine("Using websocket.");
                 try
                 {
-                    while (!this.Stop)
+                    while (true)
                     {
                         Console.WriteLine("Communicate loop.");
                         this.cancellationToken.ThrowIfCancellationRequested();
@@ -295,8 +276,6 @@ namespace ClusterClient
                 }
                 finally
                 {
-                    // Probably unnecessary
-                    this.Stop = true;
                     //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
                     // close websocket, now handled by 'using'
                     Debug.WriteLine("Communication with server ended.");
