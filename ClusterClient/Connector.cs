@@ -238,24 +238,33 @@ namespace ClusterClient
         /// </summary>
         /// <param name="serverMessage">The message from the server as a json string.</param>
         /// <returns>A server message object containing the information of the given 
-        /// <paramref name="serverMessage" /> as far as the structure allows it.</returns>
+        /// <paramref name="serverMessage" /> as far as the structure allows it.
+        /// <c>null</c> in case the given message couldn't be parsed.</returns>
         private static ServerMessage ParseServerMessage(string serverMessage)
         {
-            // check which type of server message
-            ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
-            // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
-            switch (message.Action)
+            try
             {
-                case Actions.Answer:
-                    message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
-                    break;
-                case Actions.Questions:
-                    message = JsonSerializer.Deserialize<ServerQuestionsMessage>(serverMessage);
-                    break;
-                default:
-                    break;
+                // check which type of server message
+                ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
+                // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
+                switch (message.Action)
+                {
+                    case Actions.Answer:
+                        message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
+                        break;
+                    case Actions.Questions:
+                        message = JsonSerializer.Deserialize<ServerQuestionsMessage>(serverMessage);
+                        break;
+                    default:
+                        break;
+                }
+                return message;
+            } 
+            catch(JsonException e)
+            {
+                Console.WriteLine("Message not in Json format: " + serverMessage);
+                return null;
             }
-            return message;
         }
 
         /// <summary>
