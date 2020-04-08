@@ -322,7 +322,7 @@ namespace ClusterClient
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
         /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(int userID, string question, int timeout=5)
+        public async Task<ServerAnswer> SendQuestion(int userID, string question, double timeout=5)
         {
             Console.WriteLine("Send question method called.");
             UserQuestion request = new UserQuestion
@@ -346,7 +346,7 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server 
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, long timeout)
+        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, double timeout)
         {
             Console.WriteLine("Waiting for answer from server.");
             // set timeout and wait for answer
@@ -355,7 +355,7 @@ namespace ClusterClient
             ServerAnswer answer = this.GetAnswerToQuestionOfUserByTempChatbotID(tempChatbotID, userID);
             bool found = answer != null;
             var watch = Stopwatch.StartNew();
-            long elapsedMs = 0;
+            double elapsedMs = 0;
             while (!found & !(elapsedMs > timeout))
             {
                 elapsedMs = watch.ElapsedMilliseconds;
