@@ -203,6 +203,8 @@
     <Compile Include="Controllers\DB\DBAnswerController.cs" />
     <Compile Include="Controllers\DB\DBUserController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\NLP\Requests\TempController.cs" />
+    <Compile Include="Controllers\NLP\Requests\TestController.cs" />
     <Compile Include="Controllers\NLP\WebSocket\NLPWebSocketController.cs" />
     <Compile Include="Controllers\NLP\Requests\QuestionOffenseController.cs" />
     <Compile Include="Controllers\NLP\Responses\OffenseResponseController.cs" />
