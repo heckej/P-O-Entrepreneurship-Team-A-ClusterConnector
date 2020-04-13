@@ -44,6 +44,19 @@ namespace ClusterAPI.Controllers.NLP
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
         }
 
+        public async static void TestMatchQuestion()
+        {
+            MatchQuestionModelResponse mqmr = new MatchQuestionModelResponse();
+            mqmr.msg_id = 67;
+            mqmr.possible_matches = new MatchQuestionModelInfo[] {
+                new MatchQuestionModelInfo() { prob = .85f, question_id = 5},
+                new MatchQuestionModelInfo() { prob = .6f, question_id = 7},
+                new MatchQuestionModelInfo() { prob = .15f, question_id = 1}
+            };
+            mqmr.question_id = 23;
+            ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(new List<MatchQuestionModelResponse>() { mqmr });
+        }
+
         public async static void Notify()
         {
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
