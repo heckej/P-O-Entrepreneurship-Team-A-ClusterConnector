@@ -17,12 +17,20 @@ namespace ClusterLogic.NLPHandler
 
         public static Object ProcessNLPOffensivenessResponse(List<OffensivenessModelResponse> offensivenessModels)
         {
+
             return null;
         }
 
         public static Object ProcessNLPNonsenseResponse(List<NonsenseModelResponse> nonsenseModelResponses)
         {
-            return null;
+            if (nonsenseModelResponses[0].nonsense) //if is nonsense
+            {
+                return null;
+            }
+            else
+            {
+                return new OffensivenessModelRequest(nonsenseModelResponses[0]); //This gives the Server the correct response to make it known what to do next. As a simple example
+            }
         }
     }
 }

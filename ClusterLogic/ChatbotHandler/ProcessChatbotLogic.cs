@@ -21,10 +21,13 @@ namespace ClusterLogic.ChatbotHandler
             return null;
         }
 
-
-        public static void ProcessChatbotReceiveAnswer(List<ChatbotGivenAnswerModel> list)
+        /// <summary>
+        /// Perform NLP Nonsense check
+        /// </summary>
+        /// <param name="list"></param>
+        public static OffensivenessModelRequest ProcessChatbotReceiveAnswer(List<ChatbotGivenAnswerModel> list)
         {
-            throw new NotImplementedException();
+            return new OffensivenessModelRequest(list[0]);
         }
 
         /// <summary>
