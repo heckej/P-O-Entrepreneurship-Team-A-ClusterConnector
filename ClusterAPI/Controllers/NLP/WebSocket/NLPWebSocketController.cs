@@ -75,11 +75,22 @@ namespace ClusterAPI.Controllers.NLP
             }
         }
 
-        public async static void SendQuestionOffenseRequest(params Object[] args)
+        public async static void SendQuestionNonsenseRequest(OffensivenessModelRequest offensivenessModel)
         {
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
-                String json = new QuestionOffenseRequestGen().GenerateRequest(args);
+                String json = JsonSerializer.Serialize(offensivenessModel);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+
+        public async static void SendQuestionOffenseRequest(OffensivenessModelRequest offensivenessModel)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize(offensivenessModel);
 
                 await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
@@ -220,7 +231,11 @@ namespace ClusterAPI.Controllers.NLP
                     ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList());
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
-                    ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList());
+                    var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList());
+                    if (result is OffensivenessModelRequest)
+                    {
+                        SendQuestionOffenseRequest((OffensivenessModelRequest)result);
+                    }
                     break;
             }
         }

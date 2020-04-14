@@ -52,6 +52,16 @@ namespace ClusterAPI.Controllers.NLP
             }
         }
 
+        /// <summary>
+        /// Send a message to the NLP Controller to process the given answer and check if the contents are nonsone or not.
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        private void SendAnswerToNLPForNonsense(OffensivenessModelRequest result)
+        {
+            NLPWebSocketController.SendQuestionNonsenseRequest(result);
+        }
+
         public async static void SendAnswerToQuestion(List<ChatbotAnswerRequestResponseModel> result)
         {
             if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
@@ -199,7 +209,14 @@ namespace ClusterAPI.Controllers.NLP
             switch (model.Key)
             {
                 case WEBSOCKET_RESPONSE_TYPE.RECEIVE_ANSWER:
-                    ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
+                    {
+                        var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
+                        if (result != null)
+                        {
+                            SendAnswerToNLPForNonsense(result);
+                        }
+
+                    }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.REQUEST_ANSWER_TO_QUESTION:
                     {
