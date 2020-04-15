@@ -1,4 +1,6 @@
-﻿using ClusterLogic.Models;
+﻿using ClusterConnector.Manager;
+using ClusterConnector.Models.Database;
+using ClusterLogic.Models;
 using ClusterLogic.Models.ChatbotModels;
 using System;
 using System.Collections.Generic;
@@ -19,6 +21,69 @@ namespace ClusterLogic.ChatbotHandler
         public List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(int userID = -1, int questionID = -1)
         {
             return null;
+        }
+
+        /// <summary>
+        /// 
+        /// TODO: Select all ANSWERED questions put them in the MatchQuestionModelRequest model
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public static MatchQuestionModelRequest ProcessChatbotReceiveQuestion(List<ChatbotNewQuestionModel> list)
+        {
+            MatchQuestionModelRequest mqmr = new MatchQuestionModelRequest();
+
+            //Example on how to turn a Query String into data from the SQL database
+
+            List<DBQuestion> result = new List<DBQuestion>();
+            DBManager manager = new DBManager(false); //this false 
+            String sqlCommand = "Select * From dbo.Questions answer Where ";
+
+            for (int i = 0; i < 10; i++)
+            {
+                if (i != 10 - 1)
+                {
+                    sqlCommand += "answer.question_id = " + i + " OR ";
+                }
+                else
+                {
+                    sqlCommand += "answer.question_id = " + i + ";";
+                }
+            }
+            var reader = manager.Read(sqlCommand);
+
+            while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
+            {
+                //
+                //reader["xxx"] where 'xxx' is the collumn name of the particular table you get as result from the query.
+                //You get these values a generic 'Object' so typecasting to the proper value should be safe. eg. (int)reader["xxx"]
+                //
+               
+
+                DBQuestion answer = new DBQuestion();
+                answer.Question_id = (int)reader["question_id"];
+                answer.Question = (String)reader["question"];
+                answer.Answer_id = (int)reader["answer_id"];
+
+                result.Add(answer);
+            }
+            manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
+
+
+            //**********************************
+            mqmr.action = "MATCH_QUESTIONS"; //Standard
+            mqmr.question = list[0].question;
+            mqmr.msg_id = 0; //Currently not really used
+            mqmr.question_id = 0; //This id does not exist at this point
+
+            List<NLPQuestionModelInfo> comparisonQuestions = new List<NLPQuestionModelInfo>();
+            for (int i = 0; i < result.Count; i++)
+            {
+                comparisonQuestions.Add(new NLPQuestionModelInfo() { question = result[i].Question, question_id = result[i].Question_id });
+            }
+            mqmr.compare_questions = comparisonQuestions.ToArray();
+
+            return mqmr;
         }
 
         /// <summary>

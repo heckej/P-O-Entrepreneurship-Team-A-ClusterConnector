@@ -9,6 +9,13 @@ namespace ClusterLogic.NLPHandler
 {
     public class ProcessNLPResponse
     {
+        /// <summary>
+        /// Logica: krijgt MatchedQuestionsModel binnen
+        /// en beslist of er een goede match is + het antwoord op deze vraag
+        /// 
+        /// </summary>
+        /// <param name="matchQuestionModels"></param>
+        /// <returns></returns>
         public static Object ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
         {
 
