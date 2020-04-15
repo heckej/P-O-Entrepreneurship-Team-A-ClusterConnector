@@ -15,7 +15,17 @@ namespace ClusterLogic.NLPHandler
         /// 
         /// </summary>
         /// <param name="matchQuestionModels"></param>
-        /// <returns></returns>
+        /// <returns>
+        /// 
+        /// Resultaat bij Bernd is dan
+        /// 1) Er is een goede match
+        /// 2) We moeten verderZoeken
+        /// 3) Er is geen match en vragen zijn op
+        /// 
+        /// Ik laat aan jullie om te beslissen hoe dit 1 model / meerdere modellen eruit zullen zien
+        /// return model; aan het functie is het enige dat ik nodig heb :)
+        /// 
+        /// </returns>
         public static Object ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
         {
 
