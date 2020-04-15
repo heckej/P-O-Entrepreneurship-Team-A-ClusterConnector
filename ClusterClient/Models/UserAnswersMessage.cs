@@ -10,7 +10,7 @@ namespace ClusterClient.Models
     {
         private List<UserAnswer> answerQuestions = new List<UserAnswer>();
 
-        public List<UserAnswer> AnswerQuestions {
+        public List<UserAnswer> answer_questions {
             get  => this.answerQuestions;
             set
             {

@@ -8,6 +8,6 @@ namespace ClusterClient.Models
 {
     public class ServerQuestionsMessage : ServerMessage
     {
-        public List<ServerQuestion> AnswerQuestions { get; set; }
+        public List<ServerQuestion> answer_questions { get; set; }
     }
 }

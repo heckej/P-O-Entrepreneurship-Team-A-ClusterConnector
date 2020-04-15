@@ -6,9 +6,9 @@ namespace ClusterClient.Models
 {
     public class ServerMessage
     {
-        public string Action { get; set; }
-        public int UserID { get; set; }
-        public string StatusMessage { get; set; }
-        public int StatusCode { get; set; }
+        public string action { get; set; }
+        public int user_id { get; set; }
+        public string status_msg { get; set; }
+        public int status_code { get; set; }
     }
 }
