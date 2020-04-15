@@ -78,8 +78,8 @@ namespace ClusterClient
         /// <list type="table">
         ///     <item>
         ///         <term>Invar</term>
-        ///         <description>The set belonging to a certain Action can only contain instances of the ServerMessage subclass related to that
-        ///         Action. E.g. Questions can contain instances of ServerQuestionsMessage, Answer of ServerAnswer.</description>
+        ///         <description>The set belonging to a certain action can only contain instances of the ServerMessage subclass related to that
+        ///         action. E.g. Questions can contain instances of ServerQuestionsMessage, answer of ServerAnswer.</description>
         ///     </item>
         /// </list>
         private readonly IDictionary<string, Dictionary<int, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<int, ISet<ServerMessage>>>()
@@ -204,12 +204,12 @@ namespace ClusterClient
             if (parsedMessage == null)
                 // Ignore useless messages.
                 return;
-            if (Actions.GetActions().Contains(parsedMessage.Action))
-                action = parsedMessage.Action;
+            if (Actions.GetActions().Contains(parsedMessage.action))
+                action = parsedMessage.action;
             else
                 action = Actions.Default;
-            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.UserID);
-            this.receivedMessages[action][parsedMessage.UserID].Add(parsedMessage);
+            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
+            this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
         }
 
         /// <summary>
@@ -249,7 +249,7 @@ namespace ClusterClient
                 // check which type of server message
                 ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
                 // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
-                switch (message.Action)
+                switch (message.action)
                 {
                     case Actions.Answer:
                         message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
@@ -320,7 +320,7 @@ namespace ClusterClient
         /// <param name="question">The question to which an answer is required.</param>
         /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
         /// <returns>A server answer object with a question ID assigned to the given question by the server.
-        /// In case the <c>Answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
         /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
@@ -329,12 +329,12 @@ namespace ClusterClient
             Console.WriteLine("Send question method called.");
             UserQuestion request = new UserQuestion
             {
-                UserID = userID,
-                Question = question,
-                TempChatbotID = this.GetNextTempChatbotID()
+                user_id = userID,
+                question = question,
+                chatbot_temp_id = this.GetNextTempChatbotID()
             };
             this.AddMessageToSendQueue(request);
-                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
+                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout));
             if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
                     "Try again later or use a higher timeout.");
@@ -406,7 +406,7 @@ namespace ClusterClient
             foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                 try
                 {
-                    if (((ServerAnswer)answer).QuestionID == questionID)
+                    if (((ServerAnswer)answer).question_id == questionID)
                         return true;
                 } 
                 catch(InvalidCastException)
@@ -421,10 +421,10 @@ namespace ClusterClient
         /// Checks whether the server has an answer to the question of the given user, identified by its <paramref name="chatbotTempID"/> 
         /// and <paramref name="userID"/>.
         /// </summary>
-        /// <param name="chatbotTempID">The <c>ChatbotTempID</c> of the question for which is checked whether an answer is available.</param>
+        /// <param name="chatbotTempID">The <c>chatbot_temp_id</c> of the question for which is checked whether an answer is available.</param>
         /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
         /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
-        /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>ChatbotTempID</c>.
+        /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>.
         /// Else, null is returned.</returns>
         private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
         {
@@ -433,7 +433,7 @@ namespace ClusterClient
                 foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                     try
                     {
-                        if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
+                        if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID)
                             return (ServerAnswer) answer;
                     }
                     catch (InvalidCastException)
@@ -446,7 +446,7 @@ namespace ClusterClient
             }
             catch(KeyNotFoundException)
             {
-                // userID not in message dictionary under Answer key.
+                // userID not in message dictionary under answer key.
             }
             return null;
         }
@@ -493,8 +493,8 @@ namespace ClusterClient
             Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
             {
-                QuestionID = questionID,
-                Answer = answer
+                question_id = questionID,
+                answer = answer
             };
             this.AnswerQuestion(userID, userAnswer);
         }
@@ -510,7 +510,7 @@ namespace ClusterClient
             Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             answers.AddAnswer(answer);
             this.AddMessageToSendQueue(answers);
@@ -533,7 +533,7 @@ namespace ClusterClient
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             foreach(Tuple<int, string> questionIDAnswerPair in questionIDAnswerPairs)
             {
@@ -541,8 +541,8 @@ namespace ClusterClient
                 string answer = questionIDAnswerPair.Item2;
                 UserAnswer userAnswer = new UserAnswer
                 {
-                    QuestionID = questionID,
-                    Answer = answer
+                    question_id = questionID,
+                    answer = answer
                 };
                 answers.AddAnswer(userAnswer);
             }
@@ -568,7 +568,7 @@ namespace ClusterClient
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             answers.AddAnswers(userAnswers);
             this.AddMessageToSendQueue(answers);
@@ -594,10 +594,10 @@ namespace ClusterClient
             Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
             {
-                UserID = userID,
-                AnswerID = answerID,
-                QuestionID = questionID,
-                FeedbackCode = feedback
+                user_id = userID,
+                answer_id = answerID,
+                question_id = questionID,
+                feedback_code = feedback
             };
             this.AddMessageToSendQueue(userFeedback);
         }

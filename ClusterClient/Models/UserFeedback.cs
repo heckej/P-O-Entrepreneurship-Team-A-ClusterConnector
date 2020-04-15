@@ -6,8 +6,8 @@ namespace ClusterClient.Models
 {
     class UserFeedback : UserMessage
     {
-        public int QuestionID { get; set; }
-        public int AnswerID { get; set; }
-        public int FeedbackCode { get; set; }
+        public int question_id { get; set; }
+        public int answer_id { get; set; }
+        public int feedback_code { get; set; }
     }
 }

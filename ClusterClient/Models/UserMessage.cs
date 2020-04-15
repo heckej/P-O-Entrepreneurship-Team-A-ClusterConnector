@@ -6,6 +6,6 @@ namespace ClusterClient.Models
 {
     public class UserMessage
     {
-        public int UserID { get; set; }
+        public int user_id { get; set; }
     }
 }
