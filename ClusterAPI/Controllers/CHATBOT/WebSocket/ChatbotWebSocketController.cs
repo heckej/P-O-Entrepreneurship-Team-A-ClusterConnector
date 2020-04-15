@@ -22,7 +22,7 @@ namespace ClusterAPI.Controllers.NLP
     public class ChatbotWebSocketController : ApiController
     {
         private static readonly String DEFAULT_ACTION = "match_questions";
-        private enum WEBSOCKET_RESPONSE_TYPE { REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
+        private enum WEBSOCKET_RESPONSE_TYPE { NEW_QUESTION ,REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
         private static readonly Encoding usedEncoding = Encoding.UTF8;
         private static readonly Dictionary<String, WebSocket> connections = new Dictionary<string, WebSocket>();
 
@@ -153,6 +153,29 @@ namespace ClusterAPI.Controllers.NLP
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NONE,null);
             }
 
+            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+
+            if (dict.Keys.Contains<String>("user_id") &&
+                dict.Keys.Contains<String>("question") &&
+                dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
+            {
+                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION, new List<BaseModel>() { new ChatbotNewQuestionModel(dict) });
+            }
+
+            try
+            {
+                var result = JsonSerializer.Deserialize<ChatbotNewQuestionModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
+                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.REQUEST_ANSWER_TO_QUESTION, new List<BaseModel>() { result });
+            }
+            catch
+            {
+
+            }
+
             try
             {
                 var result = JsonSerializer.Deserialize<ChatbotAnswerRequestModel>(jsonResponse);
@@ -208,6 +231,16 @@ namespace ClusterAPI.Controllers.NLP
 
             switch (model.Key)
             {
+                case WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION:
+                    {
+                        var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(model.Value.Cast<ChatbotNewQuestionModel>().ToList());
+                        if (result != null)
+                        {
+                            NLPWebSocketController.SendQuestionMatchRequest(result);
+                        }
+
+                    }
+                    break;
                 case WEBSOCKET_RESPONSE_TYPE.RECEIVE_ANSWER:
                     {
                         var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
