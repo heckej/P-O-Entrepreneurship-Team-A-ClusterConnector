@@ -91,13 +91,6 @@ class Connector(object):
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
 
-        self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = "https://clusterapi20200320113808.azurewebsites.net/api/NLP"
-        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
-        self._request_paths = {'offensive': '/QuestionOffensive', 'unmatched': '/QuestionMatch'}
-        self._post_paths = {'offensive': '/QuestionOffensivesness', 'matched': '/QuestionsMatch'}
-
-        self._request_thread = None
         self._websocket_connection_timeout = websocket_connection_timeout
         self._websocket_uri = websocket_uri
         self._reply_queue = collections.deque()  # keep list of replies to send
