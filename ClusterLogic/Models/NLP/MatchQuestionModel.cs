@@ -73,4 +73,57 @@ namespace ClusterLogic.Models
             return _question_id != -1 && prob != -1;
         }
     }
+
+    /// <summary>
+    /// An NLP MatchQuestionModelResponse processed by the Cluster Logic.
+    /// </summary>
+    [Serializable]
+    public class MatchQuestionLogicResponse : BaseModel
+    {
+        /// <summary>
+        /// The id of the matched question.
+        /// </summary>
+        public int Question_id { get; } = -1;
+
+        /// <summary>
+        /// The id of the best match.
+        /// </summary>
+        public int Match_id { get; } = -1;
+
+        /// <summary>
+        /// True if and only if the question has a match.
+        /// </summary>
+        public bool Match { get; } = false;
+
+        /// <summary>
+        /// Create a new MatchQuestionLogicResponse.
+        /// </summary>
+        /// <param name="question_id">The id of the matched question (>-1 if existant).</param>
+        /// <param name="match_id">The id of the best match (>-1 if existant).</param>
+        /// <param name="match">True if and only if there is a match.</param>
+        public MatchQuestionLogicResponse(int question_id = -1, int match_id = -1, bool match = false)
+        {
+            this.Question_id = question_id;
+            this.Match_id = match_id;
+            this.Match = match;
+        }
+
+        /// <summary>
+        /// Check whether this response has a match.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasMatch()
+        {
+            return this.Match;
+        }
+
+        /// <summary>
+        /// Return true if and only if this response is complete, e.g. it has a match and the ids are positive.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsComplete()
+        {
+            return Match && Question_id > -1 && Match_id > -1;
+        }
+    }
 }

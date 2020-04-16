@@ -9,6 +9,9 @@ namespace ClusterLogic.NLPHandler
 {
     public class ProcessNLPResponse
     {
+        // The threshold to find question matches.
+        private static double MatchThreshold { get; } = 0.75;
+
         /// <summary>
         /// Logica: krijgt MatchedQuestionsModel binnen
         /// en beslist of er een goede match is + het antwoord op deze vraag
@@ -26,10 +29,25 @@ namespace ClusterLogic.NLPHandler
         /// return model; aan het functie is het enige dat ik nodig heb :)
         /// 
         /// </returns>
-        public static Object ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
+        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(MatchQuestionModelResponse matchQuestionModel)
         {
+            // Create a "no match" response
+            MatchQuestionLogicResponse nullResponse = new MatchQuestionLogicResponse();
 
-            return null;
+            if (matchQuestionModel == null)
+            {
+                return nullResponse;
+            }
+
+            foreach (MatchQuestionModelInfo info in matchQuestionModel.possible_matches)
+            {
+                if (info.prob > MatchThreshold)
+                {
+                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, info.question_id, true);
+                }
+            }
+
+            return nullResponse;
         }
 
         public static Object ProcessNLPOffensivenessResponse(List<OffensivenessModelResponse> offensivenessModels)
