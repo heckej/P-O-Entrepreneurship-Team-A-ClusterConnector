@@ -441,7 +441,9 @@ class Connector(object):
 
     @classmethod
     def _parse_response_dict(cls, response_dict: dict) -> dict:
-        """Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case."""
+        """Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.
+        Also adds sentence and sentence_id keys to replace question/answer and question_id/answer_id.
+        """
         parsed_response = dict()
         for key, value in response_dict.items():
             if type(value) == list:
