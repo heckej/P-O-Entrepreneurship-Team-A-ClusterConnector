@@ -399,11 +399,6 @@ class Connector(object):
         self._checkout_websocket()
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
-            request_uri = self._base_request_uri
-            if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += self._post_paths['matched']
-            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += self._post_paths['offensive']
-            del self._tasks_in_progress[response['msg_id']]
             data = self._parse_request(response)
+            del self._tasks_in_progress[response['msg_id']]
             self._reply_queue.append(json.dumps(data))
