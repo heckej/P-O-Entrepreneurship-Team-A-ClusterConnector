@@ -192,6 +192,7 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::0.3.0a
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -227,10 +228,19 @@ class Connector(object):
 
                  {
                     "action": Actions.ESTIMATE_OFFENSIVENESS,
-                    "question_id": 100,
-                    "question": "XXX",
+                    "sentence_id": 100,
+                    "sentence": "XXX",
                     "msg_id": 1234567890
                  }
+
+        3. The server asks to check if a sentence is nonsense or not:
+
+                {
+                    "action": Actions.IS_NONSENSE,
+                    "sentence_id": 100,
+                    "sentence": "XXX",
+                    "msg_id": 1234567890
+                }
 
         Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
 
@@ -382,8 +392,16 @@ class Connector(object):
             2. A reply to an `estimate_offensiveness`:
 
                     {
-                        "question_id": 100,
+                        "sentence_id": 100,
                         "prob": 0.123,
+                        "msg_id": 1234567890
+                    }
+
+            3. A reply to an `is_nonsense`:
+
+                    {
+                        "sentence_id": 100,
+                        "nonsense": True,
                         "msg_id": 1234567890
                     }
 
