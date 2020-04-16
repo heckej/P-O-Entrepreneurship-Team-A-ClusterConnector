@@ -14,6 +14,7 @@ class Actions(Enum):
     """Enumeration of recognized actions.
 
     .. versionadded::0.1.0
+    .. versionchanged::0.3.0a
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -32,7 +33,10 @@ class Actions(Enum):
     """There server has no tasks to process."""
 
     IS_NONSENSE = "is_nonsense"
-    """Find out if a string contains nonsense"""
+    """Find out if a string contains nonsense
+    
+    .. versionadded::0.3.0a
+    """
 
     @classmethod
     def has_value(cls, value):
