@@ -14,6 +14,7 @@ class Actions(Enum):
     """Enumeration of recognized actions.
 
     .. versionadded::0.1.0
+    .. versionchanged::0.3.0a
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -30,6 +31,12 @@ class Actions(Enum):
 
     NO_WORK = "no_work"
     """There server has no tasks to process."""
+
+    IS_NONSENSE = "is_nonsense"
+    """Find out if a string contains nonsense
+    
+    .. versionadded::0.3.0a
+    """
 
     @classmethod
     def has_value(cls, value):
@@ -62,6 +69,12 @@ class Connector(object):
     """Set of keys that have to be in a task dictionary to be a valid task.
     
     .. versionadded::0.2.0
+    """
+
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    """Set of actions that can be applied on both questions and answers.
+    
+    .. versionadded::0.3.0a
     """
 
     __version__ = '0.3.0a'
@@ -183,6 +196,7 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::0.3.0a
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -218,10 +232,19 @@ class Connector(object):
 
                  {
                     "action": Actions.ESTIMATE_OFFENSIVENESS,
-                    "question_id": 100,
-                    "question": "XXX",
+                    "sentence_id": 100,
+                    "sentence": "XXX",
                     "msg_id": 1234567890
                  }
+
+        3. The server asks to check if a sentence is nonsense or not:
+
+                {
+                    "action": Actions.IS_NONSENSE,
+                    "sentence_id": 100,
+                    "sentence": "XXX",
+                    "msg_id": 1234567890
+                }
 
         Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
 
@@ -292,7 +315,9 @@ class Connector(object):
 
     @classmethod
     def _parse_response_dict(cls, response_dict: dict) -> dict:
-        """Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case."""
+        """Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.
+        Also adds sentence and sentence_id keys to replace question/answer and question_id/answer_id.
+        """
         parsed_response = dict()
         for key, value in response_dict.items():
             if type(value) == list:
@@ -304,10 +329,17 @@ class Connector(object):
                 value = new_value
             key = key.lower()
             parsed_response[key] = value
+        if parsed_response["action"] in cls._generic_actions:
+            # add generic keys sentence en sentence_id instead of answer/question
+            if "question" in parsed_response.keys():
+                parsed_response["sentence"] = parsed_response["question"]
+                parsed_response["sentence_id"] = parsed_response["question_id"]
+            elif "answer" in parsed_response.keys():
+                parsed_response["sentence"] = parsed_response["answer"]
+                parsed_response["sentence_id"] = parsed_response["answer_id"]
         return parsed_response
 
-    @classmethod
-    def _parse_request(cls, request: dict) -> dict:
+    def _parse_request(self, request: dict) -> dict:
         """Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
 
@@ -318,7 +350,16 @@ class Connector(object):
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         """
-        return request
+        parsed_request = request
+        # return from generic sentence(_id) to question/answer(_id)
+        original_response = self._tasks_in_progress[request["msg_id"]]
+        if "question" in original_response.keys():
+            parsed_request["question"] = request["sentence"]
+            parsed_request["question_id"] = request["sentence_id"]
+        elif "answer" in original_response.keys():
+            parsed_request["answer"] = request["sentence"]
+            parsed_request["answer_id"] = request["sentence_id"]
+        return parsed_request
 
     def reply(self, response: dict):
         """Sends the given response to the server.
@@ -355,8 +396,16 @@ class Connector(object):
             2. A reply to an `estimate_offensiveness`:
 
                     {
-                        "question_id": 100,
+                        "sentence_id": 100,
                         "prob": 0.123,
+                        "msg_id": 1234567890
+                    }
+
+            3. A reply to an `is_nonsense`:
+
+                    {
+                        "sentence_id": 100,
+                        "nonsense": True,
                         "msg_id": 1234567890
                     }
 
@@ -372,11 +421,6 @@ class Connector(object):
         self._checkout_websocket()
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
-            request_uri = self._base_request_uri
-            if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += self._post_paths['matched']
-            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += self._post_paths['offensive']
-            del self._tasks_in_progress[response['msg_id']]
             data = self._parse_request(response)
+            del self._tasks_in_progress[response['msg_id']]
             self._reply_queue.append(json.dumps(data))
