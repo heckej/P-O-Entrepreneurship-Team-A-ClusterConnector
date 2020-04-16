@@ -71,7 +71,7 @@ class Connector(object):
     .. versionadded::0.2.0
     """
 
-    generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
     """Set of actions that can be applied on both questions and answers.
     
     .. versionadded::0.3.0a
@@ -329,7 +329,7 @@ class Connector(object):
                 value = new_value
             key = key.lower()
             parsed_response[key] = value
-        if parsed_response["action"] in cls.generic_actions:
+        if parsed_response["action"] in cls._generic_actions:
             # add generic keys sentence en sentence_id instead of answer/question
             if "question" in parsed_response.keys():
                 parsed_response["sentence"] = parsed_response["question"]
