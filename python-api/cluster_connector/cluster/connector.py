@@ -339,7 +339,7 @@ class Connector(object):
                 parsed_response["sentence_id"] = parsed_response["answer_id"]
         return parsed_response
 
-    def _parse_request(cls, request: dict) -> dict:
+    def _parse_request(self, request: dict) -> dict:
         """Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
 
@@ -352,7 +352,7 @@ class Connector(object):
         """
         parsed_request = request
         # return from generic sentence(_id) to question/answer(_id)
-        original_response = cls._tasks_in_progress[request["msg_id"]]
+        original_response = self._tasks_in_progress[request["msg_id"]]
         if "question" in original_response.keys():
             parsed_request["question"] = request["sentence"]
             parsed_request["question_id"] = request["sentence_id"]
