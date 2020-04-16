@@ -14,7 +14,7 @@ class Actions(Enum):
     """Enumeration of recognized actions.
 
     .. versionadded::0.1.0
-    .. versionchanged::0.3.0a
+    .. versionchanged::1.0.0
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -35,7 +35,7 @@ class Actions(Enum):
     IS_NONSENSE = "is_nonsense"
     """Find out if a string contains nonsense
     
-    .. versionadded::0.3.0a
+    .. versionadded::1.0.0
     """
 
     @classmethod
@@ -51,7 +51,7 @@ class Connector(object):
 
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
-    .. versionchanged::0.3.0a
+    .. versionchanged::1.0.0
 
     Raises:
         Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
@@ -74,10 +74,10 @@ class Connector(object):
     _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
     """Set of actions that can be applied on both questions and answers.
     
-    .. versionadded::0.3.0a
+    .. versionadded::1.0.0
     """
 
-    __version__ = '0.3.0a'
+    __version__ = '1.0.0'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10):
@@ -168,7 +168,7 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
-        .. versionchanged::0.3.0a
+        .. versionchanged::1.0.0
 
         Checks whether the web socket connection is still alive and whether any tasks are available in the cache.
 
@@ -189,7 +189,7 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
-        .. versionchanged::0.3.0a
+        .. versionchanged::1.0.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -358,7 +358,7 @@ class Connector(object):
         """Sends the given response to the server.
 
         .. versionadded::0.1.0
-        .. versionchanged::0.3.0a
+        .. versionchanged::1.0.0
 
         Checks whether the websocket connection is still alive and delivers the given `response` to the websocket
         thread.
