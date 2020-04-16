@@ -33,6 +33,9 @@ class Actions(Enum):
     NO_WORK = "no_work"
     """There server has no tasks to process."""
 
+    IS_NONSENSE = "is_nonsense"
+    """Find out if a string contains nonsense"""
+
     @classmethod
     def has_value(cls, value):
         return value in cls._value2member_map_
@@ -78,6 +81,12 @@ class Connector(object):
     """Set of keys that have to be in a task dictionary to be a valid task.
     
     .. versionadded::0.2.0
+    """
+
+    generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    """Set of actions that can be applied on both questions and answers.
+    
+    .. versionadded::0.3.0a
     """
 
     __version__ = '0.2.0'
@@ -444,9 +453,16 @@ class Connector(object):
                 value = new_value
             key = key.lower()
             parsed_response[key] = value
+        if parsed_response["action"] in cls.generic_actions:
+            # add generic keys sentence en sentence_id instead of answer/question
+            if "question" in parsed_response.keys():
+                parsed_response["sentence"] = parsed_response["question"]
+                parsed_response["sentence_id"] = parsed_response["question_id"]
+            elif "answer" in parsed_response.keys():
+                parsed_response["sentence"] = parsed_response["answer"]
+                parsed_response["sentence_id"] = parsed_response["answer_id"]
         return parsed_response
 
-    @classmethod
     def _parse_request(cls, request: dict) -> dict:
         """Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
@@ -458,7 +474,16 @@ class Connector(object):
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         """
-        return request
+        parsed_request = request
+        # return from generic sentence(_id) to question/answer(_id)
+        original_response = cls._tasks_in_progress[request["msg_id"]]
+        if "question" in original_response.keys():
+            parsed_request["question"] = request["sentence"]
+            parsed_request["question_id"] = request["sentence_id"]
+        elif "answer" in original_response.keys():
+            parsed_request["answer"] = request["sentence"]
+            parsed_request["answer_id"] = request["sentence_id"]
+        return parsed_request
 
     def reply(self, response: dict) -> dict:
         """Sends the given response to the server.
