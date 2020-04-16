@@ -10,6 +10,8 @@ protocol.
 * Usage of requests no longer supported. Therefore the attributes `use_websocket`, `prefetch` and `fetch_in_background`
   have been removed. Also the specifications of some methods that made use of requests (`get_next_item()` and `reply()`)
   has been updated.
+* Support added for general offensiveness test for both questions and answers.
+* Nonsense protocol implemented generally.
 
 v0.2.0
 ---------------------------------------
