@@ -25,8 +25,6 @@
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">import time
-import requests
-import threading
 import json
 import queue
 import collections
@@ -42,6 +40,7 @@ class Actions(Enum):
     &#34;&#34;&#34;Enumeration of recognized actions.
 
     .. versionadded::0.1.0
+    .. versionchanged::1.0.0
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -59,6 +58,12 @@ class Actions(Enum):
     NO_WORK = &#34;no_work&#34;
     &#34;&#34;&#34;There server has no tasks to process.&#34;&#34;&#34;
 
+    IS_NONSENSE = &#34;is_nonsense&#34;
+    &#34;&#34;&#34;Find out if a string contains nonsense
+    
+    .. versionadded::1.0.0
+    &#34;&#34;&#34;
+
     @classmethod
     def has_value(cls, value):
         return value in cls._value2member_map_
@@ -72,21 +77,7 @@ class Connector(object):
 
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
-
-    Attributes:
-        prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
-            only one task will be fetched at a time. To improve performance you may want to leave this set to True,
-            because that way less data transfers may be needed, though there&#39;s no guaranty for that.
-
-        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
-            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
-            additional time to fetch when no tasks are available immediately. To improve performance you may want to
-            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
-            is required when requesting the next task using `get_next_task()`.
-
-        use_websocket: A boolean enabling the usage of a websocket connection to get tasks from the server and send
-            responses back. Usage of websockets is now still under development and will be enabled by default in a next
-            release. For now it is disabled by default.
+    .. versionchanged::1.0.0
 
     Raises:
         Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
@@ -106,49 +97,32 @@ class Connector(object):
     .. versionadded::0.2.0
     &#34;&#34;&#34;
 
-    __version__ = &#39;0.2.0&#39;
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    &#34;&#34;&#34;Set of actions that can be applied on both questions and answers.
+    
+    .. versionadded::1.0.0
+    &#34;&#34;&#34;
 
-    def __init__(self, use_websocket: bool = False,
-                 websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
+    __version__ = &#39;1.0.0&#39;
+
+    def __init__(self, websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
                  websocket_connection_timeout=10):
         &#34;&#34;&#34;
         Args:
-            use_websocket: A boolean that enables usage of websockets. See `use_websocket` under Attributes.
-
             websocket_uri: A custom uri referencing the websocket host that should be used.
 
             websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
                 default set to 10 seconds.
         &#34;&#34;&#34;
-        self.prefetch = True
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
 
-        self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
-        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
-        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
-        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
-        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
-        self._session.headers.update({&#39;Accept&#39;: &#39;application/json&#39;})  # make sure to request json only
-
-        self._request_thread = None
-        self.fetch_in_background = True
-        self.use_websocket = use_websocket
         self._websocket_connection_timeout = websocket_connection_timeout
-        if use_websocket:
-            logging.warning(&#34;The use of websockets is currently still under development. Make sure to close the &#34;
-                            &#34;connection when done using `close()`. To print debugging statements, &#34;
-                            &#34;use\n&gt;&gt; import logging, sys\n&gt;&gt; logging.basicConfig(stream=sys.stderr, &#34;
-                            &#34;level=logging.DEBUG)&#34;)
-        else:
-            logging.warning(&#34;In the next release websockets will be enabled by default.&#34;)
         self._websocket_uri = websocket_uri
         self._reply_queue = collections.deque()  # keep list of replies to send
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
-        if self.use_websocket:
-            self._init_websocket_thread()
+        self._init_websocket_thread()
 
     def reset_connection(self):
         &#34;&#34;&#34;Resets the websocket thread.
@@ -220,10 +194,9 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::1.0.0
 
-        Asks the server to check whether it has any tasks that should be processed.
-        This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
-        of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+        Checks whether the web socket connection is still alive and whether any tasks are available in the cache.
 
         Returns:
             True if and only if there is a task to be processed.
@@ -231,15 +204,8 @@ class Connector(object):
         Raises:
             Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         &#34;&#34;&#34;
-        if self.use_websocket:
-            self._checkout_websocket()
-        uri_unmatched = self._request_paths[&#39;unmatched&#39;]
-        uri_offensive = self._request_paths[&#39;offensive&#39;]
-        # print(&#34;using websocket:&#34;, self.use_websocket)
-        if self.use_websocket:
-            return len(self._tasks) &gt; 0
-        else:
-            return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)
+        self._checkout_websocket()
+        return len(self._tasks) &gt; 0
 
     def get_next_task(self, timeout: float = None) -&gt; any:
         &#34;&#34;&#34;
@@ -249,6 +215,7 @@ class Connector(object):
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::1.0.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -284,10 +251,19 @@ class Connector(object):
 
                  {
                     &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
-                    &#34;question_id&#34;: 100,
-                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;sentence_id&#34;: 100,
+                    &#34;sentence&#34;: &#34;XXX&#34;,
                     &#34;msg_id&#34;: 1234567890
                  }
+
+        3. The server asks to check if a sentence is nonsense or not:
+
+                {
+                    &#34;action&#34;: Actions.IS_NONSENSE,
+                    &#34;sentence_id&#34;: 100,
+                    &#34;sentence&#34;: &#34;XXX&#34;,
+                    &#34;msg_id&#34;: 1234567890
+                }
 
         Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
 
@@ -297,17 +273,14 @@ class Connector(object):
         Raises:
             Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         &#34;&#34;&#34;
-        if self.use_websocket:
-            logging.debug(&#34;Get task using websocket&#34;)
+        logging.debug(&#34;Get task using websocket&#34;)
+        tasks_found = len(self._tasks) &gt; 0
+        start_time = time.time()
+        time_passed = 0
+        while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+            self._checkout_websocket()
             tasks_found = len(self._tasks) &gt; 0
-            start_time = time.time()
-            time_passed = 0
-            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
-                self._checkout_websocket()
-                tasks_found = len(self._tasks) &gt; 0
-                time_passed = time.time() - start_time  # keep track of the passed time
-        else:
-            tasks_found = self._get_next_task_by_request(timeout)
+            time_passed = time.time() - start_time  # keep track of the passed time
         if tasks_found:
             # Remove task from task list and add it to the tasks in progress list.
             task = self._tasks.pop(0)
@@ -322,103 +295,6 @@ class Connector(object):
         .. versionadded::0.2.0
         &#34;&#34;&#34;
         self._websocket_thread.stop = True
-
-    def _get_next_task_by_request(self, timeout=None) -&gt; bool:
-        &#34;&#34;&#34;Requests tasks using GET requests.
-
-        Args: timeout: the time to wait before returning False without having received a response from the server.
-
-        If timeout is set to None, then the method won&#39;t return until a response has been received.
-
-        If a task is immediately available from the task list, that task is returned and a separate thread is started
-        to send a request to check for new tasks in the background.
-        If no tasks are immediately available from the task list, a request is send to check for new tasks.
-
-        Returns: - True if a task was available from the task list.
-                 - True if new tasks were received from the request before timeout.
-                 - False if no tasks were available from the task list and a timeout occurred.
-        &#34;&#34;&#34;
-        tasks_found = len(self._tasks) &gt; 0
-        path_unmatched = self._request_paths[&#39;unmatched&#39;]
-        path_offensive = self._request_paths[&#39;offensive&#39;]
-        # no tasks left, ask the server
-        if not tasks_found and (timeout is None or timeout &gt; 0):
-            time_passed = 0
-            start_time = time.time()
-            sleep = False
-            sleep_start = 0
-            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
-                if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
-                    # only try when not sleeping and when no tasks are being requested in a background already
-                    if timeout is not None:
-                        time_left = timeout - time_passed
-                        # equally divide the given timeout
-                        timeout_offensive = time_left / 2
-                        timeout_unmatched = time_left - timeout_offensive
-                    else:
-                        timeout_unmatched = None
-                        timeout_offensive = None
-                    tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
-
-                    if self.prefetch or not tasks_found:
-                        # request questions of which the offensiveness has to be tested
-                        # if prefetching disabled and already task found, then don&#39;t look for another task
-                        tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
-                    sleep_start = time.time()  # start sleeping
-                time_passed = time.time() - start_time  # keep track of the passed time
-                # stay asleep until &#39;time_until_retry&#39; seconds passed and
-                # there is more time left than &#39;time_until_retry&#39; seconds
-                sleep = (time.time() - sleep_start &lt; self._time_until_retry) and \
-                        (timeout is None or self._time_until_retry &lt; timeout - time_passed)
-
-        elif self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
-            # still tasks left, but there might be new ones to be fetched
-            self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
-                                                    args=([path_unmatched, path_offensive], self._server_timeout))
-            self._request_thread.start()
-        return tasks_found
-
-    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
-        &#34;&#34;&#34;Requests tasks from the server at all given paths.&#34;&#34;&#34;
-        for path in paths:
-            self._request_tasks(path, timeout, append)
-
-    def _request_tasks(self, path: str, timeout: float, append: bool = True):
-        &#34;&#34;&#34;Sends a request to the server to receive tasks.
-
-        Post: - If tasks were available from the server and `prefetch` is set to True, all tasks from the server are
-                added to the task list if they are not in the task or tasks in progress list.
-              - If tasks were available from the server and `prefetch` is set to False, only the first task that wasn&#39;t
-                in the task or tasks in progress list already is added to the task list.
-        &#34;&#34;&#34;
-        request_uri = self._base_request_uri + path
-        request = self._session.get(request_uri, timeout=timeout)
-        if request.status_code == 200:
-            # Status == OK
-            # JSON response can be in different format than the one that should be returned
-            received_tasks = self._parse_response(request.json())
-            # The server might not have tasks.
-            if len(received_tasks) == 0 or received_tasks[0][&#39;action&#39;].lower() == Actions.NO_WORK.value:
-                return False
-            if self.prefetch:
-                # fetch all available tasks
-                new_task_found = False
-                for task in received_tasks:
-                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
-                        # only add task if not in the (processing) task list already and appending is enabled
-                        self._tasks.append(task)
-                        new_task_found = True
-                return new_task_found
-            else:
-                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
-                # appending is disabled
-                for task in received_tasks:
-                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
-                        self._tasks.append(task)
-                        return True
-                # all available tasks have been fetched before
-                return False
-        return False
 
     @classmethod
     def is_valid_task(cls, task: dict):
@@ -458,7 +334,9 @@ class Connector(object):
 
     @classmethod
     def _parse_response_dict(cls, response_dict: dict) -&gt; dict:
-        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.&#34;&#34;&#34;
+        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.
+        Also adds sentence and sentence_id keys to replace question/answer and question_id/answer_id.
+        &#34;&#34;&#34;
         parsed_response = dict()
         for key, value in response_dict.items():
             if type(value) == list:
@@ -470,10 +348,17 @@ class Connector(object):
                 value = new_value
             key = key.lower()
             parsed_response[key] = value
+        if parsed_response[&#34;action&#34;] in cls._generic_actions:
+            # add generic keys sentence en sentence_id instead of answer/question
+            if &#34;question&#34; in parsed_response.keys():
+                parsed_response[&#34;sentence&#34;] = parsed_response[&#34;question&#34;]
+                parsed_response[&#34;sentence_id&#34;] = parsed_response[&#34;question_id&#34;]
+            elif &#34;answer&#34; in parsed_response.keys():
+                parsed_response[&#34;sentence&#34;] = parsed_response[&#34;answer&#34;]
+                parsed_response[&#34;sentence_id&#34;] = parsed_response[&#34;answer_id&#34;]
         return parsed_response
 
-    @classmethod
-    def _parse_request(cls, request: dict) -&gt; dict:
+    def _parse_request(self, request: dict) -&gt; dict:
         &#34;&#34;&#34;Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
 
@@ -484,12 +369,25 @@ class Connector(object):
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         &#34;&#34;&#34;
-        return request
+        parsed_request = request
+        # return from generic sentence(_id) to question/answer(_id)
+        original_response = self._tasks_in_progress[request[&#34;msg_id&#34;]]
+        if &#34;question&#34; in original_response.keys():
+            parsed_request[&#34;question&#34;] = request[&#34;sentence&#34;]
+            parsed_request[&#34;question_id&#34;] = request[&#34;sentence_id&#34;]
+        elif &#34;answer&#34; in original_response.keys():
+            parsed_request[&#34;answer&#34;] = request[&#34;sentence&#34;]
+            parsed_request[&#34;answer_id&#34;] = request[&#34;sentence_id&#34;]
+        return parsed_request
 
-    def reply(self, response: dict) -&gt; dict:
+    def reply(self, response: dict):
         &#34;&#34;&#34;Sends the given response to the server.
 
         .. versionadded::0.1.0
+        .. versionchanged::1.0.0
+
+        Checks whether the websocket connection is still alive and delivers the given `response` to the websocket
+        thread.
 
         Args:
             response: A dictionary built like a JSON object.
@@ -517,8 +415,16 @@ class Connector(object):
             2. A reply to an `estimate_offensiveness`:
 
                     {
-                        &#34;question_id&#34;: 100,
+                        &#34;sentence_id&#34;: 100,
                         &#34;prob&#34;: 0.123,
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            3. A reply to an `is_nonsense`:
+
+                    {
+                        &#34;sentence_id&#34;: 100,
+                        &#34;nonsense&#34;: True,
                         &#34;msg_id&#34;: 1234567890
                     }
 
@@ -531,21 +437,12 @@ class Connector(object):
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
-
+        self._checkout_websocket()
         action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
         if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
-            request_uri = self._base_request_uri
-            if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += self._post_paths[&#39;matched&#39;]
-            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += self._post_paths[&#39;offensive&#39;]
-            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
             data = self._parse_request(response)
-            if self.use_websocket:
-                self._reply_queue.append(json.dumps(data))
-            else:
-                request = self._session.post(request_uri, json=data)
-                return request.json()</code></pre>
+            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+            self._reply_queue.append(json.dumps(data))</code></pre>
 </details>
 </section>
 <section>
@@ -566,6 +463,9 @@ class Connector(object):
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.1.0</p>
 </div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.0.0</p>
+</div>
 <p>The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
 To loop through all of the actions in this enumeration, simply use</p>
 <pre><code>for action in Actions:
@@ -579,6 +479,7 @@ To loop through all of the actions in this enumeration, simply use</p>
     &#34;&#34;&#34;Enumeration of recognized actions.
 
     .. versionadded::0.1.0
+    .. versionchanged::1.0.0
 
     The actions that are recognized by the connector and therefore can be returned are enumerated in this class.
     To loop through all of the actions in this enumeration, simply use
@@ -596,6 +497,12 @@ To loop through all of the actions in this enumeration, simply use</p>
     NO_WORK = &#34;no_work&#34;
     &#34;&#34;&#34;There server has no tasks to process.&#34;&#34;&#34;
 
+    IS_NONSENSE = &#34;is_nonsense&#34;
+    &#34;&#34;&#34;Find out if a string contains nonsense
+    
+    .. versionadded::1.0.0
+    &#34;&#34;&#34;
+
     @classmethod
     def has_value(cls, value):
         return value in cls._value2member_map_</code></pre>
@@ -610,6 +517,13 @@ To loop through all of the actions in this enumeration, simply use</p>
 <dd>
 <section class="desc"><p>Estimate the offensiveness of a question.</p></section>
 </dd>
+<dt id="cluster.connector.Actions.IS_NONSENSE"><code class="name">var <span class="ident">IS_NONSENSE</span></code></dt>
+<dd>
+<section class="desc"><p>Find out if a string contains nonsense</p>
+<div class="admonition versionadded">
+<p class="admonition-title">Added in version:&ensp;1.0.0</p>
+</div></section>
+</dd>
 <dt id="cluster.connector.Actions.MATCH_QUESTIONS"><code class="name">var <span class="ident">MATCH_QUESTIONS</span></code></dt>
 <dd>
 <section class="desc"><p>Match questions.</p></section>
@@ -622,7 +536,7 @@ To loop through all of the actions in this enumeration, simply use</p>
 </dd>
 <dt id="cluster.connector.Connector"><code class="flex name class">
 <span>class <span class="ident">Connector</span></span>
-<span>(</span><span>use_websocket=False, websocket_uri='wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS', websocket_connection_timeout=10)</span>
+<span>(</span><span>websocket_uri='wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS', websocket_connection_timeout=10)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Allows communication with Cluster API server.</p>
@@ -634,23 +548,9 @@ from the server whenever any are available and by replying with a response.</p>
 <div class="admonition versionchanged">
 <p class="admonition-title">Changed in version:&ensp;0.2.0</p>
 </div>
-<h2 id="attributes">Attributes</h2>
-<dl>
-<dt><strong><code>prefetch</code></strong></dt>
-<dd>A boolean that enables this Connector to fetch all available tasks. If <code>prefetch</code> is set to False,
-only one task will be fetched at a time. To improve performance you may want to leave this set to True,
-because that way less data transfers may be needed, though there's no guaranty for that.</dd>
-<dt><strong><code>fetch_in_background</code></strong></dt>
-<dd>A boolean that enables this Connector to fetch tasks in the background and return the
-the next task immediately when available. If <code>fetch_in_background</code> is set to False, new tasks may take
-additional time to fetch when no tasks are available immediately. To improve performance you may want to
-leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
-is required when requesting the next task using <code>get_next_task()</code>.</dd>
-<dt><strong><code>use_websocket</code></strong></dt>
-<dd>A boolean enabling the usage of a websocket connection to get tasks from the server and send
-responses back. Usage of websockets is now still under development and will be enabled by default in a next
-release. For now it is disabled by default.</dd>
-</dl>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.0.0</p>
+</div>
 <h2 id="raises">Raises</h2>
 <dl>
 <dt><strong><code>Exception</code></strong></dt>
@@ -664,8 +564,6 @@ mostly focused on <code>OSError</code> and <code>websockets.exceptions.InvalidMe
 </code></pre>
 <h2 id="args">Args</h2>
 <dl>
-<dt><strong><code>use_websocket</code></strong></dt>
-<dd>A boolean that enables usage of websockets. See <code>use_websocket</code> under Attributes.</dd>
 <dt><strong><code>websocket_uri</code></strong></dt>
 <dd>A custom uri referencing the websocket host that should be used.</dd>
 <dt><strong><code>websocket_connection_timeout</code></strong></dt>
@@ -684,21 +582,7 @@ default set to 10 seconds.</dd>
 
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
-
-    Attributes:
-        prefetch: A boolean that enables this Connector to fetch all available tasks. If `prefetch` is set to False,
-            only one task will be fetched at a time. To improve performance you may want to leave this set to True,
-            because that way less data transfers may be needed, though there&#39;s no guaranty for that.
-
-        fetch_in_background: A boolean that enables this Connector to fetch tasks in the background and return the
-            the next task immediately when available. If `fetch_in_background` is set to False, new tasks may take
-            additional time to fetch when no tasks are available immediately. To improve performance you may want to
-            leave this set to True, because that way tasks may be fetched before they are needed, so no additional time
-            is required when requesting the next task using `get_next_task()`.
-
-        use_websocket: A boolean enabling the usage of a websocket connection to get tasks from the server and send
-            responses back. Usage of websockets is now still under development and will be enabled by default in a next
-            release. For now it is disabled by default.
+    .. versionchanged::1.0.0
 
     Raises:
         Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
@@ -718,49 +602,32 @@ default set to 10 seconds.</dd>
     .. versionadded::0.2.0
     &#34;&#34;&#34;
 
-    __version__ = &#39;0.2.0&#39;
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    &#34;&#34;&#34;Set of actions that can be applied on both questions and answers.
+    
+    .. versionadded::1.0.0
+    &#34;&#34;&#34;
 
-    def __init__(self, use_websocket: bool = False,
-                 websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
+    __version__ = &#39;1.0.0&#39;
+
+    def __init__(self, websocket_uri=&#34;wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS&#34;,
                  websocket_connection_timeout=10):
         &#34;&#34;&#34;
         Args:
-            use_websocket: A boolean that enables usage of websockets. See `use_websocket` under Attributes.
-
             websocket_uri: A custom uri referencing the websocket host that should be used.
 
             websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
                 default set to 10 seconds.
         &#34;&#34;&#34;
-        self.prefetch = True
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
 
-        self._server_timeout = 4  # timeout used while checking for server messages
-        self._base_request_uri = &#34;https://clusterapi20200320113808.azurewebsites.net/api/NLP&#34;
-        self._time_until_retry = 2  # the time to sleep between two attempts to connect to the server
-        self._request_paths = {&#39;offensive&#39;: &#39;/QuestionOffensive&#39;, &#39;unmatched&#39;: &#39;/QuestionMatch&#39;}
-        self._post_paths = {&#39;offensive&#39;: &#39;/QuestionOffensivesness&#39;, &#39;matched&#39;: &#39;/QuestionsMatch&#39;}
-        self._session = requests.Session()  # start session to make use of HTTP keep-alive functionality
-        self._session.headers.update({&#39;Accept&#39;: &#39;application/json&#39;})  # make sure to request json only
-
-        self._request_thread = None
-        self.fetch_in_background = True
-        self.use_websocket = use_websocket
         self._websocket_connection_timeout = websocket_connection_timeout
-        if use_websocket:
-            logging.warning(&#34;The use of websockets is currently still under development. Make sure to close the &#34;
-                            &#34;connection when done using `close()`. To print debugging statements, &#34;
-                            &#34;use\n&gt;&gt; import logging, sys\n&gt;&gt; logging.basicConfig(stream=sys.stderr, &#34;
-                            &#34;level=logging.DEBUG)&#34;)
-        else:
-            logging.warning(&#34;In the next release websockets will be enabled by default.&#34;)
         self._websocket_uri = websocket_uri
         self._reply_queue = collections.deque()  # keep list of replies to send
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
-        if self.use_websocket:
-            self._init_websocket_thread()
+        self._init_websocket_thread()
 
     def reset_connection(self):
         &#34;&#34;&#34;Resets the websocket thread.
@@ -832,10 +699,9 @@ default set to 10 seconds.</dd>
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::1.0.0
 
-        Asks the server to check whether it has any tasks that should be processed.
-        This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
-        of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+        Checks whether the web socket connection is still alive and whether any tasks are available in the cache.
 
         Returns:
             True if and only if there is a task to be processed.
@@ -843,15 +709,8 @@ default set to 10 seconds.</dd>
         Raises:
             Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         &#34;&#34;&#34;
-        if self.use_websocket:
-            self._checkout_websocket()
-        uri_unmatched = self._request_paths[&#39;unmatched&#39;]
-        uri_offensive = self._request_paths[&#39;offensive&#39;]
-        # print(&#34;using websocket:&#34;, self.use_websocket)
-        if self.use_websocket:
-            return len(self._tasks) &gt; 0
-        else:
-            return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)
+        self._checkout_websocket()
+        return len(self._tasks) &gt; 0
 
     def get_next_task(self, timeout: float = None) -&gt; any:
         &#34;&#34;&#34;
@@ -861,6 +720,7 @@ default set to 10 seconds.</dd>
 
         .. versionadded::0.1.0
         .. versionchanged::0.2.0
+        .. versionchanged::1.0.0
 
         Args:
             timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -896,10 +756,19 @@ default set to 10 seconds.</dd>
 
                  {
                     &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
-                    &#34;question_id&#34;: 100,
-                    &#34;question&#34;: &#34;XXX&#34;,
+                    &#34;sentence_id&#34;: 100,
+                    &#34;sentence&#34;: &#34;XXX&#34;,
                     &#34;msg_id&#34;: 1234567890
                  }
+
+        3. The server asks to check if a sentence is nonsense or not:
+
+                {
+                    &#34;action&#34;: Actions.IS_NONSENSE,
+                    &#34;sentence_id&#34;: 100,
+                    &#34;sentence&#34;: &#34;XXX&#34;,
+                    &#34;msg_id&#34;: 1234567890
+                }
 
         Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
 
@@ -909,17 +778,14 @@ default set to 10 seconds.</dd>
         Raises:
             Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
         &#34;&#34;&#34;
-        if self.use_websocket:
-            logging.debug(&#34;Get task using websocket&#34;)
+        logging.debug(&#34;Get task using websocket&#34;)
+        tasks_found = len(self._tasks) &gt; 0
+        start_time = time.time()
+        time_passed = 0
+        while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+            self._checkout_websocket()
             tasks_found = len(self._tasks) &gt; 0
-            start_time = time.time()
-            time_passed = 0
-            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
-                self._checkout_websocket()
-                tasks_found = len(self._tasks) &gt; 0
-                time_passed = time.time() - start_time  # keep track of the passed time
-        else:
-            tasks_found = self._get_next_task_by_request(timeout)
+            time_passed = time.time() - start_time  # keep track of the passed time
         if tasks_found:
             # Remove task from task list and add it to the tasks in progress list.
             task = self._tasks.pop(0)
@@ -934,103 +800,6 @@ default set to 10 seconds.</dd>
         .. versionadded::0.2.0
         &#34;&#34;&#34;
         self._websocket_thread.stop = True
-
-    def _get_next_task_by_request(self, timeout=None) -&gt; bool:
-        &#34;&#34;&#34;Requests tasks using GET requests.
-
-        Args: timeout: the time to wait before returning False without having received a response from the server.
-
-        If timeout is set to None, then the method won&#39;t return until a response has been received.
-
-        If a task is immediately available from the task list, that task is returned and a separate thread is started
-        to send a request to check for new tasks in the background.
-        If no tasks are immediately available from the task list, a request is send to check for new tasks.
-
-        Returns: - True if a task was available from the task list.
-                 - True if new tasks were received from the request before timeout.
-                 - False if no tasks were available from the task list and a timeout occurred.
-        &#34;&#34;&#34;
-        tasks_found = len(self._tasks) &gt; 0
-        path_unmatched = self._request_paths[&#39;unmatched&#39;]
-        path_offensive = self._request_paths[&#39;offensive&#39;]
-        # no tasks left, ask the server
-        if not tasks_found and (timeout is None or timeout &gt; 0):
-            time_passed = 0
-            start_time = time.time()
-            sleep = False
-            sleep_start = 0
-            while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
-                if not sleep and (self._request_thread is None or not self._request_thread.is_alive()):
-                    # only try when not sleeping and when no tasks are being requested in a background already
-                    if timeout is not None:
-                        time_left = timeout - time_passed
-                        # equally divide the given timeout
-                        timeout_offensive = time_left / 2
-                        timeout_unmatched = time_left - timeout_offensive
-                    else:
-                        timeout_unmatched = None
-                        timeout_offensive = None
-                    tasks_found = self._request_tasks(path_unmatched, timeout_unmatched)
-
-                    if self.prefetch or not tasks_found:
-                        # request questions of which the offensiveness has to be tested
-                        # if prefetching disabled and already task found, then don&#39;t look for another task
-                        tasks_found = tasks_found | self._request_tasks(path_offensive, timeout_offensive)
-                    sleep_start = time.time()  # start sleeping
-                time_passed = time.time() - start_time  # keep track of the passed time
-                # stay asleep until &#39;time_until_retry&#39; seconds passed and
-                # there is more time left than &#39;time_until_retry&#39; seconds
-                sleep = (time.time() - sleep_start &lt; self._time_until_retry) and \
-                        (timeout is None or self._time_until_retry &lt; timeout - time_passed)
-
-        elif self.fetch_in_background and self._request_thread is None or not self._request_thread.is_alive():
-            # still tasks left, but there might be new ones to be fetched
-            self._request_thread = threading.Thread(target=self._request_tasks_from_paths,
-                                                    args=([path_unmatched, path_offensive], self._server_timeout))
-            self._request_thread.start()
-        return tasks_found
-
-    def _request_tasks_from_paths(self, paths: list, timeout: float, append: bool = True):
-        &#34;&#34;&#34;Requests tasks from the server at all given paths.&#34;&#34;&#34;
-        for path in paths:
-            self._request_tasks(path, timeout, append)
-
-    def _request_tasks(self, path: str, timeout: float, append: bool = True):
-        &#34;&#34;&#34;Sends a request to the server to receive tasks.
-
-        Post: - If tasks were available from the server and `prefetch` is set to True, all tasks from the server are
-                added to the task list if they are not in the task or tasks in progress list.
-              - If tasks were available from the server and `prefetch` is set to False, only the first task that wasn&#39;t
-                in the task or tasks in progress list already is added to the task list.
-        &#34;&#34;&#34;
-        request_uri = self._base_request_uri + path
-        request = self._session.get(request_uri, timeout=timeout)
-        if request.status_code == 200:
-            # Status == OK
-            # JSON response can be in different format than the one that should be returned
-            received_tasks = self._parse_response(request.json())
-            # The server might not have tasks.
-            if len(received_tasks) == 0 or received_tasks[0][&#39;action&#39;].lower() == Actions.NO_WORK.value:
-                return False
-            if self.prefetch:
-                # fetch all available tasks
-                new_task_found = False
-                for task in received_tasks:
-                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
-                        # only add task if not in the (processing) task list already and appending is enabled
-                        self._tasks.append(task)
-                        new_task_found = True
-                return new_task_found
-            else:
-                # prefetching disabled, so only fetch one question that is not in the task list already, but not if
-                # appending is disabled
-                for task in received_tasks:
-                    if task not in self._tasks and task[&#39;msg_id&#39;] not in self._tasks_in_progress and append:
-                        self._tasks.append(task)
-                        return True
-                # all available tasks have been fetched before
-                return False
-        return False
 
     @classmethod
     def is_valid_task(cls, task: dict):
@@ -1070,7 +839,9 @@ default set to 10 seconds.</dd>
 
     @classmethod
     def _parse_response_dict(cls, response_dict: dict) -&gt; dict:
-        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.&#34;&#34;&#34;
+        &#34;&#34;&#34;Converts keys of given dictionary and dictionaries in a list in the given dictionary to lower case.
+        Also adds sentence and sentence_id keys to replace question/answer and question_id/answer_id.
+        &#34;&#34;&#34;
         parsed_response = dict()
         for key, value in response_dict.items():
             if type(value) == list:
@@ -1082,10 +853,17 @@ default set to 10 seconds.</dd>
                 value = new_value
             key = key.lower()
             parsed_response[key] = value
+        if parsed_response[&#34;action&#34;] in cls._generic_actions:
+            # add generic keys sentence en sentence_id instead of answer/question
+            if &#34;question&#34; in parsed_response.keys():
+                parsed_response[&#34;sentence&#34;] = parsed_response[&#34;question&#34;]
+                parsed_response[&#34;sentence_id&#34;] = parsed_response[&#34;question_id&#34;]
+            elif &#34;answer&#34; in parsed_response.keys():
+                parsed_response[&#34;sentence&#34;] = parsed_response[&#34;answer&#34;]
+                parsed_response[&#34;sentence_id&#34;] = parsed_response[&#34;answer_id&#34;]
         return parsed_response
 
-    @classmethod
-    def _parse_request(cls, request: dict) -&gt; dict:
+    def _parse_request(self, request: dict) -&gt; dict:
         &#34;&#34;&#34;Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
 
@@ -1096,12 +874,25 @@ default set to 10 seconds.</dd>
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         &#34;&#34;&#34;
-        return request
+        parsed_request = request
+        # return from generic sentence(_id) to question/answer(_id)
+        original_response = self._tasks_in_progress[request[&#34;msg_id&#34;]]
+        if &#34;question&#34; in original_response.keys():
+            parsed_request[&#34;question&#34;] = request[&#34;sentence&#34;]
+            parsed_request[&#34;question_id&#34;] = request[&#34;sentence_id&#34;]
+        elif &#34;answer&#34; in original_response.keys():
+            parsed_request[&#34;answer&#34;] = request[&#34;sentence&#34;]
+            parsed_request[&#34;answer_id&#34;] = request[&#34;sentence_id&#34;]
+        return parsed_request
 
-    def reply(self, response: dict) -&gt; dict:
+    def reply(self, response: dict):
         &#34;&#34;&#34;Sends the given response to the server.
 
         .. versionadded::0.1.0
+        .. versionchanged::1.0.0
+
+        Checks whether the websocket connection is still alive and delivers the given `response` to the websocket
+        thread.
 
         Args:
             response: A dictionary built like a JSON object.
@@ -1129,8 +920,16 @@ default set to 10 seconds.</dd>
             2. A reply to an `estimate_offensiveness`:
 
                     {
-                        &#34;question_id&#34;: 100,
+                        &#34;sentence_id&#34;: 100,
                         &#34;prob&#34;: 0.123,
+                        &#34;msg_id&#34;: 1234567890
+                    }
+
+            3. A reply to an `is_nonsense`:
+
+                    {
+                        &#34;sentence_id&#34;: 100,
+                        &#34;nonsense&#34;: True,
                         &#34;msg_id&#34;: 1234567890
                     }
 
@@ -1143,21 +942,12 @@ default set to 10 seconds.</dd>
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don&#39;t effect these specifications.
         &#34;&#34;&#34;
-
+        self._checkout_websocket()
         action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
         if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
-            request_uri = self._base_request_uri
-            if action == Actions.MATCH_QUESTIONS.value:
-                request_uri += self._post_paths[&#39;matched&#39;]
-            elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-                request_uri += self._post_paths[&#39;offensive&#39;]
-            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
             data = self._parse_request(response)
-            if self.use_websocket:
-                self._reply_queue.append(json.dumps(data))
-            else:
-                request = self._session.post(request_uri, json=data)
-                return request.json()</code></pre>
+            del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+            self._reply_queue.append(json.dumps(data))</code></pre>
 </details>
 <h3>Class variables</h3>
 <dl>
@@ -1229,6 +1019,9 @@ def is_valid_task(cls, task: dict):
 <div class="admonition versionchanged">
 <p class="admonition-title">Changed in version:&ensp;0.2.0</p>
 </div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.0.0</p>
+</div>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>timeout</code></strong></dt>
@@ -1265,10 +1058,20 @@ then the method will only return upon receiving a task from the server.</dd>
 <p>The server asks to estimate the offensiveness of a sentence:</p>
 <pre><code> {
     "action": Actions.ESTIMATE_OFFENSIVENESS,
-    "question_id": 100,
-    "question": "XXX",
+    "sentence_id": 100,
+    "sentence": "XXX",
     "msg_id": 1234567890
  }
+</code></pre>
+</li>
+<li>
+<p>The server asks to check if a sentence is nonsense or not:</p>
+<pre><code>{
+    "action": Actions.IS_NONSENSE,
+    "sentence_id": 100,
+    "sentence": "XXX",
+    "msg_id": 1234567890
+}
 </code></pre>
 </li>
 </ol>
@@ -1292,6 +1095,7 @@ then the method will only return upon receiving a task from the server.</dd>
 
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
+    .. versionchanged::1.0.0
 
     Args:
         timeout: The number of seconds to wait before returning without result. In case the timeout is set to None,
@@ -1327,10 +1131,19 @@ then the method will only return upon receiving a task from the server.</dd>
 
              {
                 &#34;action&#34;: Actions.ESTIMATE_OFFENSIVENESS,
-                &#34;question_id&#34;: 100,
-                &#34;question&#34;: &#34;XXX&#34;,
+                &#34;sentence_id&#34;: 100,
+                &#34;sentence&#34;: &#34;XXX&#34;,
                 &#34;msg_id&#34;: 1234567890
              }
+
+    3. The server asks to check if a sentence is nonsense or not:
+
+            {
+                &#34;action&#34;: Actions.IS_NONSENSE,
+                &#34;sentence_id&#34;: 100,
+                &#34;sentence&#34;: &#34;XXX&#34;,
+                &#34;msg_id&#34;: 1234567890
+            }
 
     Note that other keys can be present, but the keys mentioned in the example will be part of the actual result.
 
@@ -1340,17 +1153,14 @@ then the method will only return upon receiving a task from the server.</dd>
     Raises:
         Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
     &#34;&#34;&#34;
-    if self.use_websocket:
-        logging.debug(&#34;Get task using websocket&#34;)
+    logging.debug(&#34;Get task using websocket&#34;)
+    tasks_found = len(self._tasks) &gt; 0
+    start_time = time.time()
+    time_passed = 0
+    while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
+        self._checkout_websocket()
         tasks_found = len(self._tasks) &gt; 0
-        start_time = time.time()
-        time_passed = 0
-        while not tasks_found and (timeout is None or (time_passed &lt; timeout)):
-            self._checkout_websocket()
-            tasks_found = len(self._tasks) &gt; 0
-            time_passed = time.time() - start_time  # keep track of the passed time
-    else:
-        tasks_found = self._get_next_task_by_request(timeout)
+        time_passed = time.time() - start_time  # keep track of the passed time
     if tasks_found:
         # Remove task from task list and add it to the tasks in progress list.
         task = self._tasks.pop(0)
@@ -1371,9 +1181,10 @@ then the method will only return upon receiving a task from the server.</dd>
 <div class="admonition versionchanged">
 <p class="admonition-title">Changed in version:&ensp;0.2.0</p>
 </div>
-<p>Asks the server to check whether it has any tasks that should be processed.
-This method should only be used when there is no reason to use <code>get_next_task()</code> afterwards. Because that kind
-of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.</p>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.0.0</p>
+</div>
+<p>Checks whether the web socket connection is still alive and whether any tasks are available in the cache.</p>
 <h2 id="returns">Returns</h2>
 <p>True if and only if there is a task to be processed.</p>
 <h2 id="raises">Raises</h2>
@@ -1390,10 +1201,9 @@ of situations seems to be quite uncommon, this method will likely be removed in 
 
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
+    .. versionchanged::1.0.0
 
-    Asks the server to check whether it has any tasks that should be processed.
-    This method should only be used when there is no reason to use `get_next_task()` afterwards. Because that kind
-    of situations seems to be quite uncommon, this method will likely be removed in one of the next releases.
+    Checks whether the web socket connection is still alive and whether any tasks are available in the cache.
 
     Returns:
         True if and only if there is a task to be processed.
@@ -1401,15 +1211,8 @@ of situations seems to be quite uncommon, this method will likely be removed in 
     Raises:
         Exception: The websocket thread has passed an exception. The passed exception is raised by this method.
     &#34;&#34;&#34;
-    if self.use_websocket:
-        self._checkout_websocket()
-    uri_unmatched = self._request_paths[&#39;unmatched&#39;]
-    uri_offensive = self._request_paths[&#39;offensive&#39;]
-    # print(&#34;using websocket:&#34;, self.use_websocket)
-    if self.use_websocket:
-        return len(self._tasks) &gt; 0
-    else:
-        return self._request_tasks(uri_unmatched, 0.25, False) or self._request_tasks(uri_offensive, 0.25, False)</code></pre>
+    self._checkout_websocket()
+    return len(self._tasks) &gt; 0</code></pre>
 </details>
 </dd>
 <dt id="cluster.connector.Connector.reply"><code class="name flex">
@@ -1420,6 +1223,11 @@ of situations seems to be quite uncommon, this method will likely be removed in 
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.1.0</p>
 </div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.0.0</p>
+</div>
+<p>Checks whether the websocket connection is still alive and delivers the given <code>response</code> to the websocket
+thread.</p>
 <h2 id="args">Args</h2>
 <dl>
 <dt><strong><code>response</code></strong></dt>
@@ -1449,8 +1257,17 @@ is undefined. As a response argument, currently two possible structures are allo
 <li>
 <p>A reply to an <code>estimate_offensiveness</code>:</p>
 <pre><code>{
-    "question_id": 100,
+    "sentence_id": 100,
     "prob": 0.123,
+    "msg_id": 1234567890
+}
+</code></pre>
+</li>
+<li>
+<p>A reply to an <code>is_nonsense</code>:</p>
+<pre><code>{
+    "sentence_id": 100,
+    "nonsense": True,
     "msg_id": 1234567890
 }
 </code></pre>
@@ -1470,10 +1287,14 @@ possible, so any implementation changes don't effect these specifications.</dd>
 <summary>
 <span>Expand source code</span>
 </summary>
-<pre><code class="python">def reply(self, response: dict) -&gt; dict:
+<pre><code class="python">def reply(self, response: dict):
     &#34;&#34;&#34;Sends the given response to the server.
 
     .. versionadded::0.1.0
+    .. versionchanged::1.0.0
+
+    Checks whether the websocket connection is still alive and delivers the given `response` to the websocket
+    thread.
 
     Args:
         response: A dictionary built like a JSON object.
@@ -1501,8 +1322,16 @@ possible, so any implementation changes don't effect these specifications.</dd>
         2. A reply to an `estimate_offensiveness`:
 
                 {
-                    &#34;question_id&#34;: 100,
+                    &#34;sentence_id&#34;: 100,
                     &#34;prob&#34;: 0.123,
+                    &#34;msg_id&#34;: 1234567890
+                }
+
+        3. A reply to an `is_nonsense`:
+
+                {
+                    &#34;sentence_id&#34;: 100,
+                    &#34;nonsense&#34;: True,
                     &#34;msg_id&#34;: 1234567890
                 }
 
@@ -1515,21 +1344,12 @@ possible, so any implementation changes don't effect these specifications.</dd>
             This exception may become more specific in a future release, but for now it is kept as general as
             possible, so any implementation changes don&#39;t effect these specifications.
     &#34;&#34;&#34;
-
+    self._checkout_websocket()
     action = self._tasks_in_progress[response[&#39;msg_id&#39;]][&#39;action&#39;].lower()
     if Actions.has_value(action) and response[&#39;msg_id&#39;] in self._tasks_in_progress.keys():
-        request_uri = self._base_request_uri
-        if action == Actions.MATCH_QUESTIONS.value:
-            request_uri += self._post_paths[&#39;matched&#39;]
-        elif action == Actions.ESTIMATE_OFFENSIVENESS.value:
-            request_uri += self._post_paths[&#39;offensive&#39;]
-        del self._tasks_in_progress[response[&#39;msg_id&#39;]]
         data = self._parse_request(response)
-        if self.use_websocket:
-            self._reply_queue.append(json.dumps(data))
-        else:
-            request = self._session.post(request_uri, json=data)
-            return request.json()</code></pre>
+        del self._tasks_in_progress[response[&#39;msg_id&#39;]]
+        self._reply_queue.append(json.dumps(data))</code></pre>
 </details>
 </dd>
 <dt id="cluster.connector.Connector.reset_connection"><code class="name flex">
@@ -1574,6 +1394,7 @@ possible, so any implementation changes don't effect these specifications.</dd>
 <h4><code><a title="cluster.connector.Actions" href="#cluster.connector.Actions">Actions</a></code></h4>
 <ul class="">
 <li><code><a title="cluster.connector.Actions.ESTIMATE_OFFENSIVENESS" href="#cluster.connector.Actions.ESTIMATE_OFFENSIVENESS">ESTIMATE_OFFENSIVENESS</a></code></li>
+<li><code><a title="cluster.connector.Actions.IS_NONSENSE" href="#cluster.connector.Actions.IS_NONSENSE">IS_NONSENSE</a></code></li>
 <li><code><a title="cluster.connector.Actions.MATCH_QUESTIONS" href="#cluster.connector.Actions.MATCH_QUESTIONS">MATCH_QUESTIONS</a></code></li>
 <li><code><a title="cluster.connector.Actions.NO_WORK" href="#cluster.connector.Actions.NO_WORK">NO_WORK</a></code></li>
 </ul>
