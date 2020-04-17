@@ -498,6 +498,52 @@ namespace ClusterClient
         public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
         {
             return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions][userID]);
+        /// <summary>
+        /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
+        /// by the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="tempChatbotID"></param>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A set of server questions message objects.
+        ///          'null' in case no response was received before timeout.</returns>
+        private ISet<ServerMessage> GetResponseFromServerToRequest(int userID, string expectedResponseAction, double timeout)
+        {
+            Console.WriteLine("Waiting for questions from server.");
+            // set timeout and wait for answer
+            // convert timeout to milliseconds
+            timeout *= 1000;
+            bool found = false;
+            ISet<ServerMessage> answer = null;
+            try
+            {
+                answer = this.receivedMessages[expectedResponseAction][userID];
+                found = answer.Count > 0;
+            }
+            catch(KeyNotFoundException)
+            {
+                var watch = Stopwatch.StartNew();
+                double elapsedMs = 0;
+                while (!found & !(elapsedMs > timeout))
+                {
+                    elapsedMs = watch.ElapsedMilliseconds;
+                    try
+                    {
+                        answer = this.receivedMessages[expectedResponseAction][userID];
+                        found = answer != null;
+                    } 
+                    catch(KeyNotFoundException)
+                    {
+                        answer = null;
+                    }
+                }
+                watch.Stop();
+                Console.WriteLine("Found response to request: " + answer);
+                if (!found)
+                    return null;
+            }
+            
+            return answer;
         }
 
 
