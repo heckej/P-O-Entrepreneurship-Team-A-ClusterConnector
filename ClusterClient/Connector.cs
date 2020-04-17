@@ -213,6 +213,31 @@ namespace ClusterClient
         }
 
         /// <summary>
+        /// Removes a given server message from the received messages dictionary.
+        /// </summary>
+        /// <param name="message">The server message to be removed from the received messages.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If the given <paramref name="message"/> was in the received message dictionary under the its <paramref name="action"/>, 
+        ///         then it has been removed now.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void RemoveReceivedMessage(ServerMessage message)
+        {
+            try
+            {
+                this.receivedMessages[message.action][message.user_id].Remove(message);
+            } 
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Tried to remove message from received messages, but a key error occurred: " + e);
+            }
+        }
+
+        /// <summary>
         /// Creates a server message set in the received message dictionary at a key equal to the value of the given <paramref name="action"/>
         /// for the user identified by the given <paramref name="userID"/>.
         /// </summary>
