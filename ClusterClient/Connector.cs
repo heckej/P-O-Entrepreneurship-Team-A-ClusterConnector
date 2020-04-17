@@ -494,10 +494,19 @@ namespace ClusterClient
         /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
-        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.</returns>
+        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
+        ///          'null' in case no questions messages were found.</returns>
         public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
         {
-            return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions][userID]);
+            try
+            {
+                return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+            }
+            catch(KeyNotFoundException)
+            {
+                return null;
+            }
+        }
         /// <summary>
         /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
         /// by the user identified by the given <paramref name="userID"/>.
