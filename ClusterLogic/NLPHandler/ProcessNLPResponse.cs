@@ -22,17 +22,23 @@ namespace ClusterLogic.NLPHandler
         /// Process a NLPMatchQuestionResponse and turn it into a MatchQuestionLogicResponse containing an answer,
         /// if any.
         /// </summary>
-        /// <param name="matchQuestionModel">The NLP model to process.</param>
+        /// <param name="matchQuestionModels">The NLP model to process.</param>
         /// <returns></returns>
-        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(MatchQuestionModelResponse matchQuestionModel)
+        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
         {
             // Create a "no match" response
             MatchQuestionLogicResponse nullResponse = new MatchQuestionLogicResponse();
 
-            if (matchQuestionModel == null)
+            // Check to see whether there is at least a valid answer given
+            if (matchQuestionModels == null || 
+                matchQuestionModels.Count < 1 || 
+                matchQuestionModels[0] == null ||
+                ! matchQuestionModels[0].IsComplete())
             {
                 return nullResponse;
             }
+
+            MatchQuestionModelResponse matchQuestionModel = matchQuestionModels[0];
 
             MatchQuestionModelInfo bestInfo = null;
             double bestMatch = 0.0;
