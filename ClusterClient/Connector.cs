@@ -507,6 +507,58 @@ namespace ClusterClient
                 return null;
             }
         }
+
+        /// <summary>
+        /// Creates a request to the server to receive unanswered questions for a user.
+        /// </summary>
+        /// <param name="userID">The user ID of the user who should answer the questions.</param>
+        /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
+        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestions(int userID, double timeout = 5)
+        {
+            Console.WriteLine("Request questions method called.");
+            // Create set of questions
+            ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            // Check if questions offline -> probably not, but if there are any, add them
+            ISet<ServerQuestionsMessage> storedQuestionsMessages = this.GetQuestionsAddressedToUser(userID);
+            if (storedQuestionsMessages.Count > 0)
+                foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
+                {
+                    if (questionsMessage.answer_questions.Count > 0)
+                        foreach (ServerQuestion question in questionsMessage.answer_questions)
+                            questions.Add(question);
+
+                }
+            else
+            {
+                // Create request for server
+                UserRequest request = new UserRequest
+                {
+                    user_id = userID,
+                    request = Requests.UnansweredQuestions
+                };
+                this.AddMessageToSendQueue(request);
+
+                // Wait until questions received or timeout
+                var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
+                
+                if (answer.Count > 0)
+                {
+                    ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
+                    // Fill set of questions
+                    foreach (ServerQuestionsMessage questionsMessage in questionsMessages)
+                    {
+                        if (questionsMessage.answer_questions.Count > 0)
+                            foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                questions.Add(question);
+                        // Remove message from cache
+                        this.RemoveReceivedMessage(questionsMessage);
+                    }
+
+                }
+            }
+            return questions;
+        }
+
         /// <summary>
         /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
         /// by the user identified by the given <paramref name="userID"/>.
