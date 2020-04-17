@@ -44,10 +44,9 @@ namespace ClusterLogic.ChatbotHandler
         }
 
         /// <summary>
-        /// 
-        /// TODO: Select all ANSWERED questions put them in the MatchQuestionModelRequest model
+        /// Get all the answered questions and wrap them into a MatchQuestionModelRequest.
         /// </summary>
-        /// <param name="list"></param>
+        /// <param name="list">A list of ChatbotNewQuestionModels to process.</param>
         /// <returns></returns>
         public static MatchQuestionModelRequest ProcessChatbotReceiveQuestion(List<ChatbotNewQuestionModel> list)
         {
@@ -57,19 +56,13 @@ namespace ClusterLogic.ChatbotHandler
 
             List<DBQuestion> result = new List<DBQuestion>();
             DBManager manager = new DBManager(false); //this false 
-            String sqlCommand = "Select * From dbo.Questions answer Where ";
 
-            for (int i = 0; i < 10; i++)
-            {
-                if (i != 10 - 1)
-                {
-                    sqlCommand += "answer.question_id = " + i + " OR ";
-                }
-                else
-                {
-                    sqlCommand += "answer.question_id = " + i + ";";
-                }
-            }
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT * ");
+            sb.Append("FROM Questions q ");
+            sb.Append($"WHERE q.answer_id IS NOT NULL; ");
+            String sqlCommand = sb.ToString();
+
             var reader = manager.Read(sqlCommand);
 
             while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
