@@ -86,6 +86,11 @@ namespace ClusterLogic.Models
         public int Question_id { get; } = -1;
 
         /// <summary>
+        /// Message id (passed on from MatchQuestionModelResponse)
+        /// </summary>
+        public int Msg_id { get; } = -1;
+
+        /// <summary>
         /// The id of the best match.
         /// </summary>
         public int Match_id { get; } = -1;
@@ -104,11 +109,14 @@ namespace ClusterLogic.Models
         /// Create a new MatchQuestionLogicResponse.
         /// </summary>
         /// <param name="question_id">The id of the matched question (>-1 if existant).</param>
+        /// <param name="msg_id">The id of this msg (passed on from MatchQuestionModelResponse)</param>
         /// <param name="match_id">The id of the best match (>-1 if existant).</param>
         /// <param name="match">True if and only if there is a match.</param>
-        public MatchQuestionLogicResponse(int question_id = -1, int match_id = -1, bool match = false, string Answer = null)
+        /// <param name="Answer">Contains the answer of the matched string (if any)</param>
+        public MatchQuestionLogicResponse(int question_id = -1, int msg_id = -1, int match_id = -1, bool match = false, string Answer = null)
         {
             this.Question_id = question_id;
+            this.Msg_id = msg_id;
             this.Match_id = match_id;
             this.Match = match;
             this.Answer = null;
@@ -129,7 +137,7 @@ namespace ClusterLogic.Models
         /// <returns></returns>
         public bool IsComplete()
         {
-            return Match && Question_id > -1 && Match_id > -1;
+            return Match && Question_id > -1  && Msg_id > -1 && Match_id > -1;
         }
     }
 }

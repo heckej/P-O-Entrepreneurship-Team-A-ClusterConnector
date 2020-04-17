@@ -49,7 +49,7 @@ namespace ClusterLogic.NLPHandler
                     String sqlCommand = $"Select answer from Answers as a and Questions as q where q.question_id == {info.question_id} and q.answer_id == a.answer_id";
                     SqlDataReader queryResult = ClusterConnector.Manager.Read(sqlCommand);
 
-                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, info.question_id, true, queryResult.GetString(0));
+                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, info.question_id, true, queryResult.GetString(0));
                 }
             }
 
@@ -64,13 +64,14 @@ namespace ClusterLogic.NLPHandler
 
         public static Object ProcessNLPNonsenseResponse(List<NonsenseModelResponse> nonsenseModelResponses)
         {
-            if (nonsenseModelResponses[0].nonsense) //if is nonsense
+            NonsenseModelResponse nonsenseModelResponse = nonsenseModelResponses[0];
+            if (nonsenseModelResponse.nonsense) //if is nonsense
             {
                 return null;
             }
             else
             {
-                return new OffensivenessModelRequest(nonsenseModelResponses[0]); //This gives the Server the correct response to make it known what to do next. As a simple example
+                return new OffensivenessModelRequest(nonsenseModelResponse); //This gives the Server the correct response to make it known what to do next. As a simple example
             }
         }
     }
