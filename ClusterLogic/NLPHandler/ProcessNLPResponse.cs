@@ -46,10 +46,21 @@ namespace ClusterLogic.NLPHandler
                 {
                     // Query answer to matched string
                     // ! feedback on the answer is not yet considered in the query !
+                    List<DBQuestion> result = new List<DBQuestion>();
+                    DBManager manager = new DBManager(false); //this false 
                     String sqlCommand = $"Select answer from Answers as a and Questions as q where q.question_id == {info.question_id} and q.answer_id == a.answer_id";
-                    SqlDataReader queryResult = ClusterConnector.Manager.Read(sqlCommand);
+                    var reader = manager.Read(sqlCommand);
 
-                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, info.question_id, true, queryResult.GetString(0));
+                    while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
+                    {
+                        DBQuestion answer = new DBQuestion();
+                        answer.answer = (String)reader["answer"];
+
+                        result.Add(answer);
+                    }
+                    manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
+
+                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, info.question_id, true, result.First);
                 }
             }
 
