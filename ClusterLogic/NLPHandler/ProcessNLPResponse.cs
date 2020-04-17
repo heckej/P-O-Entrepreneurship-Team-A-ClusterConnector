@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClusterLogic.Models;
+using ClusterConnector.Manager;
 
 namespace ClusterLogic.NLPHandler
 {
@@ -43,7 +44,12 @@ namespace ClusterLogic.NLPHandler
             {
                 if (info.prob > MatchThreshold)
                 {
-                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, info.question_id, true);
+                    // Query answer to matched string
+                    // ! feedback on the answer is not yet considered in the query !
+                    String sqlCommand = $"Select answer from Answers as a and Questions as q where q.question_id == {info.question_id} and q.answer_id == a.answer_id";
+                    SqlDataReader queryResult = ClusterConnector.Manager.Read(sqlCommand);
+
+                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, info.question_id, true, queryResult.GetString(0));
                 }
             }
 
