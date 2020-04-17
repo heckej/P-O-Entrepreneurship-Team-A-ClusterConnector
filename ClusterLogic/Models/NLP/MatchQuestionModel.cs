@@ -112,14 +112,14 @@ namespace ClusterLogic.Models
         /// <param name="msg_id">The id of this msg (passed on from MatchQuestionModelResponse)</param>
         /// <param name="match_id">The id of the best match (>-1 if existant).</param>
         /// <param name="match">True if and only if there is a match.</param>
-        /// <param name="Answer">Contains the answer of the matched string (if any)</param>
-        public MatchQuestionLogicResponse(int question_id = -1, int msg_id = -1, int match_id = -1, bool match = false, string Answer = null)
+        /// <param name="answer">Contains the answer of the matched string (if any).</param>
+        public MatchQuestionLogicResponse(int question_id = -1, int msg_id = -1, int match_id = -1, bool match = false, string answer = null)
         {
             this.Question_id = question_id;
             this.Msg_id = msg_id;
             this.Match_id = match_id;
             this.Match = match;
-            this.Answer = null;
+            this.Answer = answer;
         }
 
         /// <summary>

@@ -5,31 +5,25 @@ using System.Text;
 using System.Threading.Tasks;
 using ClusterLogic.Models;
 using ClusterConnector.Manager;
+using ClusterConnector.Manager;
+using ClusterConnector.Models.Database;
+using System.Data.SqlClient;
 
 namespace ClusterLogic.NLPHandler
 {
     public class ProcessNLPResponse
     {
-        // The threshold to find question matches.
+        /// <summary>
+        /// The threshold to find question matches.
+        /// </summary>
         private static double MatchThreshold { get; } = 0.75;
 
         /// <summary>
-        /// Logica: krijgt MatchedQuestionsModel binnen
-        /// en beslist of er een goede match is + het antwoord op deze vraag
-        /// 
+        /// Process a NLPMatchQuestionResponse and turn it into a MatchQuestionLogicResponse containing an answer,
+        /// if any.
         /// </summary>
-        /// <param name="matchQuestionModels"></param>
-        /// <returns>
-        /// 
-        /// Resultaat bij Bernd is dan
-        /// 1) Er is een goede match
-        /// 2) We moeten verderZoeken
-        /// 3) Er is geen match en vragen zijn op
-        /// 
-        /// Ik laat aan jullie om te beslissen hoe dit 1 model / meerdere modellen eruit zullen zien
-        /// return model; aan het functie is het enige dat ik nodig heb :)
-        /// 
-        /// </returns>
+        /// <param name="matchQuestionModel">The NLP model to process.</param>
+        /// <returns></returns>
         public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(MatchQuestionModelResponse matchQuestionModel)
         {
             // Create a "no match" response
@@ -40,30 +34,52 @@ namespace ClusterLogic.NLPHandler
                 return nullResponse;
             }
 
+            MatchQuestionModelInfo bestInfo = null;
+            double bestMatch = 0.0;
+
+            // Find the best match above the threshold
             foreach (MatchQuestionModelInfo info in matchQuestionModel.possible_matches)
             {
-                if (info.prob > MatchThreshold)
+                if (info.prob > MatchThreshold && info.prob > bestMatch)
                 {
-                    // Query answer to matched string
-                    // ! feedback on the answer is not yet considered in the query !
-                    List<DBQuestion> result = new List<DBQuestion>();
-                    DBManager manager = new DBManager(false); //this false 
-                    String sqlCommand = $"Select answer from Answers as a and Questions as q where q.question_id == {info.question_id} and q.answer_id == a.answer_id";
-                    var reader = manager.Read(sqlCommand);
-
-                    while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
-                    {
-                        DBQuestion answer = new DBQuestion();
-                        answer.answer = (String)reader["answer"];
-
-                        result.Add(answer);
-                    }
-                    manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
-
-                    return new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, info.question_id, true, result.First);
+                    bestInfo = info;
+                    bestMatch = bestInfo.prob;
                 }
             }
 
+            // Get the answer of the best match, if any
+            if (bestInfo != null)
+            {
+                DBManager manager = new DBManager(false); //this false 
+
+                // Initialize the result
+                MatchQuestionLogicResponse result = null;
+
+                StringBuilder sb = new StringBuilder();
+                sb.Append("SELECT answer ");
+                sb.Append("FROM Answers a, Questions q ");
+                sb.Append($"WHERE q.question_id = {bestInfo.question_id} AND q.answer_id = a.answer_id; ");
+                String sql = sb.ToString();
+
+                using (SqlDataReader reader = manager.Read(sql))
+                {
+                    // This query should only return 0 or 1 result
+                    if (reader.Read())
+                    {
+                        result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, reader.GetString(0));
+                    }
+                }
+
+                // Close the connection
+                manager.Close();
+
+                if (result != null)
+                {
+                    return result;
+                }
+            }
+
+            // No valid match was found, so "no answer" is returned.
             return nullResponse;
         }
 
