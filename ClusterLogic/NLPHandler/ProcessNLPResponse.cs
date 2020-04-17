@@ -23,7 +23,8 @@ namespace ClusterLogic.NLPHandler
         /// if any.
         /// </summary>
         /// <param name="matchQuestionModels">The NLP model to process.</param>
-        /// <returns></returns>
+        /// <returns>A MatchQuestionLogicResponse containing either 1) nothing if there is no match or 2) the best match if there
+        /// is a match.</returns>
         public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
         {
             // Create a "no match" response

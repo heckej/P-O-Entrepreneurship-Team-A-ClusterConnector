@@ -47,7 +47,7 @@ namespace ClusterLogic.ChatbotHandler
         /// Get all the answered questions and wrap them into a MatchQuestionModelRequest.
         /// </summary>
         /// <param name="list">A list of ChatbotNewQuestionModels to process.</param>
-        /// <returns></returns>
+        /// <returns>A MatchQuestionModelRequest containing all the answered questions from the forum.</returns>
         public static MatchQuestionModelRequest ProcessChatbotReceiveQuestion(List<ChatbotNewQuestionModel> list)
         {
             MatchQuestionModelRequest mqmr = new MatchQuestionModelRequest();
