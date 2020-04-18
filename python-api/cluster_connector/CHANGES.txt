@@ -2,7 +2,11 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
-v0.3.0a
+v1.0.1
+---------------------------------------
+* Security issue related to websocket connection temporarily fixed. A decent fix will result in a new major release.
+
+v1.0.0
 ---------------------------------------
 This version is a major update involving several incompatibility changes related to some attributes and the task/message
 protocol.
