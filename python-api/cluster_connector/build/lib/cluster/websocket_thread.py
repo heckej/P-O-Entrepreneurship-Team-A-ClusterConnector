@@ -45,6 +45,9 @@ class WebsocketThread(threading.Thread):
         self._loop = loop  # reference to the current loop in which async methods should be called
         asyncio.set_event_loop(loop)
 
+        self._authorization = "NLP"
+        self._headers = {"Authorization": self._authorization}
+
     def run(self):
         """Starts communication with the websocket host."""
         self._loop.run_until_complete(self._communicate_with_server())
@@ -170,6 +173,8 @@ class WebsocketThread(threading.Thread):
         """Creates a websocket connection using the uri of this websocket thread.
 
         Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
-                - Exception: depends the behaviour of `websockets.client.connect()`
+                - InvalidURI - passed on from `websockets.client.connect` if `self._websocket_uri` is invalid.
+                - InvalidHandshake - passed on from `websockets.client.connect` if the opening handshake fails.
         """
-        self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)
+        self._websocket = await websockets.client.connect(self._websocket_uri, extra_headers=self._headers,
+                                                          ping_interval=None)
