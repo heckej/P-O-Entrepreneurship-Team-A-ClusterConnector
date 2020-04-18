@@ -170,6 +170,7 @@ class WebsocketThread(threading.Thread):
         """Creates a websocket connection using the uri of this websocket thread.
 
         Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
-                - Exception: depends the behaviour of `websockets.client.connect()`
+                - InvalidURI - passed on from `websockets.client.connect` if `self._websocket_uri` is invalid.
+                - InvalidHandshake - passed on from `websockets.client.connect` if the opening handshake fails.
         """
         self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)
