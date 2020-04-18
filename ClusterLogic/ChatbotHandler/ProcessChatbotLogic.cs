@@ -78,7 +78,7 @@ namespace ClusterLogic.ChatbotHandler
             StringBuilder sb = new StringBuilder();
             sb.Append("SELECT * ");
             sb.Append("FROM Questions q ");
-            sb.Append($"WHERE q.answer_id IS NOT NULL; ");
+            sb.Append("WHERE q.answer_id IS NOT NULL; ");
             String sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);

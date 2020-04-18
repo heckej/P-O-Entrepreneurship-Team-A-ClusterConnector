@@ -19,27 +19,28 @@ namespace ClusterLogic.NLPHandler
         private static double MatchThreshold { get; } = 0.75;
 
         /// <summary>
-        /// Process a NLPMatchQuestionResponse and turn it into a MatchQuestionLogicResponse containing an answer,
+        /// The threshold to find offensive sentences.
+        /// </summary>
+        private static double OffensiveThreshold { get; } = 0.8;
+
+        /// <summary>
+        /// Process an NLPMatchQuestionResponse and turn it into a MatchQuestionLogicResponse containing an answer,
         /// if any.
         /// </summary>
-        /// <param name="matchQuestionModels">The NLP model to process.</param>
+        /// <param name="matchQuestionModel">The NLP model to process.</param>
         /// <returns>A MatchQuestionLogicResponse containing either 1) nothing if there is no match or 2) the best match if there
         /// is a match.</returns>
-        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(List<MatchQuestionModelResponse> matchQuestionModels)
+        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(MatchQuestionModelResponse matchQuestionModel)
         {
             // Create a "no match" response
             MatchQuestionLogicResponse nullResponse = new MatchQuestionLogicResponse();
 
             // Check to see whether there is at least a valid answer given
-            if (matchQuestionModels == null || 
-                matchQuestionModels.Count < 1 || 
-                matchQuestionModels[0] == null ||
-                ! matchQuestionModels[0].IsComplete())
+            if (matchQuestionModel == null || 
+                ! matchQuestionModel.IsComplete())
             {
                 return nullResponse;
             }
-
-            MatchQuestionModelResponse matchQuestionModel = matchQuestionModels[0];
 
             MatchQuestionModelInfo bestInfo = null;
             double bestMatch = 0.0;
@@ -90,10 +91,39 @@ namespace ClusterLogic.NLPHandler
             return nullResponse;
         }
 
-        public static Object ProcessNLPOffensivenessResponse(List<OffensivenessModelResponse> offensivenessModels)
+        /// <summary>
+        /// Process an NLP OffensivenessModelResponse and turn it into an OffensivenessLogicResponse.
+        /// </summary>
+        /// <param name="offensivenessModel">The NLP model to process.</param>
+        /// <returns>An OffensivenessLogicResponse describing the processed OffensivenessModelResponse. The response
+        /// is either descriptive of the processed response or "not complete" if the given response was invalid.</returns>
+        public static OffensivenessLogicResponse ProcessNLPOffensivenessResponse(OffensivenessModelResponse offensivenessModel)
         {
+            // Create an "invalid model responses" response
+            OffensivenessLogicResponse nullResponse = new OffensivenessLogicResponse();
 
-            return null;
+            // Check to see whether there is at least a valid answer given
+            if (offensivenessModel == null ||
+                !offensivenessModel.IsComplete())
+            {
+                return nullResponse;
+            }
+
+            // Decide whether the given question is offensive
+            bool offensive = false;
+
+            if (offensivenessModel.prob > OffensiveThreshold)
+            {
+                offensive = true;
+            }
+
+            // Return the result
+            return new OffensivenessLogicResponse(
+                offensivenessModel.question_id,
+                offensive,
+                offensivenessModel.question,
+                offensivenessModel.msg_id
+                );
         }
 
         public static Object ProcessNLPNonsenseResponse(List<NonsenseModelResponse> nonsenseModelResponses)

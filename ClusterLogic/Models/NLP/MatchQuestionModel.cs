@@ -134,10 +134,10 @@ namespace ClusterLogic.Models
         /// <summary>
         /// Return true if and only if this response is complete, e.g. it has a match and the ids are positive.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>true if and only if this response is complete, e.g. it has a match and the ids are positive.</returns>
         public bool IsComplete()
         {
-            return Match && Question_id > -1  && Msg_id > -1 && Match_id > -1;
+            return Match && Question_id > -1  && Msg_id > -1 && Match_id > -1 && !String.IsNullOrEmpty(Answer);
         }
     }
 }
