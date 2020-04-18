@@ -126,17 +126,39 @@ namespace ClusterLogic.NLPHandler
                 );
         }
 
-        public static Object ProcessNLPNonsenseResponse(List<NonsenseModelResponse> nonsenseModelResponses)
+        /// <summary>
+        /// Process an NLP NonsenseModelResponse and turn it into an NonsenseLogicResponse.
+        /// </summary>
+        /// <param name="nonsenseModelResponse">The NLP model to process.</param>
+        /// <returns>An NonsenseLogicResponse describing the processed NonsenseModelResponse. The response
+        /// is either descriptive of the processed response or "not complete" if the given response was invalid.</returns>
+        public static NonsenseLogicResponse ProcessNLPNonsenseResponse(NonsenseModelResponse nonsenseModelResponse)
         {
-            NonsenseModelResponse nonsenseModelResponse = nonsenseModelResponses[0];
-            if (nonsenseModelResponse.nonsense) //if is nonsense
+            // Create an "invalid model responses" response
+            NonsenseLogicResponse nullResponse = new NonsenseLogicResponse();
+
+            // Check to see whether there is at least a valid answer given
+            if (nonsenseModelResponse == null ||
+                !nonsenseModelResponse.IsComplete())
             {
-                return null;
+                return nullResponse;
             }
-            else
+
+            // Decide whether the given question is nonsense
+            bool nonsense = false;
+
+            if (nonsenseModelResponse.nonsense)
             {
-                return new OffensivenessModelRequest(nonsenseModelResponse); //This gives the Server the correct response to make it known what to do next. As a simple example
+                nonsense = true;
             }
+
+            // Return the result
+            return new NonsenseLogicResponse(
+                nonsenseModelResponse.question_id,
+                nonsense,
+                nonsenseModelResponse.question,
+                nonsenseModelResponse.msg_id
+                );
         }
     }
 }

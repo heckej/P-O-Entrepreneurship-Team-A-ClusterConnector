@@ -141,4 +141,65 @@ namespace ClusterLogic.Models
             return question != null && _question_id != -1 && _msg_id != -1;
         }
     }
+
+    /// <summary>
+    /// An NLP NonsenseModelResponse processed by the Cluster logic.
+    /// </summary>
+    [Serializable]
+    public class NonsenseLogicResponse : BaseModel
+    {
+        /// <summary>
+        /// The id of the checked question.
+        /// </summary>
+        public int Question_id { get; } = -1;
+
+        /// <summary>
+        /// A boolean indicating whether the checked question is nonsense.
+        /// </summary>
+        public bool Nonsense { get; } = false;
+
+        /// <summary>
+        /// The checked question.
+        /// </summary>
+        public string Question { get; } = null;
+
+        /// <summary>
+        /// The id of the processed message.
+        /// </summary>
+        public int Msg_id { get; } = -1;
+
+        /// <summary>
+        /// Check whether the processed question is nonsense.
+        /// </summary>
+        /// <returns>True if and only if the processed question is nonsense.</returns>
+        public bool IsOffensive()
+        {
+            return Nonsense;
+        }
+
+        /// <summary>
+        /// Return true if and only if the ids are positive and the question is not null or empty.
+        /// </summary>
+        /// <returns>true if and only if the ids are positive and the question is not null or empty.</returns>
+        public bool IsComplete()
+        {
+            return Question_id > -1 && !String.IsNullOrEmpty(Question) && Msg_id > -1;
+        }
+
+        /// <summary>
+        /// Create a new processed nonsense response from the logic.
+        /// </summary>
+        /// <param name="questionId">The id of the checked question.</param>
+        /// <param name="offensive">A boolean indicating whether the checked question is nonsense (= true) or not (= false).</param>
+        /// <param name="question">The checked question.</param>
+        /// <param name="msgId">The id of the processed message.</param>
+        public NonsenseLogicResponse(int questionId = -1, bool nonsense = false, string question = null, int msgId = -1)
+        {
+            this.Question_id = questionId;
+            this.Nonsense = nonsense;
+            this.Question = question;
+            this.Msg_id = msgId;
+        }
+
+    }
 }
