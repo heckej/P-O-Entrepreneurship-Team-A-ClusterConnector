@@ -24,5 +24,16 @@ namespace ClusterLogic.Models.ChatbotModels
         public int answer_id { get => _answer_id; set => _answer_id = value; }
         public string answer { get => _answer; set => _answer = value; }
         public float certainty { get => _certainty; set => _certainty = value; }
+
+        public ChatbotNewAnswerModel(int user_id, string question, int question_id, int temporary_chatbot_id, string answer, int answer_id, int certainty)
+        {
+            _user_id = user_id;
+            _question = question;
+            _question_id = question_id;
+            _chatbot_temp_id = temporary_chatbot_id;
+            _answer_id = answer_id;
+            _answer = answer;
+            _certainty = certainty;
+        }
     }
 }

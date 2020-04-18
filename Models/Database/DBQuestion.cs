@@ -15,5 +15,7 @@ namespace ClusterConnector.Models.Database
         public int Question_id { get => question_id; set => question_id = value; }
         public string Question { get => question; set => question = value; }
         public int Answer_id { get => answer_id; set => answer_id = value; }
+
+        public string Answer { get => Answer; set => Answer = value; }
     }
 }
