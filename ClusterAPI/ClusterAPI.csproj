@@ -204,8 +204,6 @@
     <Compile Include="Controllers\NLP\Responses\OffenseResponseController.cs" />
     <Compile Include="Controllers\NLP\Requests\QuestionMatchController.cs" />
     <Compile Include="Controllers\NLP\Responses\QuestionMatchResponseController.cs" />
-    <Compile Include="Controllers\NLP\WebSocket\QuestionOffenseRequestGen.cs" />
-    <Compile Include="Controllers\NLP\WebSocket\QuestionMatchRequestGen.cs" />
     <Compile Include="Utilities\Security\ISecurityHandler.cs" />
     <Compile Include="Utilities\Security\ChatbotSecurity.cs" />
     <Compile Include="Utilities\Security\NLPSecurity.cs" />
