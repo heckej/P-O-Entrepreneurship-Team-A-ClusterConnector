@@ -178,5 +178,70 @@ namespace ClusterLogic.ChatbotHandler
         {
             throw new NotImplementedException();
         }
+
+
+        public static ChatbotResponseUnansweredQuestionsModel retrieveOpenQuestions()
+        {
+            ChatbotResponseUnansweredQuestionsModel cruqm = new ChatbotResponseUnansweredQuestionsModel();
+
+            //Example on how to turn a Query String into data from the SQL database
+
+            List<DBQuestion> result = new List<DBQuestion>();
+            DBManager manager = new DBManager(false); //this false 
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT question_id, question ");
+            sb.Append("FROM Questions q, Answers a");
+            sb.Append("WHERE q.answer_id = a.answer id");
+            sb.Append("AND a.answer = NULL;");
+            String sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
+            {
+                //
+                //reader["xxx"] where 'xxx' is the collumn name of the particular table you get as result from the query.
+                //You get these values a generic 'Object' so typecasting to the proper value should be safe. eg. (int)reader["xxx"]
+                //
+               
+
+                DBQuestion answer = new DBQuestion();
+                answer.Question_id = (int)reader["question_id"];
+                answer.Question = (String)reader["question"];
+                result.Add(answer);
+            }
+            manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
+
+
+            //**********************************
+
+            List<ChatbotQuestionHasNoAnswerModel> openQuestions = new List<ChatbotQuestionHasNoAnswerModel>();
+            for (int i = 0; i < result.Count; i++)
+            {
+                openQuestions.Add(new ChatbotQuestionHasNoAnswerModel() { question = result[i].Question, question_id = result[i].Question_id });
+            }
+
+            cruqm.openQuestions = openQuestions.ToArray();
+
+            return cruqm;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }
