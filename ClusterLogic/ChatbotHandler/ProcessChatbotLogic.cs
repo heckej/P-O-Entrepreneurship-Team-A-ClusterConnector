@@ -133,7 +133,40 @@ namespace ClusterLogic.ChatbotHandler
         /// <returns> This functions should have a response, if the response == null, then no response will be given through the websocket</returns>
         public static List<ChatbotAnswerRequestResponseModel> ProcessChatbotRequestAnswerToQuestion(List<ChatbotAnswerRequestModel> list)
         {
-            throw new NotImplementedException();
+            ChatbotAnswerRequestModel answerRequest = list[0];
+
+            int question_id = answerRequest.question_id;
+
+            // connect to database and define query
+            DBManager manager = new DBManager(false); //this false 
+            String query = "Select answer_id, answer " +
+                           "from dbo.Anwers as a and dbo.Questions as q " +
+                           "where q.question_id == '" + question_id + "' and q.answer_id == a.answer_id ";
+                           // "+ and a.approved == true;";
+
+            // execute query and read answer
+            DBQuestion sqlResult = null;
+            using (SqlDataReader reader = manager.Read(query))
+            {
+                while (reader.Read())
+                {
+                    sqlResult = new DBQuestion();
+                    sqlResult.Answer_id = (int)reader["answer_id"];
+                    sqlResult.Answer = (String)reader["answer"];
+                }
+            }
+
+            // Close the connection
+            manager.Close();
+
+            if (sqlResult == null){
+                return null;
+            }
+
+            return new List<ChatbotAnswerRequestResponseModel>()
+            {
+                new ChatbotAnswerRequestResponseModel(answerRequest.user_id, sqlResult.Answer_id, question_id, true)
+            };
         }
 
         /// <summary>

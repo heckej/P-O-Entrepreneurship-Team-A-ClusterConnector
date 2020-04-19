@@ -18,12 +18,14 @@ namespace ClusterLogic.Models.ChatbotModels
     public class ChatbotAnswerRequestModel : BaseModel
     {
         private int _question_id = -1;
+        private int _user_id = -1;
 
         public int question_id { get => _question_id; set => _question_id = value; }
+        public int user_id { get => _user_id; set => _user_id = value; }
 
         public bool IsComplete()
         {
-            return question_id != -1;
+            return question_id != -1 && user_id != -1;
         }
     }
 
@@ -38,6 +40,14 @@ namespace ClusterLogic.Models.ChatbotModels
         public int answer_id { get => _answer_id; set => _answer_id = value; }
         public int answer_question_id { get => _answer_question_id; set => _answer_question_id = value; }
         public bool has_answer { get => _has_answer; set => _has_answer = value; }
+
+        public ChatbotAnswerRequestResponseModel(int user_id, int answer_id, int answer_question_id, bool has_answer)
+        {
+            _user_id = user_id;
+            _has_answer = has_answer;
+            _answer_id = answer_id;
+            _answer_question_id = answer_question_id;
+        }
 
         public bool IsComplete()
         {
