@@ -75,16 +75,6 @@ namespace ClusterAPI.Controllers.NLP
             }
         }
 
-        public async static void SendQuestionMatchRequest(params Object[] args)
-        {
-            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
-            {
-                String json = new QuestionMatchRequestGen().GenerateRequest(args);
-
-                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
-            }
-        }
-
         public async static void SendQuestionNonsenseRequest(OffensivenessModelRequest offensivenessModel)
         {
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)

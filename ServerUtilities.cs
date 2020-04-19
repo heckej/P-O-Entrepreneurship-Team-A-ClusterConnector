@@ -8,7 +8,7 @@ namespace ClusterConnector
 {
     public static class ServerUtilities
     {
-        readonly static public String DATE_TIME_FORMAT = "MM/dd/yyyy HH:mm:ss";
+        readonly static public String DATE_TIME_FORMAT = "dd/mm/yyyy HH:mm:ss";
 #if DEBUG
         readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster_Copy;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
 #else
