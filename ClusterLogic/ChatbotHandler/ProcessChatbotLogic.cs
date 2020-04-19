@@ -176,19 +176,24 @@ namespace ClusterLogic.ChatbotHandler
         /// <returns> This functions should have a response, if the response == null or empty, then no response will be given through the websocket</returns>
         public static List<ChatbotRequestUnansweredQuestionsResponseModel> ProcessChatbotRequestAnswerToQuestion(List<ChatbotRequestUnansweredQuestionsModel> list)
         {
+            // What should this function do? --> see function below
             throw new NotImplementedException();
         }
 
 
-        public static ChatbotResponseUnansweredQuestionsModel retrieveOpenQuestions()
+        /// <summary>
+        /// Function to get a number of open questions from the database
+        /// </summary>
+        /// <param name="nbQuestions"></param>
+        /// <param name="user_id"></param>
+        /// <returns> Returns a model with a list of unanswered questions </returns>
+        public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(int nbQuestions, string user_id = null)
         {
-            //Example on how to turn a Query String into data from the SQL database
-
             List<DBQuestion> result = new List<DBQuestion>();
             DBManager manager = new DBManager(false); //this false 
 
             StringBuilder sb = new StringBuilder();
-            sb.Append("SELECT question_id, question ");
+            sb.Append($"SELECT TOP {nbQuestions} question_id, question ");
             sb.Append("FROM Questions q, Answers a");
             sb.Append("WHERE q.answer_id = a.answer id");
             sb.Append("AND a.answer = NULL;");
@@ -198,12 +203,6 @@ namespace ClusterLogic.ChatbotHandler
 
             while (reader.Read()) //reader.Read() reads entries one-by-one for all matching entries to the query
             {
-                //
-                //reader["xxx"] where 'xxx' is the collumn name of the particular table you get as result from the query.
-                //You get these values a generic 'Object' so typecasting to the proper value should be safe. eg. (int)reader["xxx"]
-                //
-               
-
                 DBQuestion answer = new DBQuestion();
                 answer.Question_id = (int)reader["question_id"];
                 answer.Question = (String)reader["question"];
@@ -217,7 +216,7 @@ namespace ClusterLogic.ChatbotHandler
                 openQuestions.Add(new ChatbotQuestionHasNoAnswerModel(result[i].Question, result[i].Question_id));
             }
 
-            return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), null);
+            return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), user_id);
         }
 
 
