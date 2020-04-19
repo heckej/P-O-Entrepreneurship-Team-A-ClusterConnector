@@ -17,9 +17,9 @@ namespace ClusterLogic.Models.ChatbotModels
 		public int user_id { get => _user_id; set => _user_id = value; }
 		public ChatbotQuestionHasNoAnswerModel[] openQuestions { get => _openQuestions; set => _openQuestions = value; }
 
-		public ChatbotResponseUnansweredQuestionsModel(List<ChatbotQuestionHasNoAnswerModel> openQuestions, int userID)
+		public ChatbotResponseUnansweredQuestionsModel(ChatbotQuestionHasNoAnswerModel[] openQuestions, int userID)
         {
-			_user_id = userId;
+			_user_id = userID;
 			_openQuestions = openQuestions; 
         }
 

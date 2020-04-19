@@ -51,6 +51,7 @@
     <Compile Include="Models\ChatbotModels\ChatbotNewQuestionModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotQuestionHasNoAnswerModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotRequestUnansweredQuestionsModel.cs" />
+    <Compile Include="Models\ChatbotModels\ChatbotResponseUnansweredQuestionsModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotUserModel.cs" />
     <Compile Include="Models\NLP\MatchQuestionModel.cs" />
     <Compile Include="Models\NLP\OffensivenessModel.cs" />

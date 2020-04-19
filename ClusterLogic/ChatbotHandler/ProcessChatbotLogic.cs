@@ -182,8 +182,6 @@ namespace ClusterLogic.ChatbotHandler
 
         public static ChatbotResponseUnansweredQuestionsModel retrieveOpenQuestions()
         {
-            ChatbotResponseUnansweredQuestionsModel cruqm = new ChatbotResponseUnansweredQuestionsModel();
-
             //Example on how to turn a Query String into data from the SQL database
 
             List<DBQuestion> result = new List<DBQuestion>();
@@ -213,18 +211,13 @@ namespace ClusterLogic.ChatbotHandler
             }
             manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
 
-
-            //**********************************
-
             List<ChatbotQuestionHasNoAnswerModel> openQuestions = new List<ChatbotQuestionHasNoAnswerModel>();
             for (int i = 0; i < result.Count; i++)
             {
-                openQuestions.Add(new ChatbotQuestionHasNoAnswerModel() { question = result[i].Question, question_id = result[i].Question_id });
+                openQuestions.Add(new ChatbotQuestionHasNoAnswerModel(result[i].Question, result[i].Question_id));
             }
 
-            cruqm.openQuestions = openQuestions.ToArray();
-
-            return cruqm;
+            return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), -1);
         }
 
 

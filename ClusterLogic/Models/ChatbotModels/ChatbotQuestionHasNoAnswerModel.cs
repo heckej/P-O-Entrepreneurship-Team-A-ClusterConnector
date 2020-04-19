@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ClusterLogic.Models.ChatbotModels
 {
-    class ChatbotQuestionHasNoAnswerModel
+    public class ChatbotQuestionHasNoAnswerModel
     {
         private int _user_id = -1;
         private String _question = null;
