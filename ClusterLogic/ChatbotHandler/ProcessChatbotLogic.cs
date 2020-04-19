@@ -19,7 +19,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="userID"></param>
         /// <param name="questionID"></param>
         /// <returns> Returns new answers on possible open questions for a certain user or question </returns>
-        public List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(int userID = -1, int questionID = -1)
+        public List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(string userID = null, int questionID = -1)
         {
             // connect to database and define query
             DBManager manager = new DBManager(false); //this false 
@@ -217,7 +217,7 @@ namespace ClusterLogic.ChatbotHandler
                 openQuestions.Add(new ChatbotQuestionHasNoAnswerModel(result[i].Question, result[i].Question_id));
             }
 
-            return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), -1);
+            return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), null);
         }
 
 

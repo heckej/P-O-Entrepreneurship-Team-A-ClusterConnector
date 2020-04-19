@@ -8,7 +8,7 @@ namespace ClusterLogic.Models.ChatbotModels
 {
     public class ChatbotNewQuestionModel : BaseModel
     {
-        private int _user_id = -1;
+        private string _user_id = null;
         private String _question = null;
         private int _chatbot_temp_id = -1;
 
@@ -18,12 +18,12 @@ namespace ClusterLogic.Models.ChatbotModels
 
         public ChatbotNewQuestionModel(Dictionary<string, string> dict)
         {
-            user_id = int.Parse(dict["user_id"]);
+            user_id = dict["user_id"];
             question = dict["question"];
             chatbot_temp_id = int.Parse(dict["chatbot_temp_id"]);
         }
 
-        public int user_id { get => _user_id; set => _user_id = value; }
+        public string user_id { get => _user_id; set => _user_id = value; }
         public string question { get => _question; set => _question = value; }
         public int chatbot_temp_id { get => _chatbot_temp_id; set => _chatbot_temp_id = value; }
 

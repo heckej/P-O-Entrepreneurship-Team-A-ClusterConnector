@@ -11,13 +11,13 @@ namespace ClusterLogic.Models.ChatbotModels
 	public class ChatbotResponseUnansweredQuestionsModel
 	{
 
-		private int _user_id = -1; 
+		private string _user_id = null; 
 		private ChatbotQuestionHasNoAnswerModel[] _openQuestions = null; 
 
-		public int user_id { get => _user_id; set => _user_id = value; }
+		public string user_id { get => _user_id; set => _user_id = value; }
 		public ChatbotQuestionHasNoAnswerModel[] openQuestions { get => _openQuestions; set => _openQuestions = value; }
 
-		public ChatbotResponseUnansweredQuestionsModel(ChatbotQuestionHasNoAnswerModel[] openQuestions, int userID)
+		public ChatbotResponseUnansweredQuestionsModel(ChatbotQuestionHasNoAnswerModel[] openQuestions, string userID)
         {
 			_user_id = userID;
 			_openQuestions = openQuestions; 
