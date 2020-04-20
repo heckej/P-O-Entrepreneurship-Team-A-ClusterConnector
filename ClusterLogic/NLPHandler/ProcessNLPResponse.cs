@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ClusterLogic.Models;
 using ClusterConnector.Manager;
-using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
 
@@ -109,12 +108,44 @@ namespace ClusterLogic.NLPHandler
                 return nullResponse;
             }
 
+            
+
             // Decide whether the given question is offensive
             bool offensive = false;
 
             if (offensivenessModel.prob > OffensiveThreshold)
             {
                 offensive = true;
+            }
+
+            // Check if the sentence contains a blacklisted word
+            DBManager manager = new DBManager(false); //this false 
+            String sentence = offensivenessModel.question;
+            String[] words = sentence.Split(' ');
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT forbidden_word");
+            sb.Append("FROM Blacklist");
+            String sql = sb.ToString();
+            List<String> blacklist = new List<String>();
+            // ToDo: make query to get blacklist and put result in placklist variable
+            using (SqlDataReader reader = manager.Read(sql))
+            {
+                // This query should only return 0 or 1 result
+                while (reader.Read())
+                {
+                    blacklist.Add(reader.GetString(0));
+                }
+            }
+            foreach(String word in words)
+            {
+                foreach(String offensiveWord in blacklist)
+                {
+                    if(String.Equals(word, offensiveWord))
+                    {
+                        offensive = true;
+                        break;
+                    }
+                }
             }
 
             // Return the result
@@ -135,9 +166,9 @@ namespace ClusterLogic.NLPHandler
         public static NonsenseLogicResponse ProcessNLPNonsenseResponse(NonsenseModelResponse nonsenseModelResponse)
         {
             // Create an "invalid model responses" response
+            // Check to see whether there is at least a valid answer given
             NonsenseLogicResponse nullResponse = new NonsenseLogicResponse();
 
-            // Check to see whether there is at least a valid answer given
             if (nonsenseModelResponse == null ||
                 !nonsenseModelResponse.IsComplete())
             {

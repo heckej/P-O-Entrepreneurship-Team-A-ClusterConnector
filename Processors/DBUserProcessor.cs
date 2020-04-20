@@ -21,7 +21,7 @@ namespace ClusterConnector.Processors
             }
 
             DBUser answer = new DBUser();
-            answer.User_id = (int)reader["user_id"];
+            answer.User_id = (String)reader["user_id"];
             if (DBNull.Value != reader["last_active"])
             {
                 answer.Last_active = ((DateTime)reader["last_active"]).ToString(ServerUtilities.DATE_TIME_FORMAT);
@@ -62,7 +62,7 @@ namespace ClusterConnector.Processors
             while (reader.Read())
             {
                 DBUser answer = new DBUser();
-                answer.User_id = (int)reader["user_id"];
+                answer.User_id = (String)reader["user_id"];
                 Object temp = reader["last_active"];
                 if (DBNull.Value != temp)
                 {

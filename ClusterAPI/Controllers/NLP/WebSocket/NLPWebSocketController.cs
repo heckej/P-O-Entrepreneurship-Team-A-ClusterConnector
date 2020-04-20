@@ -27,14 +27,14 @@ namespace ClusterAPI.Controllers.NLP
         [HttpGet]
         [Route("api/NLP/WS")]
         public HttpResponseMessage GetMessage()
-
         {
-            if (!new NLPSecurity().Authenticate(Request.Headers.GetValues("Authorization")))
+            Request.Headers.TryGetValues("Authorization", out IEnumerable<string> res);
+            if (!new NLPSecurity().Authenticate(res))
             {
                 return new HttpResponseMessage(HttpStatusCode.Forbidden);
             }
 
-            if (HttpContext.Current.IsWebSocketRequest)
+            if (true || HttpContext.Current.IsWebSocketRequest)
             {
 
                 HttpContext.Current.AcceptWebSocketRequest(ProcessRequestInternal);
@@ -91,6 +91,22 @@ namespace ClusterAPI.Controllers.NLP
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
                 String json = JsonSerializer.Serialize(offensivenessModel);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        internal async static void SendTestToNLP()
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                OffensivenessModelRequest omr = new OffensivenessModelRequest();
+                omr.msg_id = 65;
+                omr.question = "It's fucking snowing!";
+                omr.question_id = 25;
+                omr.action = "ESTIMATE_OFFENSIVENESS";
+
+                String json = JsonSerializer.Serialize(omr);
 
                 await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
@@ -228,15 +244,31 @@ namespace ClusterAPI.Controllers.NLP
                     ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS:
-                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList().First());
-                    break;
-                case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
-                    var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
-                    if (result is NonsenseLogicResponse)
                     {
-                        SendQuestionOffenseRequest((NonsenseLogicResponse)result);
+                        var result = ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList().First());
+                        if (result is OffensivenessLogicResponse)
+                        {
+                            Echo(result);
+                        }
                     }
                     break;
+                case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
+                    { 
+                        var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
+                        if (result is NonsenseLogicResponse)
+                        {
+                            SendQuestionOffenseRequest((NonsenseLogicResponse)result);
+                        }
+                     }
+                    break;
+            }
+        }
+
+        private async void Echo(OffensivenessLogicResponse result)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("ECHO ECHO TO NLP"), 0, "ECHO ECHO TO NLP".Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
     }
