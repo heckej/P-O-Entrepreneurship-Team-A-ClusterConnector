@@ -9,6 +9,10 @@ namespace ClusterAPI.Controllers.Security
     {
         public bool Authenticate(IEnumerable<string> enumerable)
         {
+            if (enumerable == null)
+            {
+                return false;
+            }
             if (enumerable.First().Equals("843iu233d3m4pxb1"))
             {
                 return true;

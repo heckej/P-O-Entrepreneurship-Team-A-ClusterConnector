@@ -29,8 +29,8 @@ namespace ClusterAPI.Controllers.NLP
         [HttpGet]
         [Route("api/Chatbot/WS")]
         public HttpResponseMessage GetMessage()
-
         {
+            Request.Headers.TryGetValues("Authorization", out IEnumerable<string> res);
             if (!new ChatbotSecurity().Authenticate(Request.Headers.GetValues("Authorization")))
             {
                 return new HttpResponseMessage(HttpStatusCode.Forbidden);
@@ -131,6 +131,7 @@ namespace ClusterAPI.Controllers.NLP
                 }
 
                 String jsonResponse = usedEncoding.GetString(buffer.ToArray(),0,retVal.Count);
+                System.Diagnostics.Debug.WriteLine(jsonResponse);
 
                 HandleResponse(ProcessResponse(jsonResponse));
 
