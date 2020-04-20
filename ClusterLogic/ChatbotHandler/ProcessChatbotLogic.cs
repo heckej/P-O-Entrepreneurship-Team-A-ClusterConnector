@@ -19,14 +19,14 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="userID"></param>
         /// <param name="questionID"></param>
         /// <returns> Returns new answers on possible open questions for a certain user or question </returns>
-        public List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(string userID = null, int questionID = -1)
+        public static List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(string userID = null, int questionID = -1)
         {
             // connect to database and define query
-            DBManager manager = new DBManager(false); //this false 
-            String query = "Select question_id, question, answer_id, answer " +
-                           "from dbo.Anwers as a and dbo.Questions as q " +
-                           "where q.question_id == '" + questionID + "' and q.answer_id == a.answer_id " +
-                           "and a.approved == true;";
+            DBManager manager = new DBManager(true);
+            String query = "Select q.question_id, q.question, q.answer_id, a.answer " +
+                           "from dbo.Answers a, dbo.Questions q " +
+                           $"where q.question_id = {questionID} and q.answer_id = a.answer_id;";// and " +
+                           //"a.approved = 'true';";
 
             // execute query and read answer
             DBQuestion sqlResult = null;
@@ -73,7 +73,7 @@ namespace ClusterLogic.ChatbotHandler
             //Example on how to turn a Query String into data from the SQL database
 
             List<DBQuestion> result = new List<DBQuestion>();
-            DBManager manager = new DBManager(false); //this false 
+            DBManager manager = new DBManager(true);
 
             StringBuilder sb = new StringBuilder();
             sb.Append("SELECT * ");
@@ -139,9 +139,9 @@ namespace ClusterLogic.ChatbotHandler
 
             // connect to database and define query
             DBManager manager = new DBManager(false); //this false 
-            String query = "Select answer_id, answer " +
-                           "from dbo.Anwers as a and dbo.Questions as q " +
-                           "where q.question_id == '" + question_id + "' and q.answer_id == a.answer_id ";
+            String query = "Select a.answer_id, a.answer " +
+                           "from dbo.Anwers as a, dbo.Questions as q " +
+                           $"where q.question_id = {question_id} and q.answer_id = a.answer_id ";
                            // "+ and a.approved == true;";
 
             // execute query and read answer
@@ -193,7 +193,7 @@ namespace ClusterLogic.ChatbotHandler
             DBManager manager = new DBManager(false); //this false 
 
             StringBuilder sb = new StringBuilder();
-            sb.Append($"SELECT TOP {nbQuestions} question_id, question ");
+            sb.Append($"SELECT TOP {nbQuestions} q.question_id, q.question ");
             sb.Append("FROM Questions q, Answers a");
             sb.Append("WHERE q.answer_id = a.answer id");
             sb.Append("AND a.answer = NULL;");

@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ClusterLogic.Models;
 using ClusterConnector.Manager;
-using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
 
