@@ -2,6 +2,10 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
+v1.1.1
+---------------------------------------
+* When in debugging mode, the exception `StopAsyncIteration` is no longer printed where it occurred before.
+
 v1.1.0
 ---------------------------------------
 * New `authorization` argument in `Connector` and `WebsocketThread`. This argument will become compulsory in a future

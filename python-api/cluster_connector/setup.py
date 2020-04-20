@@ -12,7 +12,7 @@ setup(
     install_requires=['websockets'],
     python_requires='>=3.7, <4',
     # *strongly* suggested for sharing
-    version='1.1.0',
+    version='1.1.1',
     # The license can be anything you like
     license='MIT',
     description='An API to communicate with the Cluster Connector server',
