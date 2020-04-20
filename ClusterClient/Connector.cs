@@ -347,11 +347,11 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.
         /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
-        /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
-        /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        public async Task<ServerAnswer> SendQuestionAsync(string userID, string question, double timeout=5)
         {
             Console.WriteLine("Send question method called.");
+            this.CheckoutWebSocket();
             UserQuestion request = new UserQuestion
             {
                 user_id = userID,
@@ -360,10 +360,26 @@ namespace ClusterClient
             };
             this.AddMessageToSendQueue(request);
                 var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout));
-            if (answer == null)
+            /*if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
-                    "Try again later or use a higher timeout.");
+                    "Try again later or use a higher timeout.");*/
             return answer;
+        }
+
+        /// <summary>
+        /// Sends a given question from a given user to the server and returns the answer from the server.
+        /// </summary>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="question">The question to which an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A server answer object with a question ID assigned to the given question by the server.
+        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// question ID to the given question, but it hasn't found an answer yet.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        [Obsolete("SendQuestion is deprecated, please use SendQuestionAsync instead.")]
+        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
+        {
+            return await this.SendQuestionAsync(userID, question, timeout);
         }
 
         /// <summary>
@@ -485,6 +501,7 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
+        [Obsolete("GetQuestionsToBeAnswered is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
         public List<ServerMessage> GetQuestionsToBeAnswered()
         {
             return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
@@ -496,6 +513,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
         /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
         ///          'null' in case no questions messages were found.</returns>
+        [Obsolete("GetQuestionsAddressedToUser is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
         public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(string userID)
         {
             try
@@ -663,6 +681,8 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        [Obsolete("AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs) is deprecated," +
+            " please use AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers) instead.")]
         public void AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
         {
             UserAnswersMessage answers = new UserAnswersMessage
