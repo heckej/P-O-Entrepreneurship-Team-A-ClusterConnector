@@ -532,7 +532,9 @@ namespace ClusterClient
         {
             try
             {
-                return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+                ISet < ServerQuestionsMessage > questions = new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+                this.receivedMessages[Actions.Questions][userID].Clear();
+                return questions;
             }
             catch(KeyNotFoundException)
             {
