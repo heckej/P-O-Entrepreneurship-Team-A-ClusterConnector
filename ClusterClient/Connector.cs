@@ -426,12 +426,15 @@ namespace ClusterClient
 
         /// <summary>
         /// Returns all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.
+        /// This method is not idempotent, which means that calling it twice does not necessarily return the same result twice.
         /// </summary>
         /// <param name="userID">The user ID of the user who wants to receive answers to previously asked questions.</param>
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
         public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
-            return new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            this.receivedMessages[Actions.Answer][userID].Clear();
+            return answers;
         }
 
         /// <summary>
