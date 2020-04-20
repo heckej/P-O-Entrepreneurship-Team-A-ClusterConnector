@@ -52,6 +52,7 @@ class Connector(object):
     .. versionadded::0.1.0
     .. versionchanged::0.2.0
     .. versionchanged::1.0.0
+    .. versionchanged::1.1.0
 
     Raises:
         Exception: Something went wrong while trying to communicate with the server. The range of these exceptions is
@@ -77,22 +78,25 @@ class Connector(object):
     .. versionadded::1.0.0
     """
 
-    __version__ = '1.0.0'
+    __version__ = '1.1.0'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
-                 websocket_connection_timeout=10):
+                 websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
         """
         Args:
             websocket_uri: A custom uri referencing the websocket host that should be used.
 
             websocket_connection_timeout: The timeout to be set for the websocket connection before giving up. By
                 default set to 10 seconds.
+
+            authorization: The authorization to be used to get access to the websocket host.
         """
         self._tasks = list()  # store non processed received tasks
         self._tasks_in_progress = dict()  # keep track of work in progress
 
         self._websocket_connection_timeout = websocket_connection_timeout
         self._websocket_uri = websocket_uri
+        self._authorization = authorization
         self._reply_queue = collections.deque()  # keep list of replies to send
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
@@ -124,6 +128,7 @@ class Connector(object):
         self._websocket_thread = websocket_thread.WebsocketThread(self._websocket_uri, self._websocket_exceptions,
                                                                   self._add_tasks,
                                                                   self._reply_queue, asyncio.get_event_loop(),
+                                                                  self._authorization,
                                                                   self._websocket_connection_timeout)
         self._websocket_thread.start()
         logging.debug("Thread " + self._websocket_thread.getName() + " started.")

@@ -12,6 +12,7 @@ class WebsocketThread(threading.Thread):
         them in a `tasks_queue`.
 
     .. versionadded::0.2.0
+    .. versionchanged::1.1.0
 
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
@@ -20,10 +21,10 @@ class WebsocketThread(threading.Thread):
             at initialisation.
     """
 
-    __version__ = '0.2.0'
+    __version__ = '1.1.0'
 
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
-                 reply_queue: collections.deque, loop, connection_timeout: float):
+                 reply_queue: collections.deque, loop, authorization, connection_timeout: float):
         """
         Args:
             websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
@@ -32,6 +33,8 @@ class WebsocketThread(threading.Thread):
             add_tasks: An instance method of the calling class that handles received messages.
             reply_queue: A queue in which the messages to be sent can be found.
             loop: The loop to be set as the asynchronous event loop of this thread.
+            authorization: The value to be set as the `Authorization` header value to be sent on websocket connection
+                set up.
             connection_timeout: The timeout to be set when connecting to the websocket host.
         """
         threading.Thread.__init__(self)
@@ -45,7 +48,7 @@ class WebsocketThread(threading.Thread):
         self._loop = loop  # reference to the current loop in which async methods should be called
         asyncio.set_event_loop(loop)
 
-        self._authorization = "843iu233d3m4pxb1"
+        self._authorization = authorization  # authorization value to authorize to the server
         self._headers = {"Authorization": self._authorization}
 
     def run(self):
