@@ -102,7 +102,7 @@ namespace ClusterLogic.ChatbotHandler
 
 
             //**********************************
-            mqmr.action = "MATCH_QUESTIONS"; //Standard
+            mqmr.action = "MATCH_QUESTIONS".ToLower(); //Standard
             mqmr.question = list[0].question;
             mqmr.msg_id = 0; //Currently not really used
             mqmr.question_id = 0; //This id does not exist at this point

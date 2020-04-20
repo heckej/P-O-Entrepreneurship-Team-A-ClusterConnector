@@ -104,7 +104,7 @@ namespace ClusterAPI.Controllers.NLP
                 omr.msg_id = 65;
                 omr.question = "It's fucking snowing!";
                 omr.question_id = 25;
-                omr.action = "ESTIMATE_OFFENSIVENESS";
+                omr.action = "ESTIMATE_OFFENSIVENESS".ToLower();
 
                 String json = JsonSerializer.Serialize(omr);
 

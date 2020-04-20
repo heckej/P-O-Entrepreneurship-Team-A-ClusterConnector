@@ -21,7 +21,7 @@ namespace ClusterLogic.Models
             this.question = chatbotGivenAnswerModel.answer;
             this.question_id = chatbotGivenAnswerModel.question_id;
             this.msg_id = -1; //TODO: what should this be?
-            this.action = "IS_NONSENSE";
+            this.action = "IS_NONSENSE".ToLower();
         }
 
         public OffensivenessModelRequest(NonsenseModelResponse nonsenseModelResponse)
@@ -29,7 +29,7 @@ namespace ClusterLogic.Models
             this.msg_id = nonsenseModelResponse.msg_id;
             this.question = nonsenseModelResponse.question;
             this.question_id = nonsenseModelResponse.question_id;
-            this.action = "ESTIMATE_OFFENSIVENESS";
+            this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
         public int question_id { get => _question_id; set => _question_id = value; }
