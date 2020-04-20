@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ClusterLogic.Models;
 using ClusterConnector.Manager;
-using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
 
@@ -16,12 +15,12 @@ namespace ClusterLogic.NLPHandler
         /// <summary>
         /// The threshold to find question matches.
         /// </summary>
-        private static double MatchThreshold { get; } = 0.75;
+        private static double MatchThreshold { get; } = 0.5;
 
         /// <summary>
         /// The threshold to find offensive sentences.
         /// </summary>
-        private static double OffensiveThreshold { get; } = 0.8;
+        private static double OffensiveThreshold { get; } = 0.6;
 
         /// <summary>
         /// Process an NLPMatchQuestionResponse and turn it into a MatchQuestionLogicResponse containing an answer,
@@ -120,6 +119,7 @@ namespace ClusterLogic.NLPHandler
             }
 
             // Check if the sentence contains a blacklisted word
+            DBManager manager = new DBManager(false); //this false 
             String sentence = offensivenessModel.question;
             String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
@@ -136,8 +136,6 @@ namespace ClusterLogic.NLPHandler
                     blacklist.Add(reader.GetString(0));
                 }
             }
-            DBManager manager = new DBManager(false);
-            String[] words = sentence.Split(' ');
             foreach(String word in words)
             {
                 foreach(String offensiveWord in blacklist)
