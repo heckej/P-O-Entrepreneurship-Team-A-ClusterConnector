@@ -543,6 +543,24 @@ namespace ClusterClient
         }
 
         /// <summary>
+        /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
+        /// <returns>A set containing messages of action <paramref name="action"/> addressed to the user identified by the given 
+        /// <paramref name="userID"/>. An empty set if no messages were found.</returns>
+        private ISet<ServerMessage> GetActionMessagesAddressedToUser(string action, string userID)
+        {
+            try
+            {
+                return new HashSet<ServerMessage>(this.receivedMessages[action][userID]);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new HashSet<ServerMessage>();
+            }
+        }
+
+        /// <summary>
         /// Creates a request to the server to receive unanswered questions for a user.
         /// </summary>
         /// <param name="userID">The user ID of the user who should answer the questions.</param>
