@@ -21,7 +21,7 @@ class WebsocketThread(threading.Thread):
             at initialisation.
     """
 
-    __version__ = '1.1.0'
+    __version__ = '1.1.1'
 
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
                  reply_queue: collections.deque, loop, authorization, connection_timeout: float):
@@ -66,6 +66,8 @@ class WebsocketThread(threading.Thread):
     async def _receive_handler(self):
         """Checks for new messages from server and processes them.
 
+        .. versionchanged::1.1.1
+
         Sets self.stop to True when the websocket raises a `ConnectionClosedError`.
 
         Returns: None if the websocket raises a `ConnectionClosedError`.
@@ -81,7 +83,9 @@ class WebsocketThread(threading.Thread):
                 self._exception_queue.put(ex)  # pass exception to caller of this thread
                 self.stop = True  # return method and stop this thread
             except Exception as e:
-                logging.debug(e)
+                # Only log non async iteration
+                if e is not StopAsyncIteration:
+                    logging.debug(e)
 
     async def _process_received_message(self, message):
         """Adds valid received tasks to waiting tasks queue."""
