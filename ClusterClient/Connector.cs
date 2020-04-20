@@ -470,6 +470,14 @@ namespace ClusterClient
         /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
         /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>.
         /// Else, null is returned.</returns>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>If there was a server answer for the user identified with the given <paramref name="userID"/> 
+        ///             among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>,
+        ///             then the server answer has been removed now from the received messages.</description>
+        ///     </item>
+        /// </list>
         private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID)
         {
             try
@@ -478,7 +486,10 @@ namespace ClusterClient
                     try
                     {
                         if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID)
-                            return (ServerAnswer) answer;
+                        {
+                            this.receivedMessages[Actions.Answer][userID].Remove(answer);
+                            return (ServerAnswer)answer;
+                        }
                     }
                     catch (InvalidCastException)
                     {
