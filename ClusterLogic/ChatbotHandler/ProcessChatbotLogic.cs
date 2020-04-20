@@ -18,7 +18,27 @@ namespace ClusterLogic.ChatbotHandler
         /// <returns> Returns new answers on possible open questions for a certain user or question </returns>
         public List<ChatbotNewAnswerModel> CheckAndGetNewAnswers(int userID = -1, int questionID = -1)
         {
-            return null;
+            // IMPLEMENTATION BY LOUIS
+
+            // connect to database and define query
+            string connectionString = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;Persist Security Info=True;User ID=Martijn;Password=sY6WRDL2pY7qmsY3";
+            String query = "Select answer from dbo.Anwers as a and dbo.Questions as q where q.question_id == '" + questionID + "' and q.answer_id == a.answer_id"
+                " and a.approved == true;";
+
+            // execute query and read answer
+            List<ChatbotNewAnswerModel> result = null;
+            using(var(connection = new SqlConection(connectionString)))
+            {
+                var reader = command.ExecuteReade();
+                while (reader.Read())
+                {
+                    result = reader.GetString(0);
+                }
+                reader.Close();
+            }
+            connectionString.Close();
+            
+            return result;
         }
 
 

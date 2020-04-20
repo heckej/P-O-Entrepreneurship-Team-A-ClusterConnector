@@ -78,15 +78,15 @@ namespace ClusterClient
         /// <list type="table">
         ///     <item>
         ///         <term>Invar</term>
-        ///         <description>The set belonging to a certain Action can only contain instances of the ServerMessage subclass related to that
-        ///         Action. E.g. Questions can contain instances of ServerQuestionsMessage, Answer of ServerAnswer.</description>
+        ///         <description>The set belonging to a certain action can only contain instances of the ServerMessage subclass related to that
+        ///         action. E.g. Questions can contain instances of ServerQuestionsMessage, answer of ServerAnswer.</description>
         ///     </item>
         /// </list>
-        private readonly IDictionary<string, Dictionary<int, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<int, ISet<ServerMessage>>>()
+        private readonly IDictionary<string, Dictionary<string, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<string, ISet<ServerMessage>>>()
             {
-                { Actions.Default, new Dictionary<int, ISet<ServerMessage>>() },
-                { Actions.Questions, new Dictionary<int, ISet<ServerMessage>>() },
-                { Actions.Answer, new Dictionary<int, ISet<ServerMessage>>() }
+                { Actions.Default, new Dictionary<string, ISet<ServerMessage>>() },
+                { Actions.Questions, new Dictionary<string, ISet<ServerMessage>>() },
+                { Actions.Answer, new Dictionary<string, ISet<ServerMessage>>() }
             };
 
         /// <summary>
@@ -145,7 +145,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Checks whether the websocket thread is still alive and whether it has passed exceptions.
-        /// <exception>The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         /// </summary>
         private void CheckoutWebSocket()
         {
@@ -188,12 +188,37 @@ namespace ClusterClient
             if (parsedMessage == null)
                 // Ignore useless messages.
                 return;
-            if (Actions.GetActions().Contains(parsedMessage.Action))
-                action = parsedMessage.Action;
+            if (Actions.GetActions().Contains(parsedMessage.action))
+                action = parsedMessage.action;
             else
                 action = Actions.Default;
-            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.UserID);
-            this.receivedMessages[action][parsedMessage.UserID].Add(parsedMessage);
+            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
+            this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
+        }
+
+        /// <summary>
+        /// Removes a given server message from the received messages dictionary.
+        /// </summary>
+        /// <param name="message">The server message to be removed from the received messages.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If the given <paramref name="message"/> was in the received message dictionary under the its <paramref name="action"/>, 
+        ///         then it has been removed now.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void RemoveReceivedMessage(ServerMessage message)
+        {
+            try
+            {
+                this.receivedMessages[message.action][message.user_id].Remove(message);
+            } 
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Tried to remove message from received messages, but a key error occurred: " + e);
+            }
         }
 
         /// <summary>
@@ -213,7 +238,7 @@ namespace ClusterClient
         ///         </description>
         ///     </item>
         /// </list>
-        private void InitializeReceivedMessagesActionForUser(string action, int userID)
+        private void InitializeReceivedMessagesActionForUser(string action, string userID)
         {
             if (!this.receivedMessages[action].ContainsKey(userID))
                 this.receivedMessages[action].Add(userID, new HashSet<ServerMessage>());
@@ -233,7 +258,7 @@ namespace ClusterClient
                 // check which type of server message
                 ServerMessage message = JsonSerializer.Deserialize<ServerMessage>(serverMessage);
                 // deserialise to specific type: ServerAnswer, ServerQuestionsMessage ...
-                switch (message.Action)
+                switch (message.action)
                 {
                     case Actions.Answer:
                         message = JsonSerializer.Deserialize<ServerAnswer>(serverMessage);
@@ -303,24 +328,41 @@ namespace ClusterClient
         /// <param name="question">The question to which an answer is required.</param>
         /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
         /// <returns>A server answer object with a question ID assigned to the given question by the server.
-        /// In case the <c>Answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
-        /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
-        /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(int userID, string question, double timeout=5)
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        public async Task<ServerAnswer> SendQuestionAsync(string userID, string question, double timeout=5)
         {
+            Console.WriteLine("Send question method called.");
+            this.CheckoutWebSocket();
             UserQuestion request = new UserQuestion
             {
-                UserID = userID,
-                Question = question,
-                TempChatbotID = this.GetNextTempChatbotID()
+                user_id = userID,
+                question = question,
+                chatbot_temp_id = this.GetNextTempChatbotID()
             };
             this.AddMessageToSendQueue(request);
-                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.TempChatbotID, userID, timeout));
-            if (answer == null)
+                var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout));
+            /*if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
-                    "Try again later or use a higher timeout.");
+                    "Try again later or use a higher timeout.");*/
             return answer;
+        }
+
+        /// <summary>
+        /// Sends a given question from a given user to the server and returns the answer from the server.
+        /// </summary>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="question">The question to which an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A server answer object with a question ID assigned to the given question by the server.
+        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// question ID to the given question, but it hasn't found an answer yet.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        [Obsolete("SendQuestion is deprecated, please use SendQuestionAsync instead.")]
+        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
+        {
+            return await this.SendQuestionAsync(userID, question, timeout);
         }
 
         /// <summary>
@@ -333,7 +375,7 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server 
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, double timeout)
+        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, string userID, double timeout)
         {
             // set timeout and wait for answer
             // convert timeout to milliseconds
@@ -365,12 +407,15 @@ namespace ClusterClient
 
         /// <summary>
         /// Returns all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.
+        /// This method is not idempotent, which means that calling it twice does not necessarily return the same result twice.
         /// </summary>
         /// <param name="userID">The user ID of the user who wants to receive answers to previously asked questions.</param>
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<ServerAnswer> GetNewAnswersForUser(int userID)
+        public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
-            return new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            this.receivedMessages[Actions.Answer][userID].Clear();
+            return answers;
         }
 
         /// <summary>
@@ -381,12 +426,12 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
         /// <returns>True if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
         /// among the received messages which has the given <paramref name="questionID"/> as its question ID.</returns>
-        public bool HasAnswerToQuestionOfUser(int questionID, int userID)
+        public bool HasAnswerToQuestionOfUser(int questionID, string userID)
         {
             foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                 try
                 {
-                    if (((ServerAnswer)answer).QuestionID == questionID)
+                    if (((ServerAnswer)answer).question_id == questionID)
                         return true;
                 } 
                 catch(InvalidCastException)
@@ -401,20 +446,31 @@ namespace ClusterClient
         /// Checks whether the server has an answer to the question of the given user, identified by its <paramref name="chatbotTempID"/> 
         /// and <paramref name="userID"/>.
         /// </summary>
-        /// <param name="chatbotTempID">The <c>ChatbotTempID</c> of the question for which is checked whether an answer is available.</param>
+        /// <param name="chatbotTempID">The <c>chatbot_temp_id</c> of the question for which is checked whether an answer is available.</param>
         /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
         /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
-        /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>ChatbotTempID</c>.
+        /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>.
         /// Else, null is returned.</returns>
-        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>If there was a server answer for the user identified with the given <paramref name="userID"/> 
+        ///             among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>,
+        ///             then the server answer has been removed now from the received messages.</description>
+        ///     </item>
+        /// </list>
+        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID)
         {
             try
             {
                 foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                     try
                     {
-                        if (((ServerAnswer)answer).ChatbotTempID == chatbotTempID)
-                            return (ServerAnswer) answer;
+                        if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID)
+                        {
+                            this.receivedMessages[Actions.Answer][userID].Remove(answer);
+                            return (ServerAnswer)answer;
+                        }
                     }
                     catch (InvalidCastException)
                     {
@@ -426,7 +482,7 @@ namespace ClusterClient
             }
             catch(KeyNotFoundException)
             {
-                // userID not in message dictionary under Answer key.
+                // userID not in message dictionary under answer key.
             }
             return null;
         }
@@ -440,6 +496,7 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
+        [Obsolete("GetQuestionsToBeAnswered is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
         public List<ServerMessage> GetQuestionsToBeAnswered()
         {
             return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
@@ -449,10 +506,140 @@ namespace ClusterClient
         /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
-        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
+        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
+        ///          'null' in case no questions messages were found.</returns>
+        [Obsolete("GetQuestionsAddressedToUser is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
+        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(string userID)
         {
-            return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions][userID]);
+            try
+            {
+                ISet < ServerQuestionsMessage > questions = new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+                this.receivedMessages[Actions.Questions][userID].Clear();
+                return questions;
+            }
+            catch(KeyNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
+        /// <returns>A set containing messages of action <paramref name="action"/> addressed to the user identified by the given 
+        /// <paramref name="userID"/>. An empty set if no messages were found.</returns>
+        private ISet<ServerMessage> GetActionMessagesAddressedToUser(string action, string userID)
+        {
+            try
+            {
+                return new HashSet<ServerMessage>(this.receivedMessages[action][userID]);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new HashSet<ServerMessage>();
+            }
+        }
+
+        /// <summary>
+        /// Creates a request to the server to receive unanswered questions for a user.
+        /// </summary>
+        /// <param name="userID">The user ID of the user who should answer the questions.</param>
+        /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestionsAsync(string userID, double timeout = 5)
+        {
+            Console.WriteLine("Request questions method called.");
+            this.CheckoutWebSocket();
+            // Create set of questions
+            ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            // Check if questions offline -> probably not, but if there are any, add them
+            ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet < ServerQuestionsMessage >) this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
+            if (storedQuestionsMessages.Count > 0)
+                foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
+                {
+                    if (questionsMessage.answer_questions.Count > 0)
+                        foreach (ServerQuestion question in questionsMessage.answer_questions)
+                            questions.Add(question);
+
+                }
+            else
+            {
+                // Create request for server
+                UserRequest request = new UserRequest
+                {
+                    user_id = userID,
+                    request = Requests.UnansweredQuestions
+                };
+                this.AddMessageToSendQueue(request);
+
+                // Wait until questions received or timeout
+                var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
+                
+                if (answer.Count > 0)
+                {
+                    ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
+                    // Fill set of questions
+                    foreach (ServerQuestionsMessage questionsMessage in questionsMessages)
+                    {
+                        if (questionsMessage.answer_questions.Count > 0)
+                            foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                questions.Add(question);
+                        // Remove message from cache
+                        this.RemoveReceivedMessage(questionsMessage);
+                    }
+
+                }
+            }
+            return questions;
+        }
+
+        /// <summary>
+        /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
+        /// by the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="tempChatbotID"></param>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A set of server questions message objects.
+        ///          'null' in case no response was received before timeout.</returns>
+        private ISet<ServerMessage> GetResponseFromServerToRequest(string userID, string expectedResponseAction, double timeout)
+        {
+            Console.WriteLine("Waiting for questions from server.");
+            // set timeout and wait for answer
+            // convert timeout to milliseconds
+            timeout *= 1000;
+            bool found = false;
+            ISet<ServerMessage> answer = null;
+            try
+            {
+                answer = this.receivedMessages[expectedResponseAction][userID];
+                found = answer.Count > 0;
+            }
+            catch(KeyNotFoundException)
+            {
+                var watch = Stopwatch.StartNew();
+                double elapsedMs = 0;
+                while (!found & !(elapsedMs > timeout))
+                {
+                    elapsedMs = watch.ElapsedMilliseconds;
+                    try
+                    {
+                        answer = this.receivedMessages[expectedResponseAction][userID];
+                        found = answer != null;
+                    } 
+                    catch(KeyNotFoundException)
+                    {
+                        answer = null;
+                    }
+                }
+                watch.Stop();
+                Console.WriteLine("Found response to request: " + answer);
+                if (!found)
+                    return null;
+            }
+            
+            return answer;
         }
 
 
@@ -468,12 +655,12 @@ namespace ClusterClient
         /// <param name="questionID">The question ID identifying the question for which an <paramref name="answer"/> is given.</param>
         /// <param name="answer">An answer to the question identified by the given <paramref name="questionID"/>.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, int questionID, string answer)
+        public void AnswerQuestion(string userID, int questionID, string answer)
         {
             UserAnswer userAnswer = new UserAnswer
             {
-                QuestionID = questionID,
-                Answer = answer
+                question_id = questionID,
+                answer = answer
             };
             this.AnswerQuestion(userID, userAnswer);
         }
@@ -484,11 +671,11 @@ namespace ClusterClient
         /// <param name="userID">The user ID identifying the user who submitted the answer.</param>
         /// <param name="answer">The answer to be sent.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, UserAnswer answer)
+        public void AnswerQuestion(string userID, UserAnswer answer)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             answers.AddAnswer(answer);
             this.AddMessageToSendQueue(answers);
@@ -507,11 +694,13 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
+        [Obsolete("AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs) is deprecated," +
+            " please use AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers) instead.")]
+        public void AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             foreach(Tuple<int, string> questionIDAnswerPair in questionIDAnswerPairs)
             {
@@ -519,15 +708,13 @@ namespace ClusterClient
                 string answer = questionIDAnswerPair.Item2;
                 UserAnswer userAnswer = new UserAnswer
                 {
-                    QuestionID = questionID,
-                    Answer = answer
+                    question_id = questionID,
+                    answer = answer
                 };
                 answers.AddAnswer(userAnswer);
             }
             this.AddMessageToSendQueue(answers);
         }
-
-
 
         /// <summary>
         /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
@@ -542,11 +729,11 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
+        public void AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
-                UserID = userID
+                user_id = userID
             };
             answers.AddAnswers(userAnswers);
             this.AddMessageToSendQueue(answers);
@@ -567,14 +754,14 @@ namespace ClusterClient
         /// <param name="feedback">A feedback code related to the feedback. This could be as simple as 'good' = 1 and 'bad' = 0, 
         /// or more advanced using feelings like 'happy' = 0, 'angry' = 1, 'sad' = 2 ...  as long as the server understands it well.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
+        public void SendFeedbackOnAnswer(string userID, int answerID, int questionID, int feedback)
         {
             UserFeedback userFeedback = new UserFeedback
             {
-                UserID = userID,
-                AnswerID = answerID,
-                QuestionID = questionID,
-                FeedbackCode = feedback
+                user_id = userID,
+                answer_id = answerID,
+                question_id = questionID,
+                feedback_code = feedback
             };
             this.AddMessageToSendQueue(userFeedback);
         }
