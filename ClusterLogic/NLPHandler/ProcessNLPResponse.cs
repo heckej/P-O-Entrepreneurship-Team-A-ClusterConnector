@@ -120,6 +120,7 @@ namespace ClusterLogic.NLPHandler
             }
 
             // Check if the sentence contains a blacklisted word
+            DBManager manager = new DBManager(false); //this false 
             String sentence = offensivenessModel.question;
             String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
@@ -136,8 +137,6 @@ namespace ClusterLogic.NLPHandler
                     blacklist.Add(reader.GetString(0));
                 }
             }
-            DBManager manager = new DBManager(false);
-            String[] words = sentence.Split(' ');
             foreach(String word in words)
             {
                 foreach(String offensiveWord in blacklist)
