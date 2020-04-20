@@ -155,7 +155,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Checks whether the websocket thread is still alive and whether it has passed exceptions.
-        /// <exception>The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         /// </summary>
         private void CheckoutWebSocket()
         {
@@ -513,9 +513,11 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user who should answer the questions.</param>
         /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         public async Task<ISet<ServerQuestion>> RequestUnansweredQuestionsAsync(string userID, double timeout = 5)
         {
             Console.WriteLine("Request questions method called.");
+            this.CheckoutWebSocket();
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
             // Check if questions offline -> probably not, but if there are any, add them
@@ -680,8 +682,6 @@ namespace ClusterClient
             }
             this.AddMessageToSendQueue(answers);
         }
-
-
 
         /// <summary>
         /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
