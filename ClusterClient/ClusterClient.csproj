@@ -4,13 +4,34 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <UserSecretsId>1062b6d7-a0b4-4604-8c53-edb65d01155c</UserSecretsId>
     <PackageId>ClusterClient</PackageId>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
     <Authors>heckej</Authors>
     <Company>P&amp;O CW Entrepreneurship - Team A</Company>
     <PackageDescription>A package that provides methods to communicate with a Cluster Connector Server.</PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>New in this version: everything.</PackageReleaseNotes>
+    <PackageReleaseNotes>A lot of incompatible changes here, but no major version number change, because these changes are still considered to be part of the pre-release development phase.
+* Anywhere a `user_id` or `userID` is used the datatype of this variable/property/... has changed from `int32` to `string`! This has effect on the following message models: 
+   * `ServerMessage` and derivatives
+   * `UserMessage` and derivatives
+and also on the following methods in the class `Connector`:
+   * `AnswerQuestion`
+   * `AnswerQuestions`
+   * `GetNewAnswersForUser`
+   * `GetQuestionsAddressedToUser`
+   * `HasAnswerToQuestionOfUser`
+   * `SendFeedbackOnAnswer`
+* A new (preferred) method has been added to request questions: `RequestUnansweredQuestionsAsync(string userID, double timeout)`.
+* The method `SendQuestion` has been renamed to `SendQuestionAsync`.
+Some deprecated methods will be removed in a future release.
+* `AnswerQuestions(string userID, ICollection&lt;Tuple&lt;int, string&gt;&gt; questionIDAnswerPairs)` is deprecated, please use `AnswerQuestions(string userID, ICollection&lt;UserAnswer&gt; userAnswers)` instead.
+* `GetQuestionsAddressedToUser` is deprecated, please use `RequestUnansweredQuestionsAsync` instead.
+* `GetQuestionsToBeAnswered` is deprecated, please use `RequestUnansweredQuestionsAsync` instead.
+* `SendQuestion` is deprecated, please use `SendQuestionAsync` instead. This is solely a name change.
+* `RequestUnansweredQuestionsAsync`, `SendQuestion` and `SendQuestionAsync` can throw exceptions from the websocket.
+* `SendQuestion` and `SendQuestionAsync` return `null` instead of throwing an exception (which could not be catched) on timeout.
+* Fixed: messages received from server won't be returned again after they have been returned once.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector</RepositoryUrl>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
   </PropertyGroup>
 
