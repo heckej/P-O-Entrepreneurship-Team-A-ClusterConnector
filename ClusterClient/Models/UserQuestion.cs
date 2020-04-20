@@ -10,5 +10,10 @@ namespace ClusterClient.Models
     {
         public string question { get; set; }
         public int chatbot_temp_id { get; set; }
+
+        public override string ToJson()
+        {
+            return JsonSerializer.Serialize<UserQuestion>(this);
+        }
     }
 }

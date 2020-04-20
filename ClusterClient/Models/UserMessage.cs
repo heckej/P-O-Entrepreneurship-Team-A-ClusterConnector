@@ -4,8 +4,10 @@ using System.Text;
 
 namespace ClusterClient.Models
 {
-    public class UserMessage
+    public abstract class UserMessage
     {
         public string user_id { get; set; }
+
+        public abstract string ToJson();
     }
 }

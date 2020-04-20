@@ -303,7 +303,7 @@ namespace ClusterClient
         /// <paramref name="chatbotRequest" /> as far as the structure allows it.</returns>
         private static string ParseChatbotRequest(UserMessage chatbotRequest)
         {
-            return JsonSerializer.Serialize(chatbotRequest);
+            return chatbotRequest.ToJson();
         }
 
         /// <summary>
