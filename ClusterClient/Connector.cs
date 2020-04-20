@@ -683,8 +683,6 @@ namespace ClusterClient
             this.AddMessageToSendQueue(answers);
         }
 
-
-
         /// <summary>
         /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
         /// </summary>
