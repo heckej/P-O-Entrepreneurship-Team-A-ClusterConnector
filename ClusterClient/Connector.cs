@@ -501,6 +501,7 @@ namespace ClusterClient
         /// Returns all available questions that should be answered.
         /// </summary>
         /// <returns>A set containing questions that should be answered.</returns>
+        [Obsolete("GetQuestionsToBeAnswered is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
         public List<ServerMessage> GetQuestionsToBeAnswered()
         {
             return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
