@@ -155,7 +155,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Checks whether the websocket thread is still alive and whether it has passed exceptions.
-        /// <exception>The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
         /// </summary>
         private void CheckoutWebSocket()
         {
