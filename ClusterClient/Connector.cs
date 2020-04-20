@@ -532,11 +532,31 @@ namespace ClusterClient
         {
             try
             {
-                return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+                ISet < ServerQuestionsMessage > questions = new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+                this.receivedMessages[Actions.Questions][userID].Clear();
+                return questions;
             }
             catch(KeyNotFoundException)
             {
                 return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
+        /// <returns>A set containing messages of action <paramref name="action"/> addressed to the user identified by the given 
+        /// <paramref name="userID"/>. An empty set if no messages were found.</returns>
+        private ISet<ServerMessage> GetActionMessagesAddressedToUser(string action, string userID)
+        {
+            try
+            {
+                return new HashSet<ServerMessage>(this.receivedMessages[action][userID]);
+            }
+            catch (KeyNotFoundException)
+            {
+                return new HashSet<ServerMessage>();
             }
         }
 
@@ -553,7 +573,7 @@ namespace ClusterClient
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
             // Check if questions offline -> probably not, but if there are any, add them
-            ISet<ServerQuestionsMessage> storedQuestionsMessages = this.GetQuestionsAddressedToUser(userID);
+            ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet < ServerQuestionsMessage >) this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
             if (storedQuestionsMessages.Count > 0)
                 foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
                 {
