@@ -213,6 +213,31 @@ namespace ClusterClient
         }
 
         /// <summary>
+        /// Removes a given server message from the received messages dictionary.
+        /// </summary>
+        /// <param name="message">The server message to be removed from the received messages.</param>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If the given <paramref name="message"/> was in the received message dictionary under the its <paramref name="action"/>, 
+        ///         then it has been removed now.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void RemoveReceivedMessage(ServerMessage message)
+        {
+            try
+            {
+                this.receivedMessages[message.action][message.user_id].Remove(message);
+            } 
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Tried to remove message from received messages, but a key error occurred: " + e);
+            }
+        }
+
+        /// <summary>
         /// Creates a server message set in the received message dictionary at a key equal to the value of the given <paramref name="action"/>
         /// for the user identified by the given <paramref name="userID"/>.
         /// </summary>
@@ -469,10 +494,117 @@ namespace ClusterClient
         /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
-        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.</returns>
+        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
+        ///          'null' in case no questions messages were found.</returns>
         public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
         {
-            return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>) this.receivedMessages[Actions.Questions][userID]);
+            try
+            {
+                return new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
+            }
+            catch(KeyNotFoundException)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Creates a request to the server to receive unanswered questions for a user.
+        /// </summary>
+        /// <param name="userID">The user ID of the user who should answer the questions.</param>
+        /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
+        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestions(int userID, double timeout = 5)
+        {
+            Console.WriteLine("Request questions method called.");
+            // Create set of questions
+            ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            // Check if questions offline -> probably not, but if there are any, add them
+            ISet<ServerQuestionsMessage> storedQuestionsMessages = this.GetQuestionsAddressedToUser(userID);
+            if (storedQuestionsMessages.Count > 0)
+                foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
+                {
+                    if (questionsMessage.answer_questions.Count > 0)
+                        foreach (ServerQuestion question in questionsMessage.answer_questions)
+                            questions.Add(question);
+
+                }
+            else
+            {
+                // Create request for server
+                UserRequest request = new UserRequest
+                {
+                    user_id = userID,
+                    request = Requests.UnansweredQuestions
+                };
+                this.AddMessageToSendQueue(request);
+
+                // Wait until questions received or timeout
+                var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
+                
+                if (answer.Count > 0)
+                {
+                    ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
+                    // Fill set of questions
+                    foreach (ServerQuestionsMessage questionsMessage in questionsMessages)
+                    {
+                        if (questionsMessage.answer_questions.Count > 0)
+                            foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                questions.Add(question);
+                        // Remove message from cache
+                        this.RemoveReceivedMessage(questionsMessage);
+                    }
+
+                }
+            }
+            return questions;
+        }
+
+        /// <summary>
+        /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
+        /// by the user identified by the given <paramref name="userID"/>.
+        /// </summary>
+        /// <param name="tempChatbotID"></param>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A set of server questions message objects.
+        ///          'null' in case no response was received before timeout.</returns>
+        private ISet<ServerMessage> GetResponseFromServerToRequest(int userID, string expectedResponseAction, double timeout)
+        {
+            Console.WriteLine("Waiting for questions from server.");
+            // set timeout and wait for answer
+            // convert timeout to milliseconds
+            timeout *= 1000;
+            bool found = false;
+            ISet<ServerMessage> answer = null;
+            try
+            {
+                answer = this.receivedMessages[expectedResponseAction][userID];
+                found = answer.Count > 0;
+            }
+            catch(KeyNotFoundException)
+            {
+                var watch = Stopwatch.StartNew();
+                double elapsedMs = 0;
+                while (!found & !(elapsedMs > timeout))
+                {
+                    elapsedMs = watch.ElapsedMilliseconds;
+                    try
+                    {
+                        answer = this.receivedMessages[expectedResponseAction][userID];
+                        found = answer != null;
+                    } 
+                    catch(KeyNotFoundException)
+                    {
+                        answer = null;
+                    }
+                }
+                watch.Stop();
+                Console.WriteLine("Found response to request: " + answer);
+                if (!found)
+                    return null;
+            }
+            
+            return answer;
         }
 
 
