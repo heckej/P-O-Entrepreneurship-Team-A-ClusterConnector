@@ -513,6 +513,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
         /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
         ///          'null' in case no questions messages were found.</returns>
+        [Obsolete("GetQuestionsAddressedToUser is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
         public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(string userID)
         {
             try
