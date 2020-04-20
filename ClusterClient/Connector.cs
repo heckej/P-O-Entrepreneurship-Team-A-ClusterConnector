@@ -681,6 +681,8 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
+        [Obsolete("AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs) is deprecated," +
+            " please use AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers) instead.")]
         public void AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
         {
             UserAnswersMessage answers = new UserAnswersMessage
