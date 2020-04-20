@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
-
+using System.Text.Json;
 
 namespace ClusterClient.Models
 {
@@ -28,6 +28,11 @@ namespace ClusterClient.Models
         {
             this.answerQuestions = this.answerQuestions.Union(userAnswers).ToList();
             //((ISet<UserAnswer>) this.answerQuestions).UnionWith(userAnswers);
+        }
+
+        public override string ToJson()
+        {
+            return JsonSerializer.Serialize<UserAnswersMessage>(this);
         }
     }
 }
