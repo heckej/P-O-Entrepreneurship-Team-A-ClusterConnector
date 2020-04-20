@@ -109,12 +109,37 @@ namespace ClusterLogic.NLPHandler
                 return nullResponse;
             }
 
+            
+
             // Decide whether the given question is offensive
             bool offensive = false;
 
             if (offensivenessModel.prob > OffensiveThreshold)
             {
                 offensive = true;
+            }
+
+            // Check if the sentence contains a blacklisted word
+            String sentence = offensivenessModel.question;
+            String[] words = sentence.Split(' ');
+            StringBuilder sb = new StringBuilder();
+            sb.Append("");
+            sb.Append("");
+            sb.Append("");
+            String sql = sb.ToString();
+            String[] blacklist = null;
+            // ToDo: make query to get blacklist and put result in placklist variable
+            String[] words = sentence.Split(' ');
+            foreach(String word in words)
+            {
+                foreach(String offensiveWord in blacklist)
+                {
+                    if(String.Equals(word, offensiveWord))
+                    {
+                        offensive = true;
+                        break;
+                    }
+                }
             }
 
             // Return the result
