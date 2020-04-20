@@ -38,6 +38,7 @@ class WebsocketThread(threading.Thread):
         them in a `tasks_queue`.
 
     .. versionadded::0.2.0
+    .. versionchanged::1.1.0
 
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
@@ -46,10 +47,10 @@ class WebsocketThread(threading.Thread):
             at initialisation.
     &#34;&#34;&#34;
 
-    __version__ = &#39;0.2.0&#39;
+    __version__ = &#39;1.1.0&#39;
 
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
-                 reply_queue: collections.deque, loop, connection_timeout: float):
+                 reply_queue: collections.deque, loop, authorization, connection_timeout: float):
         &#34;&#34;&#34;
         Args:
             websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
@@ -58,6 +59,8 @@ class WebsocketThread(threading.Thread):
             add_tasks: An instance method of the calling class that handles received messages.
             reply_queue: A queue in which the messages to be sent can be found.
             loop: The loop to be set as the asynchronous event loop of this thread.
+            authorization: The value to be set as the `Authorization` header value to be sent on websocket connection
+                set up.
             connection_timeout: The timeout to be set when connecting to the websocket host.
         &#34;&#34;&#34;
         threading.Thread.__init__(self)
@@ -70,6 +73,9 @@ class WebsocketThread(threading.Thread):
         self.stop = False  # variable controlling whether this thread should keep running or should return
         self._loop = loop  # reference to the current loop in which async methods should be called
         asyncio.set_event_loop(loop)
+
+        self._authorization = authorization  # authorization value to authorize to the server
+        self._headers = {&#34;Authorization&#34;: self._authorization}
 
     def run(self):
         &#34;&#34;&#34;Starts communication with the websocket host.&#34;&#34;&#34;
@@ -196,9 +202,11 @@ class WebsocketThread(threading.Thread):
         &#34;&#34;&#34;Creates a websocket connection using the uri of this websocket thread.
 
         Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
-                - Exception: depends the behaviour of `websockets.client.connect()`
+                - InvalidURI - passed on from `websockets.client.connect` if `self._websocket_uri` is invalid.
+                - InvalidHandshake - passed on from `websockets.client.connect` if the opening handshake fails.
         &#34;&#34;&#34;
-        self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)</code></pre>
+        self._websocket = await websockets.client.connect(self._websocket_uri, extra_headers=self._headers,
+                                                          ping_interval=None)</code></pre>
 </details>
 </section>
 <section>
@@ -212,13 +220,16 @@ class WebsocketThread(threading.Thread):
 <dl>
 <dt id="cluster.websocket_thread.WebsocketThread"><code class="flex name class">
 <span>class <span class="ident">WebsocketThread</span></span>
-<span>(</span><span>websocket_uri, exception_queue, add_tasks, reply_queue, loop, connection_timeout)</span>
+<span>(</span><span>websocket_uri, exception_queue, add_tasks, reply_queue, loop, authorization, connection_timeout)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Initiates a thread to run a websocket connection, send messages from a <code>reply_queue</code> and receive tasks, saving
 them in a <code>tasks_queue</code>.</p>
 <div class="admonition versionadded">
 <p class="admonition-title">Added in version:&ensp;0.2.0</p>
+</div>
+<div class="admonition versionchanged">
+<p class="admonition-title">Changed in version:&ensp;1.1.0</p>
 </div>
 <h2 id="attributes">Attributes</h2>
 <dl>
@@ -241,6 +252,9 @@ caller of this thread.</dd>
 <dd>A queue in which the messages to be sent can be found.</dd>
 <dt><strong><code>loop</code></strong></dt>
 <dd>The loop to be set as the asynchronous event loop of this thread.</dd>
+<dt><strong><code>authorization</code></strong></dt>
+<dd>The value to be set as the <code>Authorization</code> header value to be sent on websocket connection
+set up.</dd>
 <dt><strong><code>connection_timeout</code></strong></dt>
 <dd>The timeout to be set when connecting to the websocket host.</dd>
 </dl></section>
@@ -253,6 +267,7 @@ caller of this thread.</dd>
         them in a `tasks_queue`.
 
     .. versionadded::0.2.0
+    .. versionchanged::1.1.0
 
     Attributes:
         stop: A boolean controlling the running state of this thread. When stop is set to True, running tasks are
@@ -261,10 +276,10 @@ caller of this thread.</dd>
             at initialisation.
     &#34;&#34;&#34;
 
-    __version__ = &#39;0.2.0&#39;
+    __version__ = &#39;1.1.0&#39;
 
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
-                 reply_queue: collections.deque, loop, connection_timeout: float):
+                 reply_queue: collections.deque, loop, authorization, connection_timeout: float):
         &#34;&#34;&#34;
         Args:
             websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
@@ -273,6 +288,8 @@ caller of this thread.</dd>
             add_tasks: An instance method of the calling class that handles received messages.
             reply_queue: A queue in which the messages to be sent can be found.
             loop: The loop to be set as the asynchronous event loop of this thread.
+            authorization: The value to be set as the `Authorization` header value to be sent on websocket connection
+                set up.
             connection_timeout: The timeout to be set when connecting to the websocket host.
         &#34;&#34;&#34;
         threading.Thread.__init__(self)
@@ -285,6 +302,9 @@ caller of this thread.</dd>
         self.stop = False  # variable controlling whether this thread should keep running or should return
         self._loop = loop  # reference to the current loop in which async methods should be called
         asyncio.set_event_loop(loop)
+
+        self._authorization = authorization  # authorization value to authorize to the server
+        self._headers = {&#34;Authorization&#34;: self._authorization}
 
     def run(self):
         &#34;&#34;&#34;Starts communication with the websocket host.&#34;&#34;&#34;
@@ -411,9 +431,11 @@ caller of this thread.</dd>
         &#34;&#34;&#34;Creates a websocket connection using the uri of this websocket thread.
 
         Raises: - OSError when something went wrong, e.g. too many attempts to connect to the websocket host occurred.
-                - Exception: depends the behaviour of `websockets.client.connect()`
+                - InvalidURI - passed on from `websockets.client.connect` if `self._websocket_uri` is invalid.
+                - InvalidHandshake - passed on from `websockets.client.connect` if the opening handshake fails.
         &#34;&#34;&#34;
-        self._websocket = await websockets.client.connect(self._websocket_uri, ping_interval=None)</code></pre>
+        self._websocket = await websockets.client.connect(self._websocket_uri, extra_headers=self._headers,
+                                                          ping_interval=None)</code></pre>
 </details>
 <h3>Ancestors</h3>
 <ul class="hlist">
