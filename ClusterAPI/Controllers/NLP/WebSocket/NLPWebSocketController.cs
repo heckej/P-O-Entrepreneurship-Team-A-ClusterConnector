@@ -54,7 +54,7 @@ namespace ClusterAPI.Controllers.NLP
                 new MatchQuestionModelInfo() { prob = .15f, question_id = 1}
             };
             mqmr.question_id = 23;
-            ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(new List<MatchQuestionModelResponse>() { mqmr });
+            ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(mqmr);
         }
 
         public async static void Notify()
@@ -86,7 +86,7 @@ namespace ClusterAPI.Controllers.NLP
         }
 
 
-        public async static void SendQuestionOffenseRequest(OffensivenessModelRequest offensivenessModel)
+        public async static void SendQuestionOffenseRequest(NonsenseLogicResponse offensivenessModel)
         {
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
@@ -225,16 +225,16 @@ namespace ClusterAPI.Controllers.NLP
             switch (model.Key)
             {
                 case WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION:
-                    ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList());
+                    ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS:
-                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList());
+                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList().First());
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
-                    var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList());
-                    if (result is OffensivenessModelRequest)
+                    var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
+                    if (result is NonsenseLogicResponse)
                     {
-                        SendQuestionOffenseRequest((OffensivenessModelRequest)result);
+                        SendQuestionOffenseRequest((NonsenseLogicResponse)result);
                     }
                     break;
             }

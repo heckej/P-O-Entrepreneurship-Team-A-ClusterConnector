@@ -31,7 +31,7 @@ namespace ClusterAPI
                             new MatchQuestionModelInfo() { prob = .15f, question_id = 1}
                         };
                         mqmr.question_id = 23;
-                        ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(new List<MatchQuestionModelResponse>() { mqmr });
+                        ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(mqmr);
                         break;
                 }
             }
