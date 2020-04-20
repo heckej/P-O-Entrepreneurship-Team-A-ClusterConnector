@@ -367,6 +367,22 @@ namespace ClusterClient
         }
 
         /// <summary>
+        /// Sends a given question from a given user to the server and returns the answer from the server.
+        /// </summary>
+        /// <param name="userID">The ID of the user for whom an answer is required.</param>
+        /// <param name="question">The question to which an answer is required.</param>
+        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
+        /// <returns>A server answer object with a question ID assigned to the given question by the server.
+        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
+        /// question ID to the given question, but it hasn't found an answer yet.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        [Obsolete("SendQuestion is deprecated, please use SendQuestionAsync instead.")]
+        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
+        {
+            return await this.SendQuestionAsync(userID, question, timeout);
+        }
+
+        /// <summary>
         /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
         /// by the user identified by the given <paramref name="userID"/>.
         /// </summary>
