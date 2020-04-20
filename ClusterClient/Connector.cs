@@ -347,11 +347,11 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.
         /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
-        /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
-        /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        public async Task<ServerAnswer> SendQuestionAsync(string userID, string question, double timeout=5)
         {
             Console.WriteLine("Send question method called.");
+            this.CheckoutWebSocket();
             UserQuestion request = new UserQuestion
             {
                 user_id = userID,
@@ -360,9 +360,9 @@ namespace ClusterClient
             };
             this.AddMessageToSendQueue(request);
                 var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout));
-            if (answer == null)
+            /*if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
-                    "Try again later or use a higher timeout.");
+                    "Try again later or use a higher timeout.");*/
             return answer;
         }
 
