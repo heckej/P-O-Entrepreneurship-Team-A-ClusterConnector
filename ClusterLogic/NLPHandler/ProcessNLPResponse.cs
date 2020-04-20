@@ -123,7 +123,7 @@ namespace ClusterLogic.NLPHandler
             String sentence = offensivenessModel.question;
             String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
-            sb.Append("SELECT offensiveword");
+            sb.Append("SELECT forbidden_word");
             sb.Append("FROM Blacklist");
             String sql = sb.ToString();
             List<String> blacklist = new List<String>();
