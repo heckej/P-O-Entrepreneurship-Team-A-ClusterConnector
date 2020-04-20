@@ -29,7 +29,7 @@ namespace ClusterLogic.Models.ChatbotModels
 
         public bool IsComplete()
         {
-            return true;
+            return _user_id != null && _question != null;
         }
     }
 }

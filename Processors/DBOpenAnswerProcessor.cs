@@ -22,7 +22,7 @@ namespace ClusterConnector.Processors
 
             DBOpenAnswer answer = new DBOpenAnswer();
             answer.Question_id = (int)reader["question_id"];
-            answer.User_id = (int)reader["user_id"];
+            answer.User_id = (String)reader["user_id"];
             answer.Probability = (float)reader["probability"];
 
             manager.Close();
@@ -53,7 +53,7 @@ namespace ClusterConnector.Processors
             {
                 DBOpenAnswer answer = new DBOpenAnswer();
                 answer.Question_id = (int)reader["question_id"];
-                answer.User_id = (int)reader["user_id"];
+                answer.User_id = (String)reader["user_id"];
                 answer.Probability = (float)reader["probability"];
 
                 result.Add(answer);
