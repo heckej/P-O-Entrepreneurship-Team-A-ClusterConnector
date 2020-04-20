@@ -45,7 +45,7 @@ class WebsocketThread(threading.Thread):
         self._loop = loop  # reference to the current loop in which async methods should be called
         asyncio.set_event_loop(loop)
 
-        self._authorization = "NLP"
+        self._authorization = "843iu233d3m4pxb1"
         self._headers = {"Authorization": self._authorization}
 
     def run(self):
