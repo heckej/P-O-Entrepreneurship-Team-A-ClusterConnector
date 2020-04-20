@@ -78,7 +78,7 @@ class Connector(object):
     .. versionadded::1.0.0
     """
 
-    __version__ = '1.1.0'
+    __version__ = '1.1.2'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
@@ -341,6 +341,8 @@ class Connector(object):
         """Processes a dictionary received from the NLP and returns a dictionary that complies to
         structure that can be understood by the server.
 
+        .. versionchanged::1.1.2
+
         Args:
             request: The request from the NLP as a dictionary.
 
@@ -348,15 +350,15 @@ class Connector(object):
             A dictionary that complies to the structure understood by the server containing the
             information of the given `request` as far as the structure allows it.
         """
-        parsed_request = request
+        parsed_request = dict(request)
         # return from generic sentence(_id) to question/answer(_id)
-        original_response = self._tasks_in_progress[request["msg_id"]]
-        if "question" in original_response.keys():
-            parsed_request["question"] = request["sentence"]
-            parsed_request["question_id"] = request["sentence_id"]
-        elif "answer" in original_response.keys():
-            parsed_request["answer"] = request["sentence"]
-            parsed_request["answer_id"] = request["sentence_id"]
+        original_task = self._tasks_in_progress[request["msg_id"]]
+        if "question" in original_task.keys():
+            parsed_request["question"] = original_task["sentence"]
+            parsed_request["question_id"] = original_task["sentence_id"]
+        elif "answer" in original_task.keys():
+            parsed_request["answer"] = original_task["sentence"]
+            parsed_request["answer_id"] = original_task["sentence_id"]
         return parsed_request
 
     def reply(self, response: dict):
