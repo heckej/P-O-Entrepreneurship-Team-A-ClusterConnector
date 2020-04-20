@@ -426,12 +426,15 @@ namespace ClusterClient
 
         /// <summary>
         /// Returns all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.
+        /// This method is not idempotent, which means that calling it twice does not necessarily return the same result twice.
         /// </summary>
         /// <param name="userID">The user ID of the user who wants to receive answers to previously asked questions.</param>
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
         public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
-            return new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
+            this.receivedMessages[Actions.Answer][userID].Clear();
+            return answers;
         }
 
         /// <summary>
@@ -467,6 +470,14 @@ namespace ClusterClient
         /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
         /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>.
         /// Else, null is returned.</returns>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>If there was a server answer for the user identified with the given <paramref name="userID"/> 
+        ///             among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>,
+        ///             then the server answer has been removed now from the received messages.</description>
+        ///     </item>
+        /// </list>
         private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID)
         {
             try
@@ -475,7 +486,10 @@ namespace ClusterClient
                     try
                     {
                         if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID)
-                            return (ServerAnswer) answer;
+                        {
+                            this.receivedMessages[Actions.Answer][userID].Remove(answer);
+                            return (ServerAnswer)answer;
+                        }
                     }
                     catch (InvalidCastException)
                     {
