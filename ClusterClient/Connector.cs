@@ -82,11 +82,11 @@ namespace ClusterClient
         ///         action. E.g. Questions can contain instances of ServerQuestionsMessage, answer of ServerAnswer.</description>
         ///     </item>
         /// </list>
-        private readonly IDictionary<string, Dictionary<int, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<int, ISet<ServerMessage>>>()
+        private readonly IDictionary<string, Dictionary<string, ISet<ServerMessage>>> receivedMessages = new Dictionary<string, Dictionary<string, ISet<ServerMessage>>>()
             {
-                { Actions.Default, new Dictionary<int, ISet<ServerMessage>>() },
-                { Actions.Questions, new Dictionary<int, ISet<ServerMessage>>() },
-                { Actions.Answer, new Dictionary<int, ISet<ServerMessage>>() }
+                { Actions.Default, new Dictionary<string, ISet<ServerMessage>>() },
+                { Actions.Questions, new Dictionary<string, ISet<ServerMessage>>() },
+                { Actions.Answer, new Dictionary<string, ISet<ServerMessage>>() }
             };
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace ClusterClient
         ///         </description>
         ///     </item>
         /// </list>
-        private void InitializeReceivedMessagesActionForUser(string action, int userID)
+        private void InitializeReceivedMessagesActionForUser(string action, string userID)
         {
             if (!this.receivedMessages[action].ContainsKey(userID))
                 this.receivedMessages[action].Add(userID, new HashSet<ServerMessage>());
@@ -349,7 +349,7 @@ namespace ClusterClient
         /// question ID to the given question, but it hasn't found an answer yet.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server to this question, 
         /// so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        public async Task<ServerAnswer> SendQuestion(int userID, string question, double timeout=5)
+        public async Task<ServerAnswer> SendQuestion(string userID, string question, double timeout=5)
         {
             Console.WriteLine("Send question method called.");
             UserQuestion request = new UserQuestion
@@ -376,7 +376,7 @@ namespace ClusterClient
         /// <returns>A server answer object with a question ID assigned to the given question by the server.</returns>
         /// <exception cref="TimeoutException">A timeout occurred and no response has been received from the server 
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
-        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, int userID, double timeout)
+        private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, string userID, double timeout)
         {
             Console.WriteLine("Waiting for answer from server.");
             // set timeout and wait for answer
@@ -413,7 +413,7 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user who wants to receive answers to previously asked questions.</param>
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
-        public ISet<ServerAnswer> GetNewAnswersForUser(int userID)
+        public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
             return new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
         }
@@ -426,7 +426,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user for whom it is checked whether an answer is available.</param>
         /// <returns>True if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
         /// among the received messages which has the given <paramref name="questionID"/> as its question ID.</returns>
-        public bool HasAnswerToQuestionOfUser(int questionID, int userID)
+        public bool HasAnswerToQuestionOfUser(int questionID, string userID)
         {
             foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                 try
@@ -451,7 +451,7 @@ namespace ClusterClient
         /// <returns>An answer if and only if there is a server answer for the user identified with the given <paramref name="userID"/> 
         /// among the received messages which has the given <paramref name="chatbotTempID"/> as its <c>chatbot_temp_id</c>.
         /// Else, null is returned.</returns>
-        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, int userID)
+        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID)
         {
             try
             {
@@ -496,7 +496,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
         /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
         ///          'null' in case no questions messages were found.</returns>
-        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(int userID)
+        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(string userID)
         {
             try
             {
@@ -513,7 +513,7 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user ID of the user who should answer the questions.</param>
         /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
-        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestions(int userID, double timeout = 5)
+        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestionsAsync(string userID, double timeout = 5)
         {
             Console.WriteLine("Request questions method called.");
             // Create set of questions
@@ -568,7 +568,7 @@ namespace ClusterClient
         /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
         /// <returns>A set of server questions message objects.
         ///          'null' in case no response was received before timeout.</returns>
-        private ISet<ServerMessage> GetResponseFromServerToRequest(int userID, string expectedResponseAction, double timeout)
+        private ISet<ServerMessage> GetResponseFromServerToRequest(string userID, string expectedResponseAction, double timeout)
         {
             Console.WriteLine("Waiting for questions from server.");
             // set timeout and wait for answer
@@ -620,7 +620,7 @@ namespace ClusterClient
         /// <param name="questionID">The question ID identifying the question for which an <paramref name="answer"/> is given.</param>
         /// <param name="answer">An answer to the question identified by the given <paramref name="questionID"/>.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, int questionID, string answer)
+        public void AnswerQuestion(string userID, int questionID, string answer)
         {
             Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
@@ -637,7 +637,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID identifying the user who submitted the answer.</param>
         /// <param name="answer">The answer to be sent.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestion(int userID, UserAnswer answer)
+        public void AnswerQuestion(string userID, UserAnswer answer)
         {
             Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
@@ -661,7 +661,7 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
+        public void AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
@@ -696,7 +696,7 @@ namespace ClusterClient
         ///     </item>
         /// </list>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void AnswerQuestions(int userID, ICollection<UserAnswer> userAnswers)
+        public void AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers)
         {
             UserAnswersMessage answers = new UserAnswersMessage
             {
@@ -721,7 +721,7 @@ namespace ClusterClient
         /// <param name="feedback">A feedback code related to the feedback. This could be as simple as 'good' = 1 and 'bad' = 0, 
         /// or more advanced using feelings like 'happy' = 0, 'angry' = 1, 'sad' = 2 ...  as long as the server understands it well.</param>
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)
+        public void SendFeedbackOnAnswer(string userID, int answerID, int questionID, int feedback)
         {
             Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
