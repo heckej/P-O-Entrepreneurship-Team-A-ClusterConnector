@@ -137,8 +137,6 @@ namespace ClusterLogic.NLPHandler
                 return nullResponse;
             }
 
-            
-
             // Decide whether the given question is offensive
             bool offensive = false;
 
@@ -148,12 +146,12 @@ namespace ClusterLogic.NLPHandler
             }
 
             // Check if the sentence contains a blacklisted word
-            DBManager manager = new DBManager(false); //this false 
+            DBManager manager = new DBManager(true);
             String sentence = offensivenessModel.question;
             String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
-            sb.Append("SELECT forbidden_word");
-            sb.Append("FROM Blacklist");
+            sb.Append("SELECT forbidden_word ");
+            sb.Append("FROM dbo.Blacklist");
             String sql = sb.ToString();
             List<String> blacklist = new List<String>();
             // ToDo: make query to get blacklist and put result in placklist variable
@@ -165,7 +163,8 @@ namespace ClusterLogic.NLPHandler
                     blacklist.Add(reader.GetString(0));
                 }
             }
-            foreach(String word in words)
+            manager.Close();
+            foreach (String word in words)
             {
                 foreach(String offensiveWord in blacklist)
                 {
