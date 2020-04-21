@@ -73,4 +73,71 @@ namespace ClusterLogic.Models
             return _question_id != -1 && prob != -1;
         }
     }
+
+    /// <summary>
+    /// An NLP MatchQuestionModelResponse processed by the Cluster Logic.
+    /// </summary>
+    [Serializable]
+    public class MatchQuestionLogicResponse : BaseModel
+    {
+        /// <summary>
+        /// The id of the matched question.
+        /// </summary>
+        public int Question_id { get; } = -1;
+
+        /// <summary>
+        /// Message id (passed on from MatchQuestionModelResponse)
+        /// </summary>
+        public int Msg_id { get; } = -1;
+
+        /// <summary>
+        /// The id of the best match.
+        /// </summary>
+        public int Match_id { get; } = -1;
+
+        /// <summary>
+        /// True if and only if the question has a match.
+        /// </summary>
+        public bool Match { get; } = false;
+
+        /// <summary>
+        /// Answer corresponding to the matched question
+        /// </summary>
+        public string Answer { get; } = null;
+
+        /// <summary>
+        /// Create a new MatchQuestionLogicResponse.
+        /// </summary>
+        /// <param name="question_id">The id of the matched question (>-1 if existant).</param>
+        /// <param name="msg_id">The id of this msg (passed on from MatchQuestionModelResponse)</param>
+        /// <param name="match_id">The id of the best match (>-1 if existant).</param>
+        /// <param name="match">True if and only if there is a match.</param>
+        /// <param name="answer">Contains the answer of the matched string (if any).</param>
+        public MatchQuestionLogicResponse(int question_id = -1, int msg_id = -1, int match_id = -1, bool match = false, string answer = null)
+        {
+            this.Question_id = question_id;
+            this.Msg_id = msg_id;
+            this.Match_id = match_id;
+            this.Match = match;
+            this.Answer = answer;
+        }
+
+        /// <summary>
+        /// Check whether this response has a match.
+        /// </summary>
+        /// <returns></returns>
+        public bool HasMatch()
+        {
+            return this.Match;
+        }
+
+        /// <summary>
+        /// Return true if and only if this response is complete, e.g. it has a match and the ids are positive.
+        /// </summary>
+        /// <returns>true if and only if this response is complete, e.g. it has a match and the ids are positive.</returns>
+        public bool IsComplete()
+        {
+            return Match && Question_id > -1  && Msg_id > -1 && Match_id > -1 && !String.IsNullOrEmpty(Answer);
+        }
+    }
 }
