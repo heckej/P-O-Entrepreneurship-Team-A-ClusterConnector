@@ -41,53 +41,82 @@ namespace ClusterLogic.NLPHandler
                 return nullResponse;
             }
 
-            MatchQuestionModelInfo bestInfo = null;
-            double bestMatch = 0.0;
-
-            // Find the best match above the threshold
+            // Collect all questions that might match
+            List<MatchQuestionModelInfo> matchCandidates = new List<MatchQuestionModelInfo>();
             foreach (MatchQuestionModelInfo info in matchQuestionModel.possible_matches)
             {
-                if (info.prob > MatchThreshold && info.prob > bestMatch)
+                if (info.prob > MatchThreshold)
                 {
-                    bestInfo = info;
-                    bestMatch = bestInfo.prob;
+                    matchCandidates.Add(info);
                 }
             }
 
-            // Get the answer of the best match, if any
-            if (bestInfo != null)
+            // Call QueryHelperRecursive to get best match that also has an answer
+            return QueryHelperRecursive(matchCandidates, matchQuestionModel);
+        }
+
+        /// <summary>
+        /// Recursive function that looks for the best possible match that also has an aswer in the database
+        /// </summary>
+        /// <param name="match_candidates"></param>
+        /// <param name="matchQuestionModel"></param>
+        /// <returns></returns>
+        private static MatchQuestionLogicResponse QueryHelperRecursive(List<MatchQuestionModelInfo> match_candidates, MatchQuestionModelResponse matchQuestionModel)
+        {
+            MatchQuestionModelInfo bestInfo = null;
+            
+            if (match_candidates.Count == 0)
+            { return null; }
+            else
             {
-                DBManager manager = new DBManager(false); //this false 
-
-                // Initialize the result
-                MatchQuestionLogicResponse result = null;
-
-                StringBuilder sb = new StringBuilder();
-                sb.Append("SELECT answer ");
-                sb.Append("FROM Answers a, Questions q ");
-                sb.Append($"WHERE q.question_id = {bestInfo.question_id} AND q.answer_id = a.answer_id; ");
-                String sql = sb.ToString();
-
-                using (SqlDataReader reader = manager.Read(sql))
+                // get best match of all candidates
+                double bestMatch = 0.0;
+                foreach (MatchQuestionModelInfo info in match_candidates)
                 {
-                    // This query should only return 0 or 1 result
-                    if (reader.Read())
+                    if (info.prob > bestMatch)
                     {
-                        result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, reader.GetString(0));
+                        bestInfo = info;
+                        bestMatch = info.prob;
                     }
-                }
+                } 
+            }
 
-                // Close the connection
-                manager.Close();
+            if (bestInfo == null)
+            { return null; }
 
-                if (result != null)
+            // Perform query to get the answer to the best match
+            DBManager manager = new DBManager(true);
+
+            MatchQuestionLogicResponse result = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT answer ");
+            sb.Append("FROM Answers a, Questions q ");
+            sb.Append($"WHERE q.question_id = {bestInfo.question_id} AND q.answer_id = a.answer_id; ");
+            String sql = sb.ToString();
+
+            using (SqlDataReader reader = manager.Read(sql))
+            {
+                // This query should only return 0 or 1 result
+                if (reader.Read())
                 {
-                    return result;
+                    result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, reader.GetString(0));
                 }
             }
 
-            // No valid match was found, so "no answer" is returned.
-            return nullResponse;
+            manager.Close();
+
+            // If a result is found, return the result, else look for another option that does have an answer
+            if (result != null)
+            {
+                return result;
+            }
+            else
+            {
+                match_candidates.Remove(bestInfo);
+                return QueryHelperRecursive(match_candidates, matchQuestionModel);
+            }
+
         }
 
         /// <summary>
