@@ -20,7 +20,7 @@ namespace ClusterLogic.Models.ChatbotModels
 
         public ChatbotQuestionHasNoAnswerModel(string question, int question_id, string userID = null,  int chatbot_temp_id = -1) {
             _user_id = userID; 
-            String _question = question; 
+            _question = question; 
             _question_id = question_id; 
             _chatbot_temp_id = chatbot_temp_id; 
         }

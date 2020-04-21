@@ -32,7 +32,7 @@ namespace ClusterLogic.ChatbotHandler
             DBQuestion sqlResult = null;
             using (SqlDataReader reader = manager.Read(query))
             {
-                while (reader.Read())
+                if (reader.Read())
                 {
                     sqlResult = new DBQuestion();
                     sqlResult.Question_id = (int)reader["question_id"];
@@ -138,9 +138,9 @@ namespace ClusterLogic.ChatbotHandler
             int question_id = answerRequest.question_id;
 
             // connect to database and define query
-            DBManager manager = new DBManager(false); //this false 
+            DBManager manager = new DBManager(true); //this false 
             String query = "Select a.answer_id, a.answer " +
-                           "from dbo.Anwers as a, dbo.Questions as q " +
+                           "from dbo.Answers as a, dbo.Questions as q " +
                            $"where q.question_id = {question_id} and q.answer_id = a.answer_id ";
                            // "+ and a.approved == true;";
 
@@ -165,7 +165,7 @@ namespace ClusterLogic.ChatbotHandler
 
             return new List<ChatbotAnswerRequestResponseModel>()
             {
-                new ChatbotAnswerRequestResponseModel(answerRequest.user_id, sqlResult.Answer_id, question_id, true)
+                new ChatbotAnswerRequestResponseModel(answerRequest.user_id, sqlResult.Answer_id, question_id, true, sqlResult.Answer)
             };
         }
 
@@ -190,13 +190,12 @@ namespace ClusterLogic.ChatbotHandler
         public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(int nbQuestions, string user_id = null)
         {
             List<DBQuestion> result = new List<DBQuestion>();
-            DBManager manager = new DBManager(false); //this false 
+            DBManager manager = new DBManager(true); //this false 
 
             StringBuilder sb = new StringBuilder();
             sb.Append($"SELECT TOP {nbQuestions} q.question_id, q.question ");
-            sb.Append("FROM Questions q, Answers a");
-            sb.Append("WHERE q.answer_id = a.answer id");
-            sb.Append("AND a.answer = NULL;");
+            sb.Append("FROM Questions q ");
+            sb.Append("WHERE q.answer_id is NULL");
             String sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);
