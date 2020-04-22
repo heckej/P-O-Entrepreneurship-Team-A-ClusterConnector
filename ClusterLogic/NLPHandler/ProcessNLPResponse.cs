@@ -219,5 +219,15 @@ namespace ClusterLogic.NLPHandler
                 nonsenseModelResponse.msg_id
                 );
         }
+
+        /// <summary>
+        /// Method that returns possible matches with UNANSWERED questions
+        /// </summary>
+        /// <param name="matchQuestionModelResponse"></param>
+        /// <returns></returns>
+        public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsWithNoAnswersResponse(MatchQuestionModelResponse matchQuestionModelResponse)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

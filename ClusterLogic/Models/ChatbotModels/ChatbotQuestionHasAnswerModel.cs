@@ -26,4 +26,28 @@ namespace ClusterLogic.Models.ChatbotModels
         }
         
     }
+
+    public class ChatbotQuestionHasNoAnswerModelToChatbot
+    {
+        private String _question = null;
+        private int _question_id = -1;
+
+        public ChatbotQuestionHasNoAnswerModelToChatbot(ChatbotQuestionHasNoAnswerModel chatbotQuestionHasNoAnswerModel)
+        {
+            question = chatbotQuestionHasNoAnswerModel.question;
+            question_id = chatbotQuestionHasNoAnswerModel.question_id;
+        }
+
+        public string question { get => _question; set => _question = value; }
+        public int question_id { get => _question_id; set => _question_id = value; }
+    }
+
+    public class ChatbotGivesAnswerModelToServer
+    {
+        private String _answer = null;
+        private int _question_id = -1;  
+
+        public int question_id { get => _question_id; set => _question_id = value; }
+        public string answer { get => _answer; set => _answer = value; }
+    }
 }

@@ -16,6 +16,7 @@ using ClusterLogic.NLPHandler;
 using ClusterAPI.Controllers.Security;
 using ClusterLogic.Models.ChatbotModels;
 using ClusterLogic.ChatbotHandler;
+using ClusterConnector;
 
 namespace ClusterAPI.Controllers.NLP
 {
@@ -62,21 +63,57 @@ namespace ClusterAPI.Controllers.NLP
             NLPWebSocketController.SendQuestionNonsenseRequest(result);
         }
 
-        public async static void SendAnswerToQuestion(List<ChatbotAnswerRequestResponseModel> result)
+        public static void SendAnswerToQuestion(List<ChatbotAnswerRequestResponseModel> result)
         {
             if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
             {
                 String json = JsonSerializer.Serialize<ChatbotAnswerRequestResponseModel[]>(result.ToArray());
-                await connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 
-        public async static void SendUnansweredQuestions(List<ChatbotRequestUnansweredQuestionsResponseModel> result)
+        internal static void SendAnswerToQuestion(ServerResponseNoAnswerToQuestion serverResponseNoAnswerToQuestion)
+        {
+            if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize<ServerResponseNoAnswerToQuestion>(serverResponseNoAnswerToQuestion);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        internal static void SendAnswerToQuestion(ChatbotVariousServerResponses chatbotVariousServerResponses)
+        {
+            if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize<ChatbotVariousServerResponses>(chatbotVariousServerResponses);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        public static void SendUnansweredQuestions(List<ChatbotRequestUnansweredQuestionsResponseModel> result)
         {
             if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
             {
                 String json = JsonSerializer.Serialize<ChatbotRequestUnansweredQuestionsResponseModel[]>(result.ToArray());
-                await connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        private void SendUnansweredQuestions(ChatbotResponseUnansweredQuestionsModelToChatbot result)
+        {
+            if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize<ChatbotResponseUnansweredQuestionsModelToChatbot>(result);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        internal static void SendAnswerToQuestion(ChatbotNewAnswerModel chatbotNewAnswerModel)
+        {
+            if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize<ChatbotNewAnswerModel>(chatbotNewAnswerModel);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 
@@ -155,13 +192,20 @@ namespace ClusterAPI.Controllers.NLP
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NONE,null);
             }
 
-            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
-
-            if (dict.Keys.Contains<String>("user_id") &&
-                dict.Keys.Contains<String>("question") &&
-                dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
+            try
             {
-                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION, new List<BaseModel>() { new ChatbotNewQuestionModel(dict) });
+                var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+
+                if (dict.Keys.Contains<String>("user_id") &&
+                    dict.Keys.Contains<String>("question") &&
+                    dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
+                {
+                    return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION, new List<BaseModel>() { new ChatbotNewQuestionModel(dict) });
+                }
+            }
+            catch (Exception)
+            {
+
             }
 
             try
@@ -193,7 +237,7 @@ namespace ClusterAPI.Controllers.NLP
 
             try
             {
-                var result = JsonSerializer.Deserialize<ChatbotGivenAnswerModel>(jsonResponse);
+                var result = JsonSerializer.Deserialize<ChatbotGivesAnswersToQuestionsToServer>(jsonResponse);
                 if (!result.IsComplete())
                 {
                     throw new Exception();
@@ -237,11 +281,7 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(model.Value.Cast<ChatbotNewQuestionModel>().ToList());
-                            if (result != null)
-                            {
-                                NLPWebSocketController.SendQuestionMatchRequest(result);
-                            }
+                            NLPWebSocketController.CheckIfQuestionIsNonsense(model.Value.Cast<ChatbotNewQuestionModel>().First());
                         }
                         catch (Exception e)
                         {
@@ -253,11 +293,16 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
-                            if (result != null)
+                            foreach (var item in model.Value.Cast<ChatbotGivesAnswersToQuestionsToServer>().First().answer_questions)
                             {
-                                SendAnswerToNLPForNonsense(result);
+                                var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(item, model.Value.Cast<ChatbotGivesAnswersToQuestionsToServer>().First());
+
+                                if (result != null)
+                                {
+                                    SendAnswerToNLPForNonsense(result);
+                                }
                             }
+                            
                         }
                         catch (Exception e)
                         {
@@ -285,10 +330,10 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().ToList());
+                            var result = ProcessChatbotLogic.RetrieveOpenQuestions(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().First().user_id);
                             if (result != null)
                             {
-                                SendUnansweredQuestions(result);
+                                SendUnansweredQuestions(new ChatbotResponseUnansweredQuestionsModelToChatbot(result));
                             }
                         }
                         catch (Exception e)
@@ -298,6 +343,22 @@ namespace ClusterAPI.Controllers.NLP
                     }
                     break;
 
+            }
+        }
+
+        internal static void ProcessProperQuestion(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            try
+            {
+                var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(new List<ChatbotNewQuestionModel>() { new ChatbotNewQuestionModel(newQuestionNonsenseCheck)});
+                if (result != null)
+                {
+                    NLPWebSocketController.SendQuestionMatchRequest(result);
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Trace.Write(e.Message);
             }
         }
     }

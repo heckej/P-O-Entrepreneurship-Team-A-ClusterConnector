@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ClusterConnector;
 
 namespace ClusterLogic.Models.ChatbotModels
 {
@@ -21,6 +22,13 @@ namespace ClusterLogic.Models.ChatbotModels
             user_id = dict["user_id"];
             question = dict["question"];
             chatbot_temp_id = int.Parse(dict["chatbot_temp_id"]);
+        }
+
+        public ChatbotNewQuestionModel(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            user_id = newQuestionNonsenseCheck.user_id;
+            question = newQuestionNonsenseCheck.question;
+            chatbot_temp_id = newQuestionNonsenseCheck.question_id;
         }
 
         public string user_id { get => _user_id; set => _user_id = value; }

@@ -1,4 +1,5 @@
-﻿using ClusterConnector.Manager;
+﻿using ClusterConnector;
+using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using ClusterLogic.Models;
 using ClusterLogic.Models.ChatbotModels;
@@ -113,6 +114,7 @@ namespace ClusterLogic.ChatbotHandler
                 comparisonQuestions.Add(new NLPQuestionModelInfo() { question = result[i].Question, question_id = result[i].Question_id });
             }
             mqmr.compare_questions = comparisonQuestions.ToArray();
+            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgID(list[0].chatbot_temp_id,list[0].question,list[0].user_id);
 
             return mqmr;
         }
@@ -187,7 +189,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="nbQuestions"></param>
         /// <param name="user_id"></param>
         /// <returns> Returns a model with a list of unanswered questions </returns>
-        public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(int nbQuestions, string user_id = null)
+        public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(string user_id = null, int nbQuestions = 3)
         {
             List<DBQuestion> result = new List<DBQuestion>();
             DBManager manager = new DBManager(true); //this false 
@@ -218,21 +220,57 @@ namespace ClusterLogic.ChatbotHandler
             return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), user_id);
         }
 
+        public static OffensivenessModelRequest ProcessChatbotReceiveAnswer(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer)
+        {
+            return new OffensivenessModelRequest(item, chatbotGivesAnswersToQuestionsToServer);
+        }
+
+        /// <summary>
+        /// This method does all the things necessary to handle a offensive answer given by a certain user
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck"></param>
+        public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            
+            throw new NotImplementedException();
+        }
 
 
+        /// <summary>
+        /// This method does all the things necessary to handle a nonsense answer given by a certain user
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck"></param>
+        public static void ProcessNonsenseAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
 
+        /// <summary>
+        /// Given is an answer that is guaranteed to be nonsene, you are given the question and user id, process these.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck"></param>
+        public static void ProcessNonsenseQuestion(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
 
+        /// <summary>
+        /// Given is an answer that is guaranteed to be offensive, you are given the question and user id, process these.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck"></param>
+        public static void ProcessOffensiveAnswer(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
 
-
-
-
-
-
-
-
-
-
-
-
+        /// <summary>
+        /// This method gets called when the Server detects a new question, add this question to the database
+        /// </summary>
+        /// <param name="temp"></param>
+        /// <returns></returns>
+        internal static int assignQuestionIdToNewQuestion(NewQuestion temp)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
