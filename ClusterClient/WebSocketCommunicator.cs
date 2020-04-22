@@ -209,7 +209,7 @@ namespace ClusterClient
             var receiveTask = this.ReceiveMessagesAsync();
             var checkStateTask = Task.Run(() => this.CheckWebSocketState());
 
-            var allTasks = new List<Task> { sendTask, receiveTask, checkStateTask };
+            var allTasks = new List<Task> { checkStateTask, sendTask, receiveTask };
 
             var finished = await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
