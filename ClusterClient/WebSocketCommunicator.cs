@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -247,49 +247,69 @@ namespace ClusterClient
         /// </list>
         private async Task CommunicateWithServerAsync()
         {
-            using (this.webSocket = new ClientWebSocket())
-            {
 
-                //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
-                this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
-                Console.WriteLine("Using websocket.");
+            WebSocketState oldState = WebSocketState.None;
+            int i = 0;
+            try
+            {
+                while (true)
+                {
+                    i += 1;
+                    Console.WriteLine("Communicate loop.");
+                    this.cancellationToken.ThrowIfCancellationRequested();
+                    Console.WriteLine("No cancellation exception thrown.");
+                    if (this.webSocket != null)
+                        oldState = this.webSocket.State;
+                    /*if (this.webSocket != null && this.webSocket.State == WebSocketState.Aborted)
+                        //throw new WebSocketException("WebSocket aborted after " + i + " loops.");
+                        await this.ConnectToServerAsync();*/
+                    if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
+                    {
+                        this.webSocket = new ClientWebSocket();
+                        //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
+                        this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
+                    }
+                    if (this.webSocket.State != WebSocketState.Open)
+                    {
+                            
+                        Console.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
+                        Debug.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
+                        await this.ConnectToServerAsync();
+                        Console.WriteLine("Connection established.");
+                        await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
+                        Console.WriteLine("Confirmation message sent.");
+                    }
+                    await this.HandleSendReceiveTasksAsync();
+                    Console.WriteLine("Still alive.");
+                }
+            } 
+            catch(OperationCanceledException)
+            {
+                Console.WriteLine("Web socket connection closed by calling class instance.");
+            }
+            catch (Exception e)
+            {
+                // Add the exception to the queue
+                //if (e is InvalidOperationException)
+                    e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
+                this.exceptionQueue.Enqueue(e);
+                Console.WriteLine("An exception occurred in websocket thread: " + e);
+            }
+            finally
+            {
+                //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
+                // close websocket
                 try
                 {
-                    while (true)
-                    {
-                        Console.WriteLine("Communicate loop.");
-                        this.cancellationToken.ThrowIfCancellationRequested();
-                        Console.WriteLine("No cancellation exception thrown.");
-                        if (this.webSocket == null | this.webSocket.State != WebSocketState.Open)
-                        {
-                            Console.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
-                            Debug.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
-                            await this.ConnectToServerAsync();
-                            Console.WriteLine("Connection established.");
-                            await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
-                            Console.WriteLine("Confirmation message sent.");
-                        }
-                        await this.HandleSendReceiveTasksAsync();
-                        Console.WriteLine("Still alive.");
-                    }
+                    if (this.webSocket != null)
+                        await this.webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Unexpected exception thrown.", CancellationToken.None);
                 } 
-                catch(OperationCanceledException)
+                catch(Exception)
                 {
-                    Console.WriteLine("Web socket connection closed by calling class instance.");
+                    Debug.WriteLine("Connection could not be closed properly.");
                 }
-                catch (Exception e)
-                {
-                    // Add the exception to the queue
-                    this.exceptionQueue.Enqueue(e);
-                    Console.WriteLine("An exception occurred in websocket thread: " + e);
-                }
-                finally
-                {
-                    //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
-                    // close websocket, now handled by 'using'
-                    Debug.WriteLine("Communication with server ended.");
-                    Console.WriteLine("Communication with server ended.");
-                }
+                Debug.WriteLine("Communication with server ended.");
+                Console.WriteLine("Communication with server ended.");
             }
         }
 
