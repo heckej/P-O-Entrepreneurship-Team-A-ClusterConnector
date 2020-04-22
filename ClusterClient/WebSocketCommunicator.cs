@@ -276,6 +276,9 @@ namespace ClusterClient
                     // Work-around to ignore aborted websocket. This is not a decent fix.
                     if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
                     {
+                        if (this.webSocket != null)
+                            // Connection was aborted for som unknown reason. Wait some time before trying to reconnect. Exponential averaging in real life.
+                            await Task.Delay(100, this.cancellationToken);
                         this.webSocket = new ClientWebSocket();
                         //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
                         this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
