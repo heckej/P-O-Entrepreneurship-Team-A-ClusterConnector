@@ -179,22 +179,20 @@ namespace ClusterClient
         {
             while (true)
             {
-                //Console.WriteLine("Thread state at send begin: " + Thread.CurrentThread.ThreadState);
-                //Console.WriteLine("Cancellation requested (send): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
                 foreach(string message in this.MessagesToSend)
                 {
                     ArraySegment<byte> bytesToSend = new ArraySegment<byte>(
                             Encoding.UTF8.GetBytes(message));
+                    Console.WriteLine("Sending message: " + message);
                     await this.webSocket.SendAsync(bytesToSend, WebSocketMessageType.Text, true, this.cancellationToken);
+                    Console.WriteLine("Message sent: " + message);
                     // Now what if message could not be sent? The WebSocket docs don't mention any exceptions thrown by SendAsync().
                     // However, in case the message wasn't sent due to some exception or the cancellation token being cancelled, 
                     // we cannot confirm it wasn't sent and the message will be lost.
                 }
                 await Task.Delay(10, this.cancellationToken);
             }
-            // Console.WriteLine("Thread state at send end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of send messages.");
         }
 
         /// <summary>
