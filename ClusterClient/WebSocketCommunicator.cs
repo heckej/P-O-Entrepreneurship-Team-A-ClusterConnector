@@ -294,6 +294,7 @@ namespace ClusterClient
                     e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
                 this.exceptionQueue.Enqueue(e);
                 Console.WriteLine("An exception occurred in websocket thread: " + e);
+                Debug.WriteLine("Exception in WebSocket thread: " + e);
             }
             finally
             {
@@ -325,6 +326,7 @@ namespace ClusterClient
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
             Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
             Console.WriteLine("Connected.");
+            Debug.WriteLine("Connected to WebSocket.");
             Console.WriteLine("Thread state at connect: " + Thread.CurrentThread.ThreadState);
         }
 
