@@ -85,6 +85,11 @@ namespace ClusterClient
         private readonly MethodToPassMessageToClient PassMessageToClient;
 
         /// <summary>
+        /// A boolean enabling a constant check on websocket state.
+        /// </summary>
+        public bool enableCheckWebSocketStateDebugging = false;
+
+        /// <summary>
         /// Starts communication with the websocket host.
         /// </summary>
         public void Run()
@@ -205,9 +210,13 @@ namespace ClusterClient
             Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
-            var checkStateTask = Task.Run(() => this.CheckWebSocketState());
-
-            var allTasks = new List<Task> { checkStateTask, sendTask, receiveTask };
+            Task checkStateTask = null;
+            var allTasks = new List<Task> { sendTask, receiveTask };
+            if (this.enableCheckWebSocketStateDebugging)
+            {
+                checkStateTask = Task.Run(() => this.CheckWebSocketState());
+                allTasks.Insert(0, checkStateTask);
+            }
 
             var finished = await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
