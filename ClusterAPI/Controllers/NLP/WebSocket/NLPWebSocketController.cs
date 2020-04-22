@@ -253,25 +253,32 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         {
                             var result = ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
+                            
                             if (result != null)
                             {
-                                if (result.Match)
+                                if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestion)
                                 {
-                                    ChatbotWebSocketController.SendAnswerToQuestion(new ChatbotNewAnswerModel(result));
-                                }
-                                else
-                                {
-                                    var new_result = ProcessNLPResponse.ProcessNLPMatchQuestionsWithNoAnswersResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
-                                    if (new_result != null)
+                                    if (result.Match)
                                     {
-                                        if (result.Match)
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ChatbotNewAnswerModel(result));
+                                    }
+                                    else
+                                    {
+                                        var temp = ProcessChatbotLogic.GenerateModelCompareToOpenQuestions((NewQuestion)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                                        if (temp != null)
                                         {
-                                            ChatbotWebSocketController.SendAnswerToQuestion(new ChatbotNewAnswerModel(new_result));
+                                            NLPWebSocketController.SendQuestionMatchRequest(temp);
                                         }
-                                        else
-                                        {
-                                            ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(new_result,(MatchQuestionModelResponse)model.Value.First()));
-                                        }
+                                    }
+                                }else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewOpenQuestion)
+                                {
+                                    if (result.Match)
+                                    {
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ChatbotNewAnswerModel(result));
+                                    }
+                                    else
+                                    {
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First()));
                                     }
                                 }
                             }
@@ -306,7 +313,7 @@ namespace ClusterAPI.Controllers.NLP
                             if (result is NonsenseLogicResponse)
                             {
                                 ProcessNonsenseResult(result);
-                                SendQuestionOffenseRequest((NonsenseLogicResponse)result);
+                                //SendQuestionOffenseRequest((NonsenseLogicResponse)result);
                             }
                         }
                         catch (Exception e)
@@ -366,7 +373,7 @@ namespace ClusterAPI.Controllers.NLP
                 }
                 else
                 {
-
+                    ProcessChatbotLogic.SaveQuestionToDatabase((NewAnswerNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)

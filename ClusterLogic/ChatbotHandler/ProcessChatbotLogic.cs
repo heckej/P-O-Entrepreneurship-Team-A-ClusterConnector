@@ -62,6 +62,7 @@ namespace ClusterLogic.ChatbotHandler
             };
         }
 
+
         /// <summary>
         /// Get all the answered questions and wrap them into a MatchQuestionModelRequest.
         /// </summary>
@@ -246,6 +247,22 @@ namespace ClusterLogic.ChatbotHandler
         }
 
         /// <summary>
+        /// Get all the unanswered questions and wrap them into a MatchQuestionModelRequest.
+        /// </summary>
+        /// <param name="list">A list of ChatbotNewQuestionModels to process.</param>
+        /// <returns>A MatchQuestionModelRequest containing all the answered questions from the forum.</returns>
+        public static MatchQuestionModelRequest GenerateModelCompareToOpenQuestions(NewQuestion newQuestion)
+        {
+            throw new NotImplementedException();
+
+            MatchQuestionModelRequest mqmr = new MatchQuestionModelRequest();
+
+            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgIDOpenQuestions(newQuestion.chatbot_temp_id, newQuestion.question, newQuestion.user_id);
+
+            return mqmr;
+        }
+
+        /// <summary>
         /// Given is an answer that is guaranteed to be nonsene, you are given the question and user id, process these.
         /// </summary>
         /// <param name="newQuestionNonsenseCheck"></param>
@@ -265,10 +282,22 @@ namespace ClusterLogic.ChatbotHandler
 
         /// <summary>
         /// This method gets called when the Server detects a new question, add this question to the database
+        /// And generate a new UNIQUE id for this question and return it.
         /// </summary>
         /// <param name="temp"></param>
         /// <returns></returns>
-        internal static int assignQuestionIdToNewQuestion(NewQuestion temp)
+        internal static int assignQuestionIdToNewQuestion(NewOpenQuestion temp)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
+        /// close it.
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck"></param>
+        public static void SaveQuestionToDatabase(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
             throw new NotImplementedException();
         }

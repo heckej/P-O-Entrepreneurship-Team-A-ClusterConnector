@@ -52,11 +52,13 @@ namespace ClusterLogic.Models.ChatbotModels
 
         public ServerResponseNoAnswerToQuestion(MatchQuestionLogicResponse new_result, MatchQuestionModelResponse baseModel)
         {
-            NewQuestion temp = (NewQuestion)ServerUtilities.msgIdToUserID[baseModel.msg_id];
-            user_id = temp.user_id;
-            question = temp.question;
-            chatbot_temp_id = temp.chatbot_temp_id;
-            question_id = ProcessChatbotLogic.assignQuestionIdToNewQuestion(temp);
+            {
+                NewOpenQuestion temp = (NewOpenQuestion)ServerUtilities.msgIdToUserID[baseModel.msg_id];
+                user_id = temp.user_id;
+                question = temp.question;
+                chatbot_temp_id = temp.chatbot_temp_id;
+                question_id = ProcessChatbotLogic.assignQuestionIdToNewQuestion(temp);
+            }
         }
 
         public string action { get => _action; set => _action = value; }

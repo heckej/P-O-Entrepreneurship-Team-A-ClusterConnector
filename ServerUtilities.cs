@@ -43,6 +43,14 @@ namespace ClusterConnector
             msgIdToUserID.Add(msg_id, new NewQuestionNonsenseCheck(chatbot_temp_id, question, user_id));
             return msg_id;
         }
+
+        public static int getAndGenerateMsgIDOpenQuestions(int chatbot_temp_id, string question, string user_id)
+        {
+            msg_id++;
+
+            msgIdToUserID.Add(msg_id, new NewOpenQuestion(chatbot_temp_id, question, user_id));
+            return msg_id;
+        }
     }
 
     public interface ServerData
@@ -54,6 +62,17 @@ namespace ClusterConnector
     {
         public int chatbot_temp_id;public string question;public string user_id;
         public NewQuestion(int chatbot_temp_id, string question, string user_id)
+        {
+            this.chatbot_temp_id = chatbot_temp_id;
+            this.question = question;
+            this.user_id = user_id;
+        }
+    }
+
+    public struct NewOpenQuestion : ServerData
+    {
+        public int chatbot_temp_id; public string question; public string user_id;
+        public NewOpenQuestion(int chatbot_temp_id, string question, string user_id)
         {
             this.chatbot_temp_id = chatbot_temp_id;
             this.question = question;
