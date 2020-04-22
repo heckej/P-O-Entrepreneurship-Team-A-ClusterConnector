@@ -1,85 +1,57 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using ClusterClient;
-using ClusterClient.Models;
 
 namespace ClusterClientConsole
 {
     class Program
     {
-        public static void Main(string[] args)
-        {
-            Run();
-        }
+        public static Connector con = new Connector("843iu233d3m4pxb1", "ws://localhost:39160/api/Chatbot/WS", 10);
 
-        public static void Run()
+        static void Main(string[] args)
         {
-            Connector con = new Connector("chatbot", "ws://localhost:39160/api/Chatbot/WS");
-            Console.WriteLine("Connector initialized.");
-            GetInput(con);
-        }
-
-        public static void GetInput(Connector con)
-        {
-            while (true)
+            bool exit = false;
+            string input;
+            while (!exit)
             {
-                Console.Write("Enter command (ask/answer/feedback/exit): ");
-                string input = Console.ReadLine();
-                Console.WriteLine(">> " + input);
-                switch (input)
+                input = Console.ReadLine();
+                switch(input)
                 {
-                    case "ask":
-                        SendQuestion(con);
+                    case "a":
+                        AnswerQuestion();
                         break;
-                    case "answer":
-                        AnswerQuestion(con);
+                    case "q":
+                        AskQuestion();
                         break;
-                    case "feedback":
-                        SendFeedback(con);
-                        break;
-                    case "exit":
-                        con.CloseWebSocketConnection();
+                    case "stop":
                         return;
-                    default:
-                        break;
                 }
             }
         }
 
-        public static void SendQuestion(Connector con)
+        static void AnswerQuestion()
         {
             try
             {
-                Console.WriteLine("Waiting for send question.");
-                var task = con.SendQuestion(1, "Is this a question?", 0.5);
-                task.Wait();
-                Console.WriteLine("Send question result: " + task);
+                con.AnswerQuestion("abc", 1, "answer");
             }
-            catch (TimeoutException e)
+            catch(Exception e)
             {
-                Console.Write("Expected.");
+                Console.WriteLine("An exception occurred while answering:");
                 Console.WriteLine(e);
+            }
+        }
+
+        static void AskQuestion()
+        {
+            try
+            {
+                con.SendQuestionAsync("abc", "ddfd");
             }
             catch (Exception e)
             {
-                Console.WriteLine("Not expected.");
+                Console.WriteLine("An exception occurred while asking:");
                 Console.WriteLine(e);
             }
-        }
-
-        public static void AnswerQuestion(Connector con)
-        {
-            Console.WriteLine("Waiting for answer question.");
-            con.AnswerQuestion(1, 1, "Yes, that is a question.");
-        }
-
-        public static void SendFeedback(Connector con)
-        {
-            Console.WriteLine("Waiting for feedback.");
-            con.SendFeedbackOnAnswer(1, 1, 1, 1);
         }
     }
 }

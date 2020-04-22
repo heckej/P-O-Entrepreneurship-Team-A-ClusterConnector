@@ -154,7 +154,8 @@ namespace ClusterClient
                 if (!this.cancellationTokenSource.Token.IsCancellationRequested)
                     this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
-                Debug.WriteLine("An exception occurred in the websocket thread.");
+                Debug.WriteLine("Exception received from websocket thread: " + exception);
+                Console.WriteLine("Exception received from websocket thread: " + exception);
                 throw exception;
             }
             else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
@@ -170,6 +171,15 @@ namespace ClusterClient
         public void CloseWebSocketConnection()
         {
             this.cancellationTokenSource.Cancel();
+        }
+
+        /// <summary>
+        /// Enables a constant check of the websocket state on the debugging output stream.
+        /// </summary>
+        /// <param name="flag"></param>
+        public void EnableWebSocketStateCheck(bool flag)
+        {
+            this.webSocketCommunicator.enableCheckWebSocketStateDebugging = flag;
         }
 
 

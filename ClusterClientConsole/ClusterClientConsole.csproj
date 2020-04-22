@@ -3,10 +3,10 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <RepositoryUrl>https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector</RepositoryUrl>
   </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="ClusterClient" Version="0.1.0" />
+    <ProjectReference Include="..\ClusterClient\ClusterClient.csproj" />
   </ItemGroup>
 
 </Project>

@@ -29,15 +29,15 @@ namespace ClusterLogic.Models.ChatbotModels
 
     public class ChatbotRequestUnansweredQuestionsResponseModel : BaseModel
     {
-        private int _user_id = -1;
+        private string _user_id = null;
         private int _question_id = -1;
 
         public int question_id { get => _question_id; set => _question_id = value; }
-        public int user_id { get => _user_id; set => _user_id = value; }
+        public string user_id { get => _user_id; set => _user_id = value; }
 
         public bool IsComplete()
         {
-            return _user_id != -1 && _question_id != -1;
+            return _user_id != null && _question_id != -1;
         }
     }
 }
