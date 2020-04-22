@@ -207,23 +207,43 @@ namespace ClusterClient
             Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
+            var checkStateTask = Task.Run(() => this.CheckWebSocketState());
 
-            var allTasks = new List<Task> { sendTask, receiveTask };
+            var allTasks = new List<Task> { sendTask, receiveTask, checkStateTask };
 
             var finished = await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
                 task.Dispose();*/
-            if (finished == sendTask)
-                Console.WriteLine("Finished handling task: sending.");
-            if (finished == receiveTask)
-                Console.WriteLine("Finished handling task: receiving.");
+            if (allTasks.Contains(finished))
+            {
+                if (finished == sendTask)
+                    Console.WriteLine("Finished handling task: sending.");
+                else if (finished == receiveTask)
+                    Console.WriteLine("Finished handling task: receiving.");
+                else if (finished == checkStateTask)
+                    Console.WriteLine("Finished handling task: checkState.");
+            }
             else
                 Console.WriteLine("Finished handling task: unknown.");
             Console.WriteLine("Handling finished.");
             Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
             Console.WriteLine("Thread state at handler end: " + Thread.CurrentThread.ThreadState);
+        }
+
+        private void CheckWebSocketState()
+        {
+            while(true)
+            {
+                this.cancellationToken.ThrowIfCancellationRequested();
+                if(this.webSocket.State != WebSocketState.Open)
+                {
+                    Console.WriteLine("WebSocketState not open: " + this.webSocket.State + " at " + DateTime.Now.ToString());
+                    Debug.WriteLine("WebSocketState not open: " + this.webSocket.State + " at " + DateTime.Now.ToString());
+                }
+            }
+            
         }
 
         /// <summary>
@@ -247,22 +267,15 @@ namespace ClusterClient
         /// </list>
         private async Task CommunicateWithServerAsync()
         {
-
-            WebSocketState oldState = WebSocketState.None;
-            int i = 0;
             try
             {
                 while (true)
                 {
-                    i += 1;
                     Console.WriteLine("Communicate loop.");
                     this.cancellationToken.ThrowIfCancellationRequested();
                     Console.WriteLine("No cancellation exception thrown.");
-                    if (this.webSocket != null)
-                        oldState = this.webSocket.State;
-                    /*if (this.webSocket != null && this.webSocket.State == WebSocketState.Aborted)
-                        //throw new WebSocketException("WebSocket aborted after " + i + " loops.");
-                        await this.ConnectToServerAsync();*/
+
+                    // Work-around to ignore aborted websocket. This is not a decent fix.
                     if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
                     {
                         this.webSocket = new ClientWebSocket();
@@ -286,12 +299,13 @@ namespace ClusterClient
             catch(OperationCanceledException)
             {
                 Console.WriteLine("Web socket connection closed by calling class instance.");
+                Debug.WriteLine("WebSocket connection closed by calling class instance.");
             }
             catch (Exception e)
             {
                 // Add the exception to the queue
                 //if (e is InvalidOperationException)
-                    e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
+                    //e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
                 this.exceptionQueue.Enqueue(e);
                 Console.WriteLine("An exception occurred in websocket thread: " + e);
                 Debug.WriteLine("Exception in WebSocket thread: " + e);
