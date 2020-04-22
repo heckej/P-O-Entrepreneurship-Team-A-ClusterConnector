@@ -56,6 +56,14 @@ namespace ClusterLogic.Models
         public int msg_id { get => _msg_id; set => _msg_id = value; }
         public string question { get => _question; set => _question = value; }
 
+        public OffensivenessModelResponse(int question_id = -1, float prob = -1, string question = null, int msg_id = -1)
+        {
+            _question_id = question_id;
+            _prob = prob;
+            _question = question;
+            _msg_id = msg_id;
+        }
+
         public bool IsComplete()
         {
             return question != null && _question_id != -1 && _prob != -1 && _msg_id != -1;

@@ -56,6 +56,13 @@ namespace ClusterLogic.Models
         {
             return possible_matches != null && _question_id != -1 && _msg_id != -1;
         }
+
+        public MatchQuestionModelResponse(int question_id = -1, MatchQuestionModelInfo[] possible_matches = null, int msg_id = -1)
+        {
+            _question_id = question_id;
+            _possible_matches = possible_matches;
+            _msg_id = msg_id;
+        }
     }
 
     [Serializable]
@@ -71,6 +78,12 @@ namespace ClusterLogic.Models
         public bool IsComplete()
         {
             return _question_id != -1 && prob != -1;
+        }
+
+        public MatchQuestionModelInfo(int question_id = -1, float prob = 0)
+        {
+            _question_id = question_id;
+            _prob = prob;
         }
     }
 
