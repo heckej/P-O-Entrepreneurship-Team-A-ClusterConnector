@@ -27,14 +27,14 @@ namespace ClusterAPI.Controllers.NLP
         [HttpGet]
         [Route("api/NLP/WS")]
         public HttpResponseMessage GetMessage()
-
         {
-            if (!new NLPSecurity().Authenticate(Request.Headers.GetValues("Authorization")))
+            Request.Headers.TryGetValues("Authorization", out IEnumerable<string> res);
+            if (!new NLPSecurity().Authenticate(res))
             {
                 return new HttpResponseMessage(HttpStatusCode.Forbidden);
             }
 
-            if (HttpContext.Current.IsWebSocketRequest)
+            if (true || HttpContext.Current.IsWebSocketRequest)
             {
 
                 HttpContext.Current.AcceptWebSocketRequest(ProcessRequestInternal);
@@ -42,6 +42,19 @@ namespace ClusterAPI.Controllers.NLP
             }
 
             return new HttpResponseMessage(HttpStatusCode.SwitchingProtocols);
+        }
+
+        public async static void TestMatchQuestion()
+        {
+            MatchQuestionModelResponse mqmr = new MatchQuestionModelResponse();
+            mqmr.msg_id = 67;
+            mqmr.possible_matches = new MatchQuestionModelInfo[] {
+                new MatchQuestionModelInfo() { prob = .85f, question_id = 5},
+                new MatchQuestionModelInfo() { prob = .6f, question_id = 7},
+                new MatchQuestionModelInfo() { prob = .15f, question_id = 1}
+            };
+            mqmr.question_id = 23;
+            ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(mqmr);
         }
 
         public async static void Notify()
@@ -52,21 +65,48 @@ namespace ClusterAPI.Controllers.NLP
             }
         }
 
-        public async static void SendQuestionMatchRequest(params Object[] args)
+        public async static void SendQuestionMatchRequest(MatchQuestionModelRequest mqmr)
         {
-            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open && mqmr != null)
             {
-                String json = new QuestionMatchRequestGen().GenerateRequest(args);
+                String json = JsonSerializer.Serialize(mqmr);
 
                 await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
 
-        public async static void SendQuestionOffenseRequest(params Object[] args)
+        public async static void SendQuestionNonsenseRequest(OffensivenessModelRequest offensivenessModel)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open && offensivenessModel!=null)
+            {
+                String json = JsonSerializer.Serialize(offensivenessModel);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+
+        public async static void SendQuestionOffenseRequest(NonsenseLogicResponse offensivenessModel)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open && offensivenessModel != null)
+            {
+                String json = JsonSerializer.Serialize(offensivenessModel);
+
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        internal async static void SendTestToNLP()
         {
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
-                String json = new QuestionOffenseRequestGen().GenerateRequest(args);
+                OffensivenessModelRequest omr = new OffensivenessModelRequest();
+                omr.msg_id = 65;
+                omr.question = "It's fucking snowing!";
+                omr.question_id = 25;
+                omr.action = "ESTIMATE_OFFENSIVENESS".ToLower();
+
+                String json = JsonSerializer.Serialize(omr);
 
                 await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
@@ -122,9 +162,13 @@ namespace ClusterAPI.Controllers.NLP
                     break;
                 }
 
-                String jsonResponse = usedEncoding.GetString(buffer.ToArray(),0,retVal.Count);
+                if (retVal.Count > 0)
+                {
+                    String jsonResponse = usedEncoding.GetString(buffer.ToArray(), 0, retVal.Count);
 
-                HandleResponse(ProcessResponse(jsonResponse));
+                    HandleResponse(ProcessResponse(jsonResponse));
+                }
+
 
                 if (retVal.CloseStatus != null)
                 {
@@ -201,14 +245,55 @@ namespace ClusterAPI.Controllers.NLP
             switch (model.Key)
             {
                 case WEBSOCKET_RESPONSE_TYPE.MATCH_QUESTION:
-                    ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList());
+                    try
+                    {
+                        ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
+                    }
+                    catch (Exception e)
+                    {
+                        System.Diagnostics.Trace.Write(e.Message);
+                    }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.OFFENSIVENESS:
-                    ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList());
+                    {
+                        try
+                        {
+                            var result = ProcessNLPResponse.ProcessNLPOffensivenessResponse(model.Value.Cast<OffensivenessModelResponse>().ToList().First());
+                            if (result is OffensivenessLogicResponse)
+                            {
+                                Echo(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
+                    }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.NONSENSE:
-                    ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList());
+                    {
+                        try
+                        {
+                            var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
+                            if (result is NonsenseLogicResponse)
+                            {
+                                SendQuestionOffenseRequest((NonsenseLogicResponse)result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
+                     }
                     break;
+            }
+        }
+
+        private async void Echo(OffensivenessLogicResponse result)
+        {
+            if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
+            {
+                await connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("ECHO ECHO TO NLP"), 0, "ECHO ECHO TO NLP".Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
         }
     }

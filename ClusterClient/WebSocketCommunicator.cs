@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -83,6 +83,11 @@ namespace ClusterClient
         /// Variable referencing an instance method of the calling class that handles received messages.
         /// </summary>
         private readonly MethodToPassMessageToClient PassMessageToClient;
+
+        /// <summary>
+        /// A boolean enabling a constant check on websocket state.
+        /// </summary>
+        public bool enableCheckWebSocketStateDebugging = false;
 
         /// <summary>
         /// Starts communication with the websocket host.
@@ -179,22 +184,20 @@ namespace ClusterClient
         {
             while (true)
             {
-                //Console.WriteLine("Thread state at send begin: " + Thread.CurrentThread.ThreadState);
-                //Console.WriteLine("Cancellation requested (send): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
                 foreach(string message in this.MessagesToSend)
                 {
                     ArraySegment<byte> bytesToSend = new ArraySegment<byte>(
                             Encoding.UTF8.GetBytes(message));
+                    Console.WriteLine("Sending message: " + message);
                     await this.webSocket.SendAsync(bytesToSend, WebSocketMessageType.Text, true, this.cancellationToken);
+                    Console.WriteLine("Message sent: " + message);
                     // Now what if message could not be sent? The WebSocket docs don't mention any exceptions thrown by SendAsync().
                     // However, in case the message wasn't sent due to some exception or the cancellation token being cancelled, 
                     // we cannot confirm it wasn't sent and the message will be lost.
                 }
                 await Task.Delay(10, this.cancellationToken);
             }
-            // Console.WriteLine("Thread state at send end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of send messages.");
         }
 
         /// <summary>
@@ -207,23 +210,47 @@ namespace ClusterClient
             Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
-
+            Task checkStateTask = null;
             var allTasks = new List<Task> { sendTask, receiveTask };
+            if (this.enableCheckWebSocketStateDebugging)
+            {
+                checkStateTask = Task.Run(() => this.CheckWebSocketState());
+                allTasks.Insert(0, checkStateTask);
+            }
 
             var finished = await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
                 task.Dispose();*/
-            if (finished == sendTask)
-                Console.WriteLine("Finished handling task: sending.");
-            if (finished == receiveTask)
-                Console.WriteLine("Finished handling task: receiving.");
+            if (allTasks.Contains(finished))
+            {
+                if (finished == sendTask)
+                    Console.WriteLine("Finished handling task: sending.");
+                else if (finished == receiveTask)
+                    Console.WriteLine("Finished handling task: receiving.");
+                else if (finished == checkStateTask)
+                    Console.WriteLine("Finished handling task: checkState.");
+            }
             else
                 Console.WriteLine("Finished handling task: unknown.");
             Console.WriteLine("Handling finished.");
             Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
             Console.WriteLine("Thread state at handler end: " + Thread.CurrentThread.ThreadState);
+        }
+
+        private void CheckWebSocketState()
+        {
+            while(true)
+            {
+                this.cancellationToken.ThrowIfCancellationRequested();
+                if(this.webSocket.State != WebSocketState.Open)
+                {
+                    Console.WriteLine("WebSocketState not open: " + this.webSocket.State + " at " + DateTime.Now.ToString());
+                    Debug.WriteLine("WebSocketState not open: " + this.webSocket.State + " at " + DateTime.Now.ToString());
+                }
+            }
+            
         }
 
         /// <summary>
@@ -247,49 +274,67 @@ namespace ClusterClient
         /// </list>
         private async Task CommunicateWithServerAsync()
         {
-            using (this.webSocket = new ClientWebSocket())
+            try
             {
+                while (true)
+                {
+                    Console.WriteLine("Communicate loop.");
+                    this.cancellationToken.ThrowIfCancellationRequested();
+                    Console.WriteLine("No cancellation exception thrown.");
 
-                //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
-                this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
-                Console.WriteLine("Using websocket.");
+                    // Work-around to ignore aborted websocket. This is not a decent fix, but the problem usually lies at the server side.
+                    if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
+                    {
+                        if (this.webSocket != null)
+                            // Connection was aborted for som unknown reason. Wait some time before trying to reconnect. Exponential averaging in real life.
+                            await Task.Delay(100, this.cancellationToken);
+                        this.webSocket = new ClientWebSocket();
+                        //this.webSocket.Options.SetRequestHeader("Authorization", "Basic " + Convert.ToBase64String(ASCIIEncoding.ASCII.GetBytes("user:password")));
+                        this.webSocket.Options.SetRequestHeader("Authorization", this.authorization);
+                    }
+                    if (this.webSocket.State != WebSocketState.Open)
+                    {
+                            
+                        Console.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
+                        Debug.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
+                        await this.ConnectToServerAsync();
+                        Console.WriteLine("Connection established.");
+                        await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
+                        Console.WriteLine("Confirmation message sent.");
+                    }
+                    await this.HandleSendReceiveTasksAsync();
+                    Console.WriteLine("Still alive.");
+                }
+            } 
+            catch(OperationCanceledException)
+            {
+                Console.WriteLine("Web socket connection closed by calling class instance.");
+                Debug.WriteLine("WebSocket connection closed by calling class instance.");
+            }
+            catch (Exception e)
+            {
+                // Add the exception to the queue
+                //if (e is InvalidOperationException)
+                    //e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
+                this.exceptionQueue.Enqueue(e);
+                Console.WriteLine("An exception occurred in websocket thread: " + e);
+                Debug.WriteLine("Exception in WebSocket thread: " + e);
+            }
+            finally
+            {
+                //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
+                // close websocket
                 try
                 {
-                    while (true)
-                    {
-                        Console.WriteLine("Communicate loop.");
-                        this.cancellationToken.ThrowIfCancellationRequested();
-                        Console.WriteLine("No cancellation exception thrown.");
-                        if (this.webSocket == null | this.webSocket.State != WebSocketState.Open)
-                        {
-                            Console.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
-                            Debug.WriteLine("Websocket NOT connected. Trying to connect. " + this.connectionTimeoutSeconds + "s timeout set.");
-                            await this.ConnectToServerAsync();
-                            Console.WriteLine("Connection established.");
-                            await this.webSocket.SendAsync(connectionEstablishedMessage, WebSocketMessageType.Text, true, this.cancellationToken);
-                            Console.WriteLine("Confirmation message sent.");
-                        }
-                        await this.HandleSendReceiveTasksAsync();
-                        Console.WriteLine("Still alive.");
-                    }
+                    if (this.webSocket != null)
+                        await this.webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Unexpected exception thrown.", CancellationToken.None);
                 } 
-                catch(OperationCanceledException)
+                catch(Exception)
                 {
-                    Console.WriteLine("Web socket connection closed by calling class instance.");
+                    Debug.WriteLine("Connection could not be closed properly.");
                 }
-                catch (Exception e)
-                {
-                    // Add the exception to the queue
-                    this.exceptionQueue.Enqueue(e);
-                    Console.WriteLine("An exception occurred in websocket thread: " + e);
-                }
-                finally
-                {
-                    //if (this.websocket != null & this.websocket.State == WebSocketState.Open)
-                    // close websocket, now handled by 'using'
-                    Debug.WriteLine("Communication with server ended.");
-                    Console.WriteLine("Communication with server ended.");
-                }
+                Debug.WriteLine("Communication with server ended.");
+                Console.WriteLine("Communication with server ended.");
             }
         }
 
@@ -305,6 +350,7 @@ namespace ClusterClient
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
             Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
             Console.WriteLine("Connected.");
+            Debug.WriteLine("Connected to WebSocket.");
             Console.WriteLine("Thread state at connect: " + Thread.CurrentThread.ThreadState);
         }
 

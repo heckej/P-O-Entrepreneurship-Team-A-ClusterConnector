@@ -22,15 +22,15 @@ namespace ClusterAPI.Controllers.NLP
     public class ChatbotWebSocketController : ApiController
     {
         private static readonly String DEFAULT_ACTION = "match_questions";
-        private enum WEBSOCKET_RESPONSE_TYPE { REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
+        private enum WEBSOCKET_RESPONSE_TYPE { NEW_QUESTION ,REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
         private static readonly Encoding usedEncoding = Encoding.UTF8;
         private static readonly Dictionary<String, WebSocket> connections = new Dictionary<string, WebSocket>();
 
         [HttpGet]
         [Route("api/Chatbot/WS")]
         public HttpResponseMessage GetMessage()
-
         {
+            Request.Headers.TryGetValues("Authorization", out IEnumerable<string> res);
             if (!new ChatbotSecurity().Authenticate(Request.Headers.GetValues("Authorization")))
             {
                 return new HttpResponseMessage(HttpStatusCode.Forbidden);
@@ -50,6 +50,16 @@ namespace ClusterAPI.Controllers.NLP
             {
                 await connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("YO!"), 0, "YO!".Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+        }
+
+        /// <summary>
+        /// Send a message to the NLP Controller to process the given answer and check if the contents are nonsone or not.
+        /// 
+        /// </summary>
+        /// <param name="result"></param>
+        private void SendAnswerToNLPForNonsense(OffensivenessModelRequest result)
+        {
+            NLPWebSocketController.SendQuestionNonsenseRequest(result);
         }
 
         public async static void SendAnswerToQuestion(List<ChatbotAnswerRequestResponseModel> result)
@@ -120,10 +130,12 @@ namespace ClusterAPI.Controllers.NLP
                     break;
                 }
 
-                String jsonResponse = usedEncoding.GetString(buffer.ToArray(),0,retVal.Count);
+                if (retVal.Count > 0)
+                {
+                    String jsonResponse = usedEncoding.GetString(buffer.ToArray(), 0, retVal.Count);
 
-                HandleResponse(ProcessResponse(jsonResponse));
-
+                    HandleResponse(ProcessResponse(jsonResponse));
+                }
 
                 if (retVal.CloseStatus != null)
                 {
@@ -141,6 +153,29 @@ namespace ClusterAPI.Controllers.NLP
             if (jsonResponse == null || jsonResponse.Equals(""))
             {
                 return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NONE,null);
+            }
+
+            var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+
+            if (dict.Keys.Contains<String>("user_id") &&
+                dict.Keys.Contains<String>("question") &&
+                dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
+            {
+                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION, new List<BaseModel>() { new ChatbotNewQuestionModel(dict) });
+            }
+
+            try
+            {
+                var result = JsonSerializer.Deserialize<ChatbotNewQuestionModel>(jsonResponse);
+                if (!result.IsComplete())
+                {
+                    throw new Exception();
+                }
+                return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.REQUEST_ANSWER_TO_QUESTION, new List<BaseModel>() { result });
+            }
+            catch
+            {
+
             }
 
             try
@@ -198,24 +233,67 @@ namespace ClusterAPI.Controllers.NLP
 
             switch (model.Key)
             {
+                case WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION:
+                    {
+                        try
+                        {
+                            var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(model.Value.Cast<ChatbotNewQuestionModel>().ToList());
+                            if (result != null)
+                            {
+                                NLPWebSocketController.SendQuestionMatchRequest(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
+                    }
+                    break;
                 case WEBSOCKET_RESPONSE_TYPE.RECEIVE_ANSWER:
-                    ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
+                    {
+                        try
+                        {
+                            var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
+                            if (result != null)
+                            {
+                                SendAnswerToNLPForNonsense(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
+                    }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.REQUEST_ANSWER_TO_QUESTION:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotAnswerRequestModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            SendAnswerToQuestion(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotAnswerRequestModel>().ToList());
+                            if (result != null)
+                            {
+                                SendAnswerToQuestion(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
                         }
                     }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.REQUEST_UNANSWERED_QUESTIONS:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            SendUnansweredQuestions(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().ToList());
+                            if (result != null)
+                            {
+                                SendUnansweredQuestions(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
                         }
                     }
                     break;
