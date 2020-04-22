@@ -273,7 +273,7 @@ namespace ClusterClient
                     this.cancellationToken.ThrowIfCancellationRequested();
                     Console.WriteLine("No cancellation exception thrown.");
 
-                    // Work-around to ignore aborted websocket. This is not a decent fix.
+                    // Work-around to ignore aborted websocket. This is not a decent fix, but the problem usually lies at the server side.
                     if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
                     {
                         if (this.webSocket != null)
