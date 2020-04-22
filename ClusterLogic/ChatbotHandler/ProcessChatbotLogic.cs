@@ -284,11 +284,88 @@ namespace ClusterLogic.ChatbotHandler
         /// This method gets called when the Server detects a new question, add this question to the database
         /// And generate a new UNIQUE id for this question and return it.
         /// </summary>
-        /// <param name="temp"></param>
-        /// <returns></returns>
-        internal static int assignQuestionIdToNewQuestion(NewOpenQuestion temp)
+        /// <param name="openQuestion">The new question to store.</param>
+        /// <returns>The new unique ID of the question to store or -1 of the program was unable to add the
+        /// id to the database</returns>
+        internal static int assignQuestionIdToNewQuestion(NewOpenQuestion openQuestion)
         {
-            throw new NotImplementedException();
+            int res = -1;
+
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Questions (question, answer_id) ");
+            sb.Append($"VALUES ({openQuestion.question}, NULL); ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+
+            manager = new DBManager(true);
+
+            sb = new StringBuilder();
+            sb.Append("SELECT question_id ");
+            sb.Append("FROM dbo.Questions ");
+            sb.Append($"WHERE question = {openQuestion.question}");
+            sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            // Get the new unique id
+            if (reader.Read()) // We only expect one result
+            {
+                res = reader.GetInt32(0);
+            }
+
+            manager.Close();
+
+            return res;
+        }
+
+        /// <summary>
+        /// This method gets called when there is a new answer to store in the database.
+        /// </summary>
+        /// <param name="answer">The new answer to store.</param>
+        /// <returns>The new unique ID of the answer to store or -1 of the program was unable to add the
+        /// id to the database.</returns>
+        private static int assignAnswerIdToNewAnswer(string answer, string user_id)
+        {
+            int res = -1;
+
+            if (String.IsNullOrEmpty(answer))
+            {
+                return res;
+            }
+
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Answers (answer, user_id) ");
+            sb.Append($"VALUES ({answer}, {user_id}); ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+
+            manager = new DBManager(true);
+
+            sb = new StringBuilder();
+            sb.Append("SELECT answer_id ");
+            sb.Append("FROM dbo.Answers ");
+            sb.Append($"WHERE answer = {answer}; ");
+            sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            // Get the new unique id
+            if (reader.Read()) // We only expect one result
+            {
+                res = reader.GetInt32(0);
+            }
+
+            manager.Close();
+
+            return res;
         }
 
 
@@ -296,10 +373,23 @@ namespace ClusterLogic.ChatbotHandler
         /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
         /// close it.
         /// </summary>
-        /// <param name="newAnswerNonsenseCheck"></param>
+        /// <param name="newAnswerNonsenseCheck">The answer to add to the given question.</param>
         public static void SaveQuestionToDatabase(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
-            throw new NotImplementedException();
+            // Store the answer
+            int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
+
+            // Add a reference to the answer to the question
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Questions (answer_id) ");
+            sb.Append($"VALUES ({ansId}) ");
+            sb.Append($"WHERE question_id = {newAnswerNonsenseCheck.question_id}; ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
         }
     }
 }
