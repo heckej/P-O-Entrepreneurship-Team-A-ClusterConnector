@@ -130,11 +130,12 @@ namespace ClusterAPI.Controllers.NLP
                     break;
                 }
 
-                String jsonResponse = usedEncoding.GetString(buffer.ToArray(),0,retVal.Count);
-                System.Diagnostics.Debug.WriteLine(jsonResponse);
+                if (retVal.Count > 0)
+                {
+                    String jsonResponse = usedEncoding.GetString(buffer.ToArray(), 0, retVal.Count);
 
-                HandleResponse(ProcessResponse(jsonResponse));
-
+                    HandleResponse(ProcessResponse(jsonResponse));
+                }
 
                 if (retVal.CloseStatus != null)
                 {
@@ -234,39 +235,65 @@ namespace ClusterAPI.Controllers.NLP
             {
                 case WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(model.Value.Cast<ChatbotNewQuestionModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            NLPWebSocketController.SendQuestionMatchRequest(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotReceiveQuestion(model.Value.Cast<ChatbotNewQuestionModel>().ToList());
+                            if (result != null)
+                            {
+                                NLPWebSocketController.SendQuestionMatchRequest(result);
+                            }
                         }
-
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
                     }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.RECEIVE_ANSWER:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            SendAnswerToNLPForNonsense(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(model.Value.Cast<ChatbotGivenAnswerModel>().ToList());
+                            if (result != null)
+                            {
+                                SendAnswerToNLPForNonsense(result);
+                            }
                         }
-
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
                     }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.REQUEST_ANSWER_TO_QUESTION:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotAnswerRequestModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            SendAnswerToQuestion(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotAnswerRequestModel>().ToList());
+                            if (result != null)
+                            {
+                                SendAnswerToQuestion(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
                         }
                     }
                     break;
                 case WEBSOCKET_RESPONSE_TYPE.REQUEST_UNANSWERED_QUESTIONS:
                     {
-                        var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().ToList());
-                        if (result != null)
+                        try
                         {
-                            SendUnansweredQuestions(result);
+                            var result = ProcessChatbotLogic.ProcessChatbotRequestAnswerToQuestion(model.Value.Cast<ChatbotRequestUnansweredQuestionsModel>().ToList());
+                            if (result != null)
+                            {
+                                SendUnansweredQuestions(result);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
                         }
                     }
                     break;
