@@ -187,6 +187,15 @@ namespace ClusterClient
             this.cancellationTokenSource.Cancel();
         }
 
+        /// <summary>
+        /// Enables a constant check of the websocket state on the debugging output stream.
+        /// </summary>
+        /// <param name="flag"></param>
+        public void EnableWebSocketStateCheck(bool flag)
+        {
+            this.webSocketCommunicator.enableCheckWebSocketStateDebugging = flag;
+        }
+
 
         /*********************************************
          * Message parsing
