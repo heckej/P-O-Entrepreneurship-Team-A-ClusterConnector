@@ -165,8 +165,8 @@ namespace ClusterClient
                 if (!this.cancellationTokenSource.Token.IsCancellationRequested)
                     this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
-                Debug.WriteLine("An exception occurred in the websocket thread.");
-                Console.WriteLine("An exception occurred in the websocket thread.");
+                Debug.WriteLine("Exception received from websocket thread: " + exception);
+                Console.WriteLine("Exception received from websocket thread: " + exception);
                 throw exception;
             }
             else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
