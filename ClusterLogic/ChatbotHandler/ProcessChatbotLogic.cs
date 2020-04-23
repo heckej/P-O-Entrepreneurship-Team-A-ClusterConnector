@@ -115,7 +115,9 @@ namespace ClusterLogic.ChatbotHandler
                 comparisonQuestions.Add(new NLPQuestionModelInfo() { question = result[i].Question, question_id = result[i].Question_id });
             }
             mqmr.compare_questions = comparisonQuestions.ToArray();
-            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgID(list[0].chatbot_temp_id,list[0].question,list[0].user_id);
+
+            // IMPORTANT: DO NOT REMOVE THIS LINE
+            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgID(list[0].chatbot_temp_id,list[0].question,list[0].user_id); 
 
             return mqmr;
         }
@@ -228,12 +230,33 @@ namespace ClusterLogic.ChatbotHandler
 
         /// <summary>
         /// This method does all the things necessary to handle a offensive answer given by a certain user
+        /// --> Answer is added to bad_answers table
         /// </summary>
         /// <param name="newAnswerNonsenseCheck"></param>
         public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
+            // Store the answer
+            int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
+
+            DBManager manager = new DBManager(true);
             
-            throw new NotImplementedException();
+            // Add a reference to the answer in the bad_answer table
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.BadAnswers ");
+            sb.Append($"VALUES ({ansId}, {newAnswerNonsenseCheck.answer}, {newAnswerNonsenseCheck.question_id}, {newAnswerNonsenseCheck.user_id}) ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+
+            /**
+            // Make sure answer is set so that approves == false
+            StringBuilder sb2 = new StringBuilder();
+            sb.Append("UPDATE dbo.Answers ");
+            sb.Append("SET approved = '0' ");
+            sb.Append($"WHERE answer_id = {ansId};");
+            */
+
+            manager.Close();
         }
 
 
@@ -243,7 +266,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newAnswerNonsenseCheck"></param>
         public static void ProcessNonsenseAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
-            throw new NotImplementedException();
+            ProcessOffensiveAnswer(newAnswerNonsenseCheck); // Just adds answer to bad_answer table 
         }
 
         /// <summary>
@@ -253,9 +276,41 @@ namespace ClusterLogic.ChatbotHandler
         /// <returns>A MatchQuestionModelRequest containing all the answered questions from the forum.</returns>
         public static MatchQuestionModelRequest GenerateModelCompareToOpenQuestions(NewQuestion newQuestion)
         {
-            throw new NotImplementedException();
-
             MatchQuestionModelRequest mqmr = new MatchQuestionModelRequest();
+
+            List<DBQuestion> result = new List<DBQuestion>();
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT * ");
+            sb.Append("FROM Questions q ");
+            sb.Append("WHERE q.answer_id IS NOT NULL; ");
+            String sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            while (reader.Read())
+            {
+                DBQuestion answer = new DBQuestion();
+                answer.Question_id = (int)reader["question_id"];
+                answer.Question = (String)reader["question"];
+                answer.Answer_id = (int)reader["answer_id"];
+
+                result.Add(answer);
+            }
+            manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
+
+            mqmr.action = "MATCH_QUESTIONS".ToLower(); //Standard
+            mqmr.question = newQuestion.question;
+            mqmr.question_id = -1; // This id does not exist at this point
+
+            List<NLPQuestionModelInfo> comparisonQuestions = new List<NLPQuestionModelInfo>();
+            for (int i = 0; i < result.Count; i++)
+            {
+                comparisonQuestions.Add(new NLPQuestionModelInfo() { question = result[i].Question, question_id = result[i].Question_id });
+            }
+            mqmr.compare_questions = comparisonQuestions.ToArray();
+
 
             mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgIDOpenQuestions(newQuestion.chatbot_temp_id, newQuestion.question, newQuestion.user_id);
 
@@ -382,6 +437,15 @@ namespace ClusterLogic.ChatbotHandler
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
 
+            // Add the new answer to the answers-table
+            StringBuilder sb1 = new StringBuilder();
+            sb1.Append("INSERT INTO dbo.Answers (answer_id, answer, user_id, positive_feedback, negative_feedback, approved) ");
+            sb1.Append($"VALUES ({ansId},{newAnswerNonsenseCheck.answer},{newAnswerNonsenseCheck.user_id}, {0}, {0}, {0})");
+            String sqlCommand1 = sb1.ToString();
+
+            manager.Read(sqlCommand1);
+
+            // Reference the new answer from the questions table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Questions (answer_id) ");
             sb.Append($"VALUES ({ansId}) ");
