@@ -1,4 +1,4 @@
-using ClusterConnector;
+﻿using ClusterConnector;
 using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using ClusterLogic.Models;
@@ -435,6 +435,10 @@ namespace ClusterLogic.ChatbotHandler
         {
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
+
+            // Default answer id -1 when answer is null
+            if (ansId < 0)
+                return;
 
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
