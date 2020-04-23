@@ -53,6 +53,8 @@ namespace ClusterConnector.Manager
             {
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e);
+                System.Diagnostics.Debug.WriteLine("Query: " + sqlCommand);
                 return null;
             }
         }
