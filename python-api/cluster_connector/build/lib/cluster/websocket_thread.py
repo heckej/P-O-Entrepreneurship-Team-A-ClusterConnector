@@ -105,11 +105,12 @@ class WebsocketThread(threading.Thread):
                     await self._websocket.send(reply)
                     logging.debug("Reply sent: " + str(reply))
             except StopAsyncIteration as e1:
-                logging.debug(e1)
-                logging.debug("No replies available.")
+                #logging.debug(e1)
+                #logging.debug("No replies available.")
+                await asyncio.sleep(0.05)
             except RuntimeError as e2:
-                logging.debug(e2)
-                logging.debug("Can't handle StopAsyncIteration.")
+                #logging.debug(e2)
+                #logging.debug("Can't handle StopAsyncIteration.")
                 await asyncio.sleep(0.05)
             except Exception as e:
                 logging.debug("Reply not sent.")

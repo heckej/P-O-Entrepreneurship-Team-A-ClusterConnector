@@ -2,6 +2,12 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
+v1.1.3
+---------------------------------------
+* `sentence` and `sentence_id` keys correctly added to nonsense task.
+* When in debugging mode, the exception `StopAsyncIteration` and `RunTimeError` is no longer printed where it occurred
+  before.
+
 v1.1.2
 ---------------------------------------
 * The method `reply()` no longer expects the argument to contain a `sentence` key as it mistakenly did before.

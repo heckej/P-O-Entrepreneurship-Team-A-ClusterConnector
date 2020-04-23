@@ -11,4 +11,3 @@ cluster_connector.egg-info/SOURCES.txt
 cluster_connector.egg-info/dependency_links.txt
 cluster_connector.egg-info/requires.txt
 cluster_connector.egg-info/top_level.txt
-doc/docs.html

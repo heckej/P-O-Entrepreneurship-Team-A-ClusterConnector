@@ -68,17 +68,18 @@ class Connector(object):
 
     necessary_task_keys = {"msg_id", "action"}
     """Set of keys that have to be in a task dictionary to be a valid task.
-    
+
     .. versionadded::0.2.0
     """
 
-    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS.value, Actions.IS_NONSENSE.value}
     """Set of actions that can be applied on both questions and answers.
-    
+
     .. versionadded::1.0.0
+    .. versionchanged::1.1.3
     """
 
-    __version__ = '1.1.2'
+    __version__ = '1.1.3'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
