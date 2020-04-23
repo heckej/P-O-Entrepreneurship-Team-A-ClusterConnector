@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -88,6 +88,11 @@ namespace ClusterLogic.Models
         public float prob { get => _prob; set => _prob = value; }
         public int msg_id { get => _msg_id; set => _msg_id = value; }
         public string question { get => _question; set => _question = value; }
+
+        public OffensivenessModelResponse()
+        {
+
+        }
 
         public OffensivenessModelResponse(int question_id = -1, float prob = -1, string question = null, int msg_id = -1)
         {
