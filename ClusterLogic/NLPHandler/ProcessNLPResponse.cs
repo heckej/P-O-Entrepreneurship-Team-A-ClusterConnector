@@ -152,7 +152,7 @@ namespace ClusterLogic.NLPHandler
             String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
             sb.Append("SELECT forbidden_word ");
-            sb.Append("FROM dbo.Blacklist");
+            sb.Append("FROM dbo.Blacklist;");
             String sql = sb.ToString();
             List<String> blacklist = new List<String>();
             // ToDo: make query to get blacklist and put result in placklist variable
