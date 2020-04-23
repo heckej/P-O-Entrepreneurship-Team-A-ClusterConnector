@@ -238,15 +238,24 @@ namespace ClusterLogic.ChatbotHandler
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
 
-            // Add a reference to the answer in the bad_answer table
             DBManager manager = new DBManager(true);
-
+            
+            // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.BadAnswers ");
             sb.Append($"VALUES ({ansId}, {newAnswerNonsenseCheck.answer}, {newAnswerNonsenseCheck.question_id}, {newAnswerNonsenseCheck.user_id}) ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
+
+            /**
+            // Make sure answer is set so that approves == false
+            StringBuilder sb2 = new StringBuilder();
+            sb.Append("UPDATE dbo.Answers ");
+            sb.Append("SET approved = '0' ");
+            sb.Append($"WHERE answer_id = {ansId};");
+            */
+
             manager.Close();
         }
 
