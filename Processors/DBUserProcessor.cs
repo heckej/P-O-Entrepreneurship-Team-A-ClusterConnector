@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace ClusterConnector.Processors
 {
@@ -30,10 +32,10 @@ namespace ClusterConnector.Processors
             {
                 answer.Last_active = "NULL";
             }
-            answer.Fname = (String)reader["fname"];
+            /*answer.Fname = (String)reader["fname"];
             answer.Lname = (String)reader["lname"];
             answer.Email = (String)reader["email"];
-            answer.Phone = (String)reader["phone"];
+            answer.Phone = (String)reader["phone"];*/
 
             manager.Close();
 
