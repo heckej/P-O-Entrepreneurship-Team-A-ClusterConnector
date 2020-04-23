@@ -450,5 +450,15 @@ namespace ClusterLogic.ChatbotHandler
             manager.Read(sqlCommand);
             manager.Close();
         }
+
+        /// <summary>
+        /// This function gets called when the server wants to add a new, unanswered question to the database.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck">The model containing all the information about the question to add.</param>
+        /// <returns>The id of the question that was just added.</returns>
+        public static int SaveQuestionToDatabase(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            return assignQuestionIdToNewQuestion(new NewOpenQuestion(1, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.user_id));
+        }
     }
 }
