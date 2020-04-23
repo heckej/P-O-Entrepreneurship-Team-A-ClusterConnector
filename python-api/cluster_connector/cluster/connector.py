@@ -76,9 +76,10 @@ class Connector(object):
     """Set of actions that can be applied on both questions and answers.
 
     .. versionadded::1.0.0
+    .. versionchanged::1.1.3
     """
 
-    __version__ = '1.1.2'
+    __version__ = '1.1.3'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
