@@ -243,7 +243,7 @@ namespace ClusterLogic.ChatbotHandler
             // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.BadAnswers ");
-            sb.Append($"VALUES ({ansId}, {newAnswerNonsenseCheck.answer}, {newAnswerNonsenseCheck.question_id}, {newAnswerNonsenseCheck.user_id}) ");
+            sb.Append($"VALUES ({ansId}, '{newAnswerNonsenseCheck.answer}', {newAnswerNonsenseCheck.question_id}, '{newAnswerNonsenseCheck.user_id}') ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -398,7 +398,7 @@ namespace ClusterLogic.ChatbotHandler
 
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Answers (answer, user_id) ");
-            sb.Append($"VALUES ({answer}, {user_id}); ");
+            sb.Append($"VALUES ('{answer}', '{user_id}'); ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -409,7 +409,7 @@ namespace ClusterLogic.ChatbotHandler
             sb = new StringBuilder();
             sb.Append("SELECT answer_id ");
             sb.Append("FROM dbo.Answers ");
-            sb.Append($"WHERE answer = {answer}; ");
+            sb.Append($"WHERE answer = '{answer}'; ");
             sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);
@@ -436,13 +436,17 @@ namespace ClusterLogic.ChatbotHandler
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
 
+            // Default answer id -1 when answer is null
+            if (ansId < 0)
+                return;
+
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
 
             // Add the new answer to the answers-table
             StringBuilder sb1 = new StringBuilder();
             sb1.Append("INSERT INTO dbo.Answers (answer_id, answer, user_id, positive_feedback, negative_feedback, approved) ");
-            sb1.Append($"VALUES ({ansId},{newAnswerNonsenseCheck.answer},{newAnswerNonsenseCheck.user_id}, {0}, {0}, {0})");
+            sb1.Append($"VALUES ({ansId},'{newAnswerNonsenseCheck.answer}','{newAnswerNonsenseCheck.user_id}', {0}, {0}, {0})");
             String sqlCommand1 = sb1.ToString();
 
             manager.Read(sqlCommand1);

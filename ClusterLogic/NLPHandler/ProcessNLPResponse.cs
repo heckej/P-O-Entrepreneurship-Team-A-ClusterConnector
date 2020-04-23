@@ -7,6 +7,7 @@ using ClusterLogic.Models;
 using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace ClusterLogic.NLPHandler
 {
@@ -157,11 +158,14 @@ namespace ClusterLogic.NLPHandler
             // ToDo: make query to get blacklist and put result in placklist variable
             using (SqlDataReader reader = manager.Read(sql))
             {
-                // This query should only return 0 or 1 result
-                while (reader.Read())
-                {
-                    blacklist.Add(reader.GetString(0));
-                }
+                if (reader != null)
+                    // This query should only return 0 or 1 result
+                    while (reader.Read())
+                    {
+                        blacklist.Add(reader.GetString(0));
+                    }
+                else
+                    Debug.WriteLine("Reader null");
             }
             manager.Close();
             foreach (String word in words)
