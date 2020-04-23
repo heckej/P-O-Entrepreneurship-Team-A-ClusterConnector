@@ -68,13 +68,13 @@ class Connector(object):
 
     necessary_task_keys = {"msg_id", "action"}
     """Set of keys that have to be in a task dictionary to be a valid task.
-    
+
     .. versionadded::0.2.0
     """
 
-    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS, Actions.IS_NONSENSE}
+    _generic_actions = {Actions.ESTIMATE_OFFENSIVENESS.value, Actions.IS_NONSENSE.value}
     """Set of actions that can be applied on both questions and answers.
-    
+
     .. versionadded::1.0.0
     """
 
