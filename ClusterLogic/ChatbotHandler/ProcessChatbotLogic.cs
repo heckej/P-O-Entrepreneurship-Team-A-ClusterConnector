@@ -323,7 +323,8 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newQuestionNonsenseCheck"></param>
         public static void ProcessNonsenseQuestion(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return;
         }
 
         /// <summary>
@@ -332,7 +333,8 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newQuestionNonsenseCheck"></param>
         public static void ProcessOffensiveAnswer(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
+            return;
         }
 
         /// <summary>
