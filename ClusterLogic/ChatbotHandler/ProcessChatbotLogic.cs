@@ -1,4 +1,5 @@
-﻿using ClusterConnector.Manager;
+﻿using ClusterConnector;
+using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using ClusterLogic.Models;
 using ClusterLogic.Models.ChatbotModels;
@@ -61,6 +62,7 @@ namespace ClusterLogic.ChatbotHandler
             };
         }
 
+
         /// <summary>
         /// Get all the answered questions and wrap them into a MatchQuestionModelRequest.
         /// </summary>
@@ -113,6 +115,7 @@ namespace ClusterLogic.ChatbotHandler
                 comparisonQuestions.Add(new NLPQuestionModelInfo() { question = result[i].Question, question_id = result[i].Question_id });
             }
             mqmr.compare_questions = comparisonQuestions.ToArray();
+            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgID(list[0].chatbot_temp_id,list[0].question,list[0].user_id);
 
             return mqmr;
         }
@@ -187,7 +190,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="nbQuestions"></param>
         /// <param name="user_id"></param>
         /// <returns> Returns a model with a list of unanswered questions </returns>
-        public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(int nbQuestions, string user_id = null)
+        public static ChatbotResponseUnansweredQuestionsModel RetrieveOpenQuestions(string user_id = null, int nbQuestions = 3)
         {
             List<DBQuestion> result = new List<DBQuestion>();
             DBManager manager = new DBManager(true); //this false 
@@ -218,21 +221,175 @@ namespace ClusterLogic.ChatbotHandler
             return new ChatbotResponseUnansweredQuestionsModel(openQuestions.ToArray(), user_id);
         }
 
+        public static OffensivenessModelRequest ProcessChatbotReceiveAnswer(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer)
+        {
+            return new OffensivenessModelRequest(item, chatbotGivesAnswersToQuestionsToServer);
+        }
+
+        /// <summary>
+        /// This method does all the things necessary to handle a offensive answer given by a certain user
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck"></param>
+        public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            
+            throw new NotImplementedException();
+        }
 
 
+        /// <summary>
+        /// This method does all the things necessary to handle a nonsense answer given by a certain user
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck"></param>
+        public static void ProcessNonsenseAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Get all the unanswered questions and wrap them into a MatchQuestionModelRequest.
+        /// </summary>
+        /// <param name="list">A list of ChatbotNewQuestionModels to process.</param>
+        /// <returns>A MatchQuestionModelRequest containing all the answered questions from the forum.</returns>
+        public static MatchQuestionModelRequest GenerateModelCompareToOpenQuestions(NewQuestion newQuestion)
+        {
+            throw new NotImplementedException();
+
+            MatchQuestionModelRequest mqmr = new MatchQuestionModelRequest();
+
+            mqmr.msg_id = ClusterConnector.ServerUtilities.getAndGenerateMsgIDOpenQuestions(newQuestion.chatbot_temp_id, newQuestion.question, newQuestion.user_id);
+
+            return mqmr;
+        }
+
+        /// <summary>
+        /// Given is an answer that is guaranteed to be nonsene, you are given the question and user id, process these.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck"></param>
+        public static void ProcessNonsenseQuestion(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Given is an answer that is guaranteed to be offensive, you are given the question and user id, process these.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck"></param>
+        public static void ProcessOffensiveAnswer(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// This method gets called when the Server detects a new question, add this question to the database
+        /// And generate a new UNIQUE id for this question and return it.
+        /// </summary>
+        /// <param name="openQuestion">The new question to store.</param>
+        /// <returns>The new unique ID of the question to store or -1 of the program was unable to add the
+        /// id to the database</returns>
+        internal static int assignQuestionIdToNewQuestion(NewOpenQuestion openQuestion)
+        {
+            int res = -1;
+
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Questions (question, answer_id) ");
+            sb.Append($"VALUES ({openQuestion.question}, NULL); ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+
+            manager = new DBManager(true);
+
+            sb = new StringBuilder();
+            sb.Append("SELECT question_id ");
+            sb.Append("FROM dbo.Questions ");
+            sb.Append($"WHERE question = {openQuestion.question}");
+            sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            // Get the new unique id
+            if (reader.Read()) // We only expect one result
+            {
+                res = reader.GetInt32(0);
+            }
+
+            manager.Close();
+
+            return res;
+        }
+
+        /// <summary>
+        /// This method gets called when there is a new answer to store in the database.
+        /// </summary>
+        /// <param name="answer">The new answer to store.</param>
+        /// <returns>The new unique ID of the answer to store or -1 of the program was unable to add the
+        /// id to the database.</returns>
+        private static int assignAnswerIdToNewAnswer(string answer, string user_id)
+        {
+            int res = -1;
+
+            if (String.IsNullOrEmpty(answer))
+            {
+                return res;
+            }
+
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Answers (answer, user_id) ");
+            sb.Append($"VALUES ({answer}, {user_id}); ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+
+            manager = new DBManager(true);
+
+            sb = new StringBuilder();
+            sb.Append("SELECT answer_id ");
+            sb.Append("FROM dbo.Answers ");
+            sb.Append($"WHERE answer = {answer}; ");
+            sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            // Get the new unique id
+            if (reader.Read()) // We only expect one result
+            {
+                res = reader.GetInt32(0);
+            }
+
+            manager.Close();
+
+            return res;
+        }
 
 
+        /// <summary>
+        /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
+        /// close it.
+        /// </summary>
+        /// <param name="newAnswerNonsenseCheck">The answer to add to the given question.</param>
+        public static void SaveQuestionToDatabase(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            // Store the answer
+            int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
 
+            // Add a reference to the answer to the question
+            DBManager manager = new DBManager(true);
 
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.Questions (answer_id) ");
+            sb.Append($"VALUES ({ansId}) ");
+            sb.Append($"WHERE question_id = {newAnswerNonsenseCheck.question_id}; ");
+            String sqlCommand = sb.ToString();
 
-
-
-
-
-
-
-
-
-
+            manager.Read(sqlCommand);
+            manager.Close();
+        }
     }
 }

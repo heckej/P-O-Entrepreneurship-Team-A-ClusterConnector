@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ClusterConnector;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -34,6 +35,18 @@ namespace ClusterLogic.Models.ChatbotModels
             _answer_id = answer_id;
             _answer = answer;
             _certainty = certainty;
+        }
+
+        public ChatbotNewAnswerModel(MatchQuestionLogicResponse result)
+        {
+            NewQuestion temp = (NewQuestion)ServerUtilities.msgIdToUserID[result.Msg_id];
+            this.question_id = result.Question_id;
+            this.certainty = 0.75f;
+            this.question = temp.question;
+            this.user_id = temp.user_id;
+            this.answer = result.Answer;
+            this.answer_id = LogicUtility.getAnswerId(result.Answer, this.question_id);
+            this.chatbot_temp_id = temp.chatbot_temp_id;
         }
     }
 }

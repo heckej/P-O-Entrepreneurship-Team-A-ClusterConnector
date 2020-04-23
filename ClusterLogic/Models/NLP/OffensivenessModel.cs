@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using ClusterConnector;
 using ClusterLogic.Models.ChatbotModels;
 
 namespace ClusterLogic.Models
@@ -30,6 +31,38 @@ namespace ClusterLogic.Models
             this.question = nonsenseModelResponse.question;
             this.question_id = nonsenseModelResponse.question_id;
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
+        }
+
+        public OffensivenessModelRequest(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        {
+            this.question = newAnswerNonsenseCheck.answer;
+            this.question_id = newAnswerNonsenseCheck.question_id;
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newAnswerNonsenseCheck.user_id, newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.question_id);
+            this.action =   "ESTIMATE_OFFENSIVENESS".ToLower();
+        }
+
+        public OffensivenessModelRequest(ChatbotNewQuestionModel chatbotNewQuestionModel)
+        {
+            this.question = chatbotNewQuestionModel.question;
+            this.question_id = chatbotNewQuestionModel.chatbot_temp_id;
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenQuestion(chatbotNewQuestionModel.user_id, chatbotNewQuestionModel.question, chatbotNewQuestionModel.chatbot_temp_id);
+            this.action = "IS_NONSENSE".ToLower();
+        }
+
+        public OffensivenessModelRequest(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            this.question = newQuestionNonsenseCheck.question;
+            this.question_id = newQuestionNonsenseCheck.question_id;
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
+            this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
+        }
+
+        public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer, Boolean checkForNonsense = true)
+        {
+            this.question = item.answer;
+            this.question_id = item.question_id;
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(chatbotGivesAnswersToQuestionsToServer.user_id, item.answer, item.question_id); //TODO: what should this be?
+            this.action = checkForNonsense ? "IS_NONSENSE".ToLower() : "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
         public int question_id { get => _question_id; set => _question_id = value; }

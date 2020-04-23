@@ -118,6 +118,8 @@ namespace ClusterLogic.Models
         /// </summary>
         public string Answer { get; } = null;
 
+        public int Temp_ID = 0;
+
         /// <summary>
         /// Create a new MatchQuestionLogicResponse.
         /// </summary>
