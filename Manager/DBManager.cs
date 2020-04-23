@@ -1,4 +1,4 @@
-﻿using ClusterConnector.Models.Database;
+using ClusterConnector.Models.Database;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -38,7 +38,8 @@ namespace ClusterConnector.Manager
                 }
 
                 SqlCommand command = new SqlCommand(sqlCommand, sqlConnection);
-                command.Connection.Open();
+                if(command.Connection.State != System.Data.ConnectionState.Open)
+                    command.Connection.Open();
                 command.ExecuteNonQuery();
 
                 if (!this.keep_open)

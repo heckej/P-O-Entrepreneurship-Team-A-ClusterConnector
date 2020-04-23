@@ -1,4 +1,4 @@
-using ClusterConnector.Models.Database;
+﻿using ClusterConnector.Models.Database;
 using ClusterConnector.Manager;
 using System;
 using System.Collections.Generic;
