@@ -1,4 +1,4 @@
-﻿using ClusterConnector.Models.Database;
+using ClusterConnector.Models.Database;
 using ClusterConnector.Manager;
 using System;
 using System.Collections.Generic;
@@ -38,6 +38,19 @@ namespace ClusterConnector.Processors
             manager.Close();
 
             return answer;
+        }
+
+        public void AddUser(string user_id)
+        {
+            String sqlCommand = "INSERT INTO dbo.Users (user_id) VALUES('" + user_id + "');";
+            DBManager manager = new DBManager(true);
+            var reader = manager.Read(sqlCommand);
+            if (reader == null || !reader.Read())
+            {
+                throw new Exception("User with user id " + user_id + " could not be added to the database.");
+            }
+
+            manager.Close();
         }
 
         public List<DBUser> getByKeys(List<int> keys)
