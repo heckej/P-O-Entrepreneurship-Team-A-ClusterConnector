@@ -10,12 +10,12 @@ namespace ClusterConnector.Processors
 {
     public class DBUserProcessor
     {
-        public DBUser getByKey(int user_id)
+        public DBUser getByKey(string user_id)
         {
-            String sqlCommand = "Select * From dbo.Users _user Where _user.user_id = " + user_id + ";";
+            String sqlCommand = "Select * From dbo.Users _user Where _user.user_id = '" + user_id + "';";
             DBManager manager = new DBManager(true);
             var reader = manager.Read(sqlCommand);
-            if (!reader.Read())
+            if (reader == null || !reader.Read())
             {
                 return null;
             }
