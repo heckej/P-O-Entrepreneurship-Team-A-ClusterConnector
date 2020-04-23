@@ -17,6 +17,8 @@ using ClusterAPI.Controllers.Security;
 using ClusterLogic.Models.ChatbotModels;
 using ClusterLogic.ChatbotHandler;
 using ClusterConnector;
+using ClusterConnector.Models.Database;
+using ClusterConnector.Processors;
 
 namespace ClusterAPI.Controllers.NLP
 {
@@ -196,6 +198,17 @@ namespace ClusterAPI.Controllers.NLP
             {
                 var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
 
+                if (dict.ContainsKey("user_id"))
+                    // if user not in database, add user
+                    try
+                    {
+                        AddUserToDatabaseIfNonExisting(dict["user_id"]);
+                    }
+                    catch(Exception e)
+                    {
+                        Console.Error.WriteLine(e.Message);
+                    }
+
                 if (dict.Keys.Contains<String>("user_id") &&
                     dict.Keys.Contains<String>("question") &&
                     dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
@@ -265,6 +278,15 @@ namespace ClusterAPI.Controllers.NLP
 
 
             return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NONE, null);
+        }
+
+        private void AddUserToDatabaseIfNonExisting(string userID)
+        {
+            DBUserProcessor userProcessor = new DBUserProcessor();
+            DBUser userData = userProcessor.getByKey(userID);
+            // if userData null, add user
+            if(userData == null)
+                userProcessor.AddUser(userID);
         }
 
         private void HandleResponse(KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>> model)
