@@ -589,22 +589,7 @@ namespace ClusterClient
             if (messages.Count > 0)
             {
                 // Fill set of questions
-                foreach (ServerMessage message in messages)
-                {
-                    try
-                    {
-                        ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
-                        if (questionsMessage.answer_questions.Count > 0)
-                            foreach (ServerQuestion question in questionsMessage.answer_questions)
-                                questions.Add(question);
-                    }
-                    catch (InvalidCastException e)
-                    {
-                        Console.WriteLine("Illegal message under questions key: " + e);
-                        Debug.WriteLine("Illegal message under questions key: " + e);
-                    }
-                    this.RemoveReceivedMessage(message);
-                }
+                this.CopyQuestionsFromResponseToSet(messages, questions);
             }
             else
             {
@@ -622,26 +607,30 @@ namespace ClusterClient
                 if (response != null && response.Count > 0)
                 {
                     // Fill set of questions
-                    foreach (ServerMessage message in response)
-                    {
-                        try
-                        {
-                            ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
-                            if (questionsMessage.answer_questions.Count > 0)
-                                foreach (ServerQuestion question in questionsMessage.answer_questions)
-                                    questions.Add(question);
-                        }
-                        catch (InvalidCastException e)
-                        {
-                            Console.WriteLine("Illegal message under questions key: " + e);
-                            Debug.WriteLine("Illegal message under questions key: " + e);
-                        }
-                        this.RemoveReceivedMessage(message);
-                    }
-
+                    this.CopyQuestionsFromResponseToSet(response, questions);
                 }
             }
             return questions;
+        }
+
+        private void CopyQuestionsFromResponseToSet(ISet<ServerMessage> response, ISet<ServerQuestion> questions)
+        {
+            foreach (ServerMessage message in response)
+            {
+                try
+                {
+                    ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
+                    if (questionsMessage.answer_questions.Count > 0)
+                        foreach (ServerQuestion question in questionsMessage.answer_questions)
+                            questions.Add(question);
+                }
+                catch (InvalidCastException e)
+                {
+                    Console.WriteLine("Illegal message under questions key: " + e);
+                    Debug.WriteLine("Illegal message under questions key: " + e);
+                }
+                this.RemoveReceivedMessage(message);
+            }
         }
 
         /// <summary>
