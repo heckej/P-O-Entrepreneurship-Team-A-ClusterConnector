@@ -580,6 +580,7 @@ namespace ClusterClient
         /// <param name="userID">The user ID of the user who should answer the questions.</param>
         /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
         /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        [Obsolete("RequestUnansweredQuestionsAsync is deprecated, please use RequestAndRetrieveUnansweredQuestions instead.")]
         public async Task<ISet<ServerQuestion>> RequestUnansweredQuestionsAsync(string userID, double timeout = 5)
         {
             Console.WriteLine("Request questions method called.");
@@ -605,14 +606,18 @@ namespace ClusterClient
                 this.AddMessageToSendQueue(request);
 
                 // Wait until questions received or timeout
+                Console.WriteLine("Time before awaiting response: " + DateTime.Now.ToString());
+
                 var response = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
-                
+
+                Console.WriteLine("Time after awaiting response: " + DateTime.Now.ToString());
                 if (response != null && response.Count > 0)
                 {
                     // Fill set of questions
                     this.CopyQuestionsFromResponseToSet(response, questions);
                 }
             }
+            Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
             return questions;
         }
 
