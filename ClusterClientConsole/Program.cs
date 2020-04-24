@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using ClusterClient;
 using ClusterClient.Models;
 
@@ -25,7 +26,8 @@ namespace ClusterClientConsole
                         AskQuestion();
                         break;
                     case "r":
-                        RequestQuestions();
+                        Task task = RequestQuestions();
+                        task.Wait();
                         break;
                     case "stop":
                         return;
@@ -61,17 +63,17 @@ namespace ClusterClientConsole
             }
         }
 
-        static void RequestQuestions()
+        static async Task RequestQuestions()
         {
             try
             {
-                var questions = con.RequestUnansweredQuestionsAsync("adfdsf", 10);
-                questions.Wait();
-                foreach (ServerQuestion question in questions.Result)
+                var questions = await con.RequestUnansweredQuestionsAsync("adfdsf", 10);
+                foreach (ServerQuestion question in questions)
                 {
                     Console.WriteLine("Question: " + question.question);
                     Console.WriteLine("Question ID: " + question.question_id);
                 }
+                Console.WriteLine("Questions received: " + questions.Count);
             } 
             catch(Exception e)
             {
