@@ -670,21 +670,23 @@ namespace ClusterClient
                     elapsedMs = watch.ElapsedMilliseconds;
                     try
                     {
-                        answer = this.receivedMessages[expectedResponseAction][userID];
-                        found = answer != null;
+                        response = this.receivedMessages[expectedResponseAction][userID];
+                        found = response != null;
                     } 
                     catch(KeyNotFoundException)
                     {
-                        answer = null;
+                        response = null;
                     }
                 }
                 watch.Stop();
-                Console.WriteLine("Found response to request: " + answer);
+                Console.WriteLine("Found response to request: " + response);
                 if (!found)
                     return null;
             }
+            if (response != null)
+                response = new HashSet<ServerMessage>(response);
             
-            return answer;
+            return response;
         }
 
 
