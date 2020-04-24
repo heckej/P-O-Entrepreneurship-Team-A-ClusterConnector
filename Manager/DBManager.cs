@@ -38,7 +38,8 @@ namespace ClusterConnector.Manager
                 }
 
                 SqlCommand command = new SqlCommand(sqlCommand, sqlConnection);
-                command.Connection.Open();
+                if(command.Connection.State != System.Data.ConnectionState.Open)
+                    command.Connection.Open();
                 command.ExecuteNonQuery();
 
                 if (!this.keep_open)
@@ -52,6 +53,8 @@ namespace ClusterConnector.Manager
             {
                 TextWriter errorWriter = Console.Error;
                 errorWriter.WriteLine(e.Message);
+                System.Diagnostics.Debug.WriteLine(e);
+                System.Diagnostics.Debug.WriteLine("Query: " + sqlCommand);
                 return null;
             }
         }

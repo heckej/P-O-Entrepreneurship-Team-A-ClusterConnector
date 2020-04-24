@@ -235,26 +235,15 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newAnswerNonsenseCheck"></param>
         public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
-            // Store the answer
-            int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
-
             DBManager manager = new DBManager(true);
             
             // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
-            sb.Append("INSERT INTO dbo.BadAnswers ");
-            sb.Append($"VALUES ({ansId}, {newAnswerNonsenseCheck.answer}, {newAnswerNonsenseCheck.question_id}, {newAnswerNonsenseCheck.user_id}) ");
+            sb.Append("INSERT INTO dbo.BadAnswers (bad_answer, question_id, answer_author_id) ");
+            sb.Append($"VALUES ('{newAnswerNonsenseCheck.answer}', {newAnswerNonsenseCheck.question_id}, '{newAnswerNonsenseCheck.user_id}') ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
-
-            /**
-            // Make sure answer is set so that approves == false
-            StringBuilder sb2 = new StringBuilder();
-            sb.Append("UPDATE dbo.Answers ");
-            sb.Append("SET approved = '0' ");
-            sb.Append($"WHERE answer_id = {ansId};");
-            */
 
             manager.Close();
         }
@@ -398,7 +387,7 @@ namespace ClusterLogic.ChatbotHandler
 
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Answers (answer, user_id) ");
-            sb.Append($"VALUES ({answer}, {user_id}); ");
+            sb.Append($"VALUES ('{answer}', '{user_id}'); ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -409,7 +398,7 @@ namespace ClusterLogic.ChatbotHandler
             sb = new StringBuilder();
             sb.Append("SELECT answer_id ");
             sb.Append("FROM dbo.Answers ");
-            sb.Append($"WHERE answer = {answer}; ");
+            sb.Append($"WHERE answer = '{answer}'; ");
             sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);
@@ -430,11 +419,15 @@ namespace ClusterLogic.ChatbotHandler
         /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
         /// close it.
         /// </summary>
-        /// <param name="newAnswerNonsenseCheck">The answer to add to the given question.</param>
-        public static void SaveQuestionToDatabase(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        /// <param name="newAnswerNonsenseCheck">The model containing the answer to add, the user who wrote it, and the question_id to refer to.</param>
+        public static void SaveAnswerToOpenQuestion(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
+
+            // Default answer id -1 when answer is null
+            if (ansId < 0)
+                return;
 
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
@@ -442,7 +435,7 @@ namespace ClusterLogic.ChatbotHandler
             // Add the new answer to the answers-table
             StringBuilder sb1 = new StringBuilder();
             sb1.Append("INSERT INTO dbo.Answers (answer_id, answer, user_id, positive_feedback, negative_feedback, approved) ");
-            sb1.Append($"VALUES ({ansId},{newAnswerNonsenseCheck.answer},{newAnswerNonsenseCheck.user_id}, {0}, {0}, {0})");
+            sb1.Append($"VALUES ({ansId},'{newAnswerNonsenseCheck.answer}','{newAnswerNonsenseCheck.user_id}', {0}, {0}, {0})");
             String sqlCommand1 = sb1.ToString();
 
             manager.Read(sqlCommand1);
@@ -456,6 +449,16 @@ namespace ClusterLogic.ChatbotHandler
 
             manager.Read(sqlCommand);
             manager.Close();
+        }
+
+        /// <summary>
+        /// This function gets called when the server wants to add a new, unanswered question to the database.
+        /// </summary>
+        /// <param name="newQuestionNonsenseCheck">The model containing all the information about the question to add.</param>
+        /// <returns>The id of the question that was just added.</returns>
+        public static int SaveQuestionToDatabase(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        {
+            return assignQuestionIdToNewQuestion(new NewOpenQuestion(1, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.user_id));
         }
     }
 }
