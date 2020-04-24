@@ -587,25 +587,24 @@ namespace ClusterClient
 
             if (messages.Count > 0)
             {
-                try
+                // Fill set of questions
+                foreach (ServerMessage message in messages)
                 {
-                    ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet<ServerQuestionsMessage>)messages;
-                    foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
+                    try
                     {
+                        ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
                         if (questionsMessage.answer_questions.Count > 0)
                             foreach (ServerQuestion question in questionsMessage.answer_questions)
                                 questions.Add(question);
-
                     }
-                } 
-                catch(InvalidCastException e)
-                {
-                    Console.WriteLine("Illegal message under questions key: " + e);
-                    Debug.WriteLine("Illegal message under questions key: " + e);
+                    catch (InvalidCastException e)
+                    {
+                        Console.WriteLine("Illegal message under questions key: " + e);
+                        Debug.WriteLine("Illegal message under questions key: " + e);
+                    }
+                    this.RemoveReceivedMessage(message);
                 }
-                
             }
-                
             else
             {
                 // Create request for server
@@ -617,19 +616,26 @@ namespace ClusterClient
                 this.AddMessageToSendQueue(request);
 
                 // Wait until questions received or timeout
-                var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
+                var response = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
                 
-                if (answer != null && answer.Count > 0)
+                if (response != null && response.Count > 0)
                 {
-                    ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
                     // Fill set of questions
-                    foreach (ServerQuestionsMessage questionsMessage in questionsMessages)
+                    foreach (ServerMessage message in response)
                     {
-                        if (questionsMessage.answer_questions.Count > 0)
-                            foreach (ServerQuestion question in questionsMessage.answer_questions)
-                                questions.Add(question);
-                        // Remove message from cache
-                        this.RemoveReceivedMessage(questionsMessage);
+                        try
+                        {
+                            ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
+                            if (questionsMessage.answer_questions.Count > 0)
+                                foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                    questions.Add(question);
+                        }
+                        catch (InvalidCastException e)
+                        {
+                            Console.WriteLine("Illegal message under questions key: " + e);
+                            Debug.WriteLine("Illegal message under questions key: " + e);
+                        }
+                        this.RemoveReceivedMessage(message);
                     }
 
                 }
