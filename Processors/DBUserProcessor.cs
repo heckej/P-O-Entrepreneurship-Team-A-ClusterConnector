@@ -14,7 +14,7 @@ namespace ClusterConnector.Processors
     {
         public DBUser getByKey(string user_id)
         {
-            String sqlCommand = "Select * From dbo.Users _user Where _user.user_id = '" + user_id + "';";
+            String sqlCommand = "Select * From dbo.Users Where user_id = '" + user_id + "';";
             DBManager manager = new DBManager(true);
             var reader = manager.Read(sqlCommand);
             if (reader == null || !reader.Read())

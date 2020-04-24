@@ -27,10 +27,11 @@ namespace ClusterLogic.Models.ChatbotModels
 
     public class ChatbotResponseUnansweredQuestionsModelToChatbot
     {
-
+        private readonly string _action = "questions";
         private string _user_id = null;
         private ChatbotQuestionHasNoAnswerModelToChatbot[] _answer_questions = null;
 
+        public string action { get => _action; }
         public string user_id { get => _user_id; set => _user_id = value; }
         public ChatbotQuestionHasNoAnswerModelToChatbot[] answer_questions { get => _answer_questions; set => _answer_questions = value; }
 

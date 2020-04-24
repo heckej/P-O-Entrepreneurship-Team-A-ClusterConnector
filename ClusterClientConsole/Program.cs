@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using ClusterClient;
+using ClusterClient.Models;
 
 namespace ClusterClientConsole
 {
@@ -22,10 +25,15 @@ namespace ClusterClientConsole
                     case "q":
                         AskQuestion();
                         break;
+                    case "r":
+                        Task task = RequestQuestions();
+                        task.Wait();
+                        break;
                     case "stop":
                         return;
                 }
             }
+            con.CloseWebSocketConnection();
         }
 
         static void AnswerQuestion()
@@ -45,11 +53,30 @@ namespace ClusterClientConsole
         {
             try
             {
-                con.SendQuestionAsync("abc", "ddfd");
+                var task = con.SendQuestionAsync("abc", "ddfd");
+                task.Wait();
             }
             catch (Exception e)
             {
                 Console.WriteLine("An exception occurred while asking:");
+                Console.WriteLine(e);
+            }
+        }
+
+        static async Task RequestQuestions()
+        {
+            try
+            {
+                var questions = await con.RequestUnansweredQuestionsAsync("adfdsf", 10);
+                foreach (ServerQuestion question in questions)
+                {
+                    Console.WriteLine("Question: " + question.question);
+                    Console.WriteLine("Question ID: " + question.question_id);
+                }
+                Console.WriteLine("Questions received: " + questions.Count);
+            } 
+            catch(Exception e)
+            {
                 Console.WriteLine(e);
             }
         }

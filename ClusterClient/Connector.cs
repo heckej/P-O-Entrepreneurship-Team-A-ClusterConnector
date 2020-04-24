@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.WebSockets;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
@@ -217,6 +218,7 @@ namespace ClusterClient
                 action = parsedMessage.action;
             else
                 action = Actions.Default;
+            Console.WriteLine("Message added under action " + action);
             this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
             this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
         }
@@ -582,15 +584,28 @@ namespace ClusterClient
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
             // Check if questions offline -> probably not, but if there are any, add them
-            ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet < ServerQuestionsMessage >) this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
-            if (storedQuestionsMessages.Count > 0)
-                foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
-                {
-                    if (questionsMessage.answer_questions.Count > 0)
-                        foreach (ServerQuestion question in questionsMessage.answer_questions)
-                            questions.Add(question);
+            ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
 
+            if (messages.Count > 0)
+            {
+                // Fill set of questions
+                foreach (ServerMessage message in messages)
+                {
+                    try
+                    {
+                        ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
+                        if (questionsMessage.answer_questions.Count > 0)
+                            foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                questions.Add(question);
+                    }
+                    catch (InvalidCastException e)
+                    {
+                        Console.WriteLine("Illegal message under questions key: " + e);
+                        Debug.WriteLine("Illegal message under questions key: " + e);
+                    }
+                    this.RemoveReceivedMessage(message);
                 }
+            }
             else
             {
                 // Create request for server
@@ -602,19 +617,26 @@ namespace ClusterClient
                 this.AddMessageToSendQueue(request);
 
                 // Wait until questions received or timeout
-                var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
+                var response = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
                 
-                if (answer.Count > 0)
+                if (response != null && response.Count > 0)
                 {
-                    ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
                     // Fill set of questions
-                    foreach (ServerQuestionsMessage questionsMessage in questionsMessages)
+                    foreach (ServerMessage message in response)
                     {
-                        if (questionsMessage.answer_questions.Count > 0)
-                            foreach (ServerQuestion question in questionsMessage.answer_questions)
-                                questions.Add(question);
-                        // Remove message from cache
-                        this.RemoveReceivedMessage(questionsMessage);
+                        try
+                        {
+                            ServerQuestionsMessage questionsMessage = (ServerQuestionsMessage)message;
+                            if (questionsMessage.answer_questions.Count > 0)
+                                foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                    questions.Add(question);
+                        }
+                        catch (InvalidCastException e)
+                        {
+                            Console.WriteLine("Illegal message under questions key: " + e);
+                            Debug.WriteLine("Illegal message under questions key: " + e);
+                        }
+                        this.RemoveReceivedMessage(message);
                     }
 
                 }
@@ -638,11 +660,11 @@ namespace ClusterClient
             // convert timeout to milliseconds
             timeout *= 1000;
             bool found = false;
-            ISet<ServerMessage> answer = null;
+            ISet<ServerMessage> response = null;
             try
             {
-                answer = this.receivedMessages[expectedResponseAction][userID];
-                found = answer.Count > 0;
+                response = this.receivedMessages[expectedResponseAction][userID];
+                found = response.Count > 0;
             }
             catch(KeyNotFoundException)
             {
@@ -653,21 +675,23 @@ namespace ClusterClient
                     elapsedMs = watch.ElapsedMilliseconds;
                     try
                     {
-                        answer = this.receivedMessages[expectedResponseAction][userID];
-                        found = answer != null;
+                        response = this.receivedMessages[expectedResponseAction][userID];
+                        found = response != null;
                     } 
                     catch(KeyNotFoundException)
                     {
-                        answer = null;
+                        response = null;
                     }
                 }
                 watch.Stop();
-                Console.WriteLine("Found response to request: " + answer);
+                Console.WriteLine("Found response to request: " + response);
                 if (!found)
                     return null;
             }
+            if (response != null)
+                response = new HashSet<ServerMessage>(response);
             
-            return answer;
+            return response;
         }
 
 
