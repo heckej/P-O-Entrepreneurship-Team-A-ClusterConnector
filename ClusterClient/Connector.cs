@@ -660,11 +660,11 @@ namespace ClusterClient
             // convert timeout to milliseconds
             timeout *= 1000;
             bool found = false;
-            ISet<ServerMessage> answer = null;
+            ISet<ServerMessage> response = null;
             try
             {
-                answer = this.receivedMessages[expectedResponseAction][userID];
-                found = answer.Count > 0;
+                response = this.receivedMessages[expectedResponseAction][userID];
+                found = response.Count > 0;
             }
             catch(KeyNotFoundException)
             {
