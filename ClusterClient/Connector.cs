@@ -536,16 +536,6 @@ namespace ClusterClient
          ********************************************/
 
         /// <summary>
-        /// Returns all available questions that should be answered.
-        /// </summary>
-        /// <returns>A set containing questions that should be answered.</returns>
-        [Obsolete("GetQuestionsToBeAnswered is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
-        public List<ServerMessage> GetQuestionsToBeAnswered()
-        {
-            return this.receivedMessages[Actions.Questions].SelectMany(d => d.Value).ToList();
-        }
-
-        /// <summary>
         /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
