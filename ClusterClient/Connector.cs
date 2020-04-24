@@ -657,33 +657,34 @@ namespace ClusterClient
         ///          'null' in case no response was received before timeout.</returns>
         private ISet<ServerMessage> GetResponseFromServerToRequest(string userID, string expectedResponseAction, double timeout)
         {
-            Console.WriteLine("Waiting for questions from server.");
+            Console.WriteLine("Waiting for response from server.");
             // set timeout and wait for answer
             // convert timeout to milliseconds
             timeout *= 1000;
             bool found = false;
             ISet<ServerMessage> response = null;
-            try
-            {
+
+            if (this.receivedMessages.ContainsKey(expectedResponseAction) && this.receivedMessages[expectedResponseAction].ContainsKey(userID)
+                && this.receivedMessages[expectedResponseAction][userID].Count > 0)
                 response = this.receivedMessages[expectedResponseAction][userID];
-                found = response.Count > 0;
-            }
-            catch(KeyNotFoundException)
+            else
             {
                 var watch = Stopwatch.StartNew();
                 double elapsedMs = 0;
-                while (!found & !(elapsedMs > timeout))
+                while (!found && !(elapsedMs > timeout))
                 {
                     elapsedMs = watch.ElapsedMilliseconds;
-                    try
+                    /*Console.WriteLine("Contains key " + expectedResponseAction + ": " + this.receivedMessages.ContainsKey(expectedResponseAction));
+                    Console.WriteLine("Contains userID: " + this.receivedMessages[expectedResponseAction].ContainsKey(userID));*/
+                    Thread.Sleep(1);
+                    if (this.receivedMessages.ContainsKey(expectedResponseAction) && this.receivedMessages[expectedResponseAction].ContainsKey(userID)
+                        && this.receivedMessages[expectedResponseAction][userID].Count > 0)
                     {
                         response = this.receivedMessages[expectedResponseAction][userID];
                         found = response != null;
-                    } 
-                    catch(KeyNotFoundException)
-                    {
-                        response = null;
                     }
+                    else
+                        response = null;
                 }
                 watch.Stop();
                 Console.WriteLine("Found response to request: " + response);
