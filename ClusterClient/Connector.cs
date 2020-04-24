@@ -604,7 +604,7 @@ namespace ClusterClient
                 // Wait until questions received or timeout
                 var answer = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
                 
-                if (answer.Count > 0)
+                if (answer != null && answer.Count > 0)
                 {
                     ISet<ServerQuestionsMessage> questionsMessages = (ISet<ServerQuestionsMessage>)answer;
                     // Fill set of questions
