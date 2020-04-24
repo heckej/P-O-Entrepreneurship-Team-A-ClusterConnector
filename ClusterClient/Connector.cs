@@ -733,41 +733,6 @@ namespace ClusterClient
         /// <list type="table">
         ///     <item>
         ///         <term>Pre</term>
-        ///         <description>Every question ID only occurs once in the given collection.</description>
-        ///     </item>
-        /// </list>
-        /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
-        [Obsolete("AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs) is deprecated," +
-            " please use AnswerQuestions(string userID, ICollection<UserAnswer> userAnswers) instead.")]
-        public void AnswerQuestions(string userID, ICollection<Tuple<int, string>> questionIDAnswerPairs)
-        {
-            UserAnswersMessage answers = new UserAnswersMessage
-            {
-                user_id = userID
-            };
-            foreach(Tuple<int, string> questionIDAnswerPair in questionIDAnswerPairs)
-            {
-                int questionID = questionIDAnswerPair.Item1;
-                string answer = questionIDAnswerPair.Item2;
-                UserAnswer userAnswer = new UserAnswer
-                {
-                    question_id = questionID,
-                    answer = answer
-                };
-                answers.AddAnswer(userAnswer);
-            }
-            this.AddMessageToSendQueue(answers);
-        }
-
-        /// <summary>
-        /// Processes a series of questionID-answer pairs from a user identified by the given <paramref name="userID"/>.
-        /// </summary>
-        /// <param name="userID">The user id of the user who wants to send answers to questions.</param>
-        /// <param name="questionIDAnswerPairs">A collection containing pairs consisting of a question ID and the answer
-        /// provided by the user to the question belonging to the given question ID.</param>
-        /// <list type="table">
-        ///     <item>
-        ///         <term>Pre</term>
         ///         <description>Every answer in the given collection has a unique question ID among the answers in that collection.</description>
         ///     </item>
         /// </list>
