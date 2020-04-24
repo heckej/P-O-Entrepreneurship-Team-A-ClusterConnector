@@ -373,7 +373,7 @@ namespace ClusterAPI.Controllers.NLP
                 }
                 else
                 {
-                    ProcessChatbotLogic.SaveQuestionToDatabase((NewAnswerNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)
