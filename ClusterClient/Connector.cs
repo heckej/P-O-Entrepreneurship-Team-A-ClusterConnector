@@ -378,35 +378,6 @@ namespace ClusterClient
         }
 
         /// <summary>
-        /// Sends a given question from a given user to the server and returns the answer from the server.
-        /// </summary>
-        /// <param name="userID">The ID of the user for whom an answer is required.</param>
-        /// <param name="question">The question to which an answer is required.</param>
-        /// <param name="timeout">The timeout to be set in seconds before throwing an exception.</param>
-        /// <returns>A server answer object with a question ID assigned to the given question by the server.
-        /// In case the <c>answer</c> property of the returned server answer is <c>null</c>, then the server the server has assigned a 
-        /// question ID to the given question, but it hasn't found an answer yet.</returns>
-        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
-        [Obsolete("SendQuestionAsync is deprecated, please use SendQuestionAndWaitForAnswer instead.")]
-        public async Task<ServerAnswer> SendQuestionAsync(string userID, string question, double timeout = 5)
-        {
-            Console.WriteLine("Send question method called.");
-            this.CheckoutWebSocket();
-            UserQuestion request = new UserQuestion
-            {
-                user_id = userID,
-                question = question,
-                chatbot_temp_id = this.GetNextTempChatbotID()
-            };
-            this.AddMessageToSendQueue(request);
-            var answer = await Task.Run(() => this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout));
-            /*if (answer == null)
-                throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
-                    "Try again later or use a higher timeout.");*/
-            return answer;
-        }
-
-        /// <summary>
         /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
         /// by the user identified by the given <paramref name="userID"/>.
         /// </summary>
@@ -597,53 +568,6 @@ namespace ClusterClient
                     // Remove response messages from received messages.
                     foreach (ServerMessage responseMessage in response)
                         this.RemoveReceivedMessage(responseMessage);
-                }
-            }
-            Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
-            return questions;
-        }
-
-        /// <summary>
-        /// Creates a request to the server to receive unanswered questions for a user.
-        /// </summary>
-        /// <param name="userID">The user ID of the user who should answer the questions.</param>
-        /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
-        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
-        [Obsolete("RequestUnansweredQuestionsAsync is deprecated, please use RequestAndRetrieveUnansweredQuestions instead.")]
-        public async Task<ISet<ServerQuestion>> RequestUnansweredQuestionsAsync(string userID, double timeout = 5)
-        {
-            Console.WriteLine("Request questions method called.");
-            this.CheckoutWebSocket();
-            // Create set of questions
-            ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
-            // Check if questions offline -> probably not, but if there are any, add them
-            ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
-
-            if (messages.Count > 0)
-            {
-                // Fill set of questions
-                this.CopyQuestionsFromResponseToSet(messages, questions);
-            }
-            else
-            {
-                // Create request for server
-                UserRequest request = new UserRequest
-                {
-                    user_id = userID,
-                    request = Requests.UnansweredQuestions
-                };
-                this.AddMessageToSendQueue(request);
-
-                // Wait until questions received or timeout
-                Console.WriteLine("Time before awaiting response: " + DateTime.Now.ToString());
-
-                var response = await Task.Run(() => this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout));
-
-                Console.WriteLine("Time after awaiting response: " + DateTime.Now.ToString());
-                if (response != null && response.Count > 0)
-                {
-                    // Fill set of questions
-                    this.CopyQuestionsFromResponseToSet(response, questions);
                 }
             }
             Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
