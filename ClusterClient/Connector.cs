@@ -539,20 +539,17 @@ namespace ClusterClient
         /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
         /// </summary>
         /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
-        /// <returns>A set containing questions addressed to the user identified by the given <paramref name="userID"/>.
-        ///          'null' in case no questions messages were found.</returns>
-        [Obsolete("GetQuestionsAddressedToUser is deprecated, please use RequestUnansweredQuestionsAsync instead.")]
-        public ISet<ServerQuestionsMessage> GetQuestionsAddressedToUser(string userID)
+        /// <returns>A set containing messages of action <paramref name="action"/> addressed to the user identified by the given 
+        /// <paramref name="userID"/>. An empty set if no messages were found.</returns>
+        private ISet<ServerMessage> GetActionMessagesAddressedToUser(string action, string userID)
         {
             try
             {
-                ISet < ServerQuestionsMessage > questions = new HashSet<ServerQuestionsMessage>((ISet<ServerQuestionsMessage>)this.receivedMessages[Actions.Questions][userID]);
-                this.receivedMessages[Actions.Questions][userID].Clear();
-                return questions;
+                return new HashSet<ServerMessage>(this.receivedMessages[action][userID]);
             }
-            catch(KeyNotFoundException)
+            catch (KeyNotFoundException)
             {
-                return null;
+                return new HashSet<ServerMessage>();
             }
         }
 
