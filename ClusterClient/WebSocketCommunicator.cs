@@ -326,7 +326,7 @@ namespace ClusterClient
                 // close websocket
                 try
                 {
-                    if (this.webSocket != null)
+                    if (this.webSocket != null && this.webSocket.State == WebSocketState.Open)
                         await this.webSocket.CloseAsync(WebSocketCloseStatus.InternalServerError, "Unexpected exception thrown.", CancellationToken.None);
                 } 
                 catch(Exception)
