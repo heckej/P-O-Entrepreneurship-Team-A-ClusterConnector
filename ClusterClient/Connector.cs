@@ -582,15 +582,29 @@ namespace ClusterClient
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
             // Check if questions offline -> probably not, but if there are any, add them
-            ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet < ServerQuestionsMessage >) this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
-            if (storedQuestionsMessages.Count > 0)
-                foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
-                {
-                    if (questionsMessage.answer_questions.Count > 0)
-                        foreach (ServerQuestion question in questionsMessage.answer_questions)
-                            questions.Add(question);
+            ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
 
+            if (messages.Count > 0)
+            {
+                try
+                {
+                    ISet<ServerQuestionsMessage> storedQuestionsMessages = (ISet<ServerQuestionsMessage>)messages;
+                    foreach (ServerQuestionsMessage questionsMessage in storedQuestionsMessages)
+                    {
+                        if (questionsMessage.answer_questions.Count > 0)
+                            foreach (ServerQuestion question in questionsMessage.answer_questions)
+                                questions.Add(question);
+
+                    }
+                } 
+                catch(InvalidCastException e)
+                {
+                    Console.WriteLine("Illegal message under questions key: " + e);
+                    Debug.WriteLine("Illegal message under questions key: " + e);
                 }
+                
+            }
+                
             else
             {
                 // Create request for server
