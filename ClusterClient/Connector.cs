@@ -648,7 +648,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Waits until <paramref name="timeout"/> for an answer from the server to the question identified by the given <paramref name="tempChatbotID"/> and asked
-        /// by the user identified by the given <paramref name="userID"/>.
+        /// by the user identified by the given <paramref name="userID"/>. This method is CPU bound.
         /// </summary>
         /// <param name="tempChatbotID"></param>
         /// <param name="userID">The ID of the user for whom an answer is required.</param>
