@@ -5,17 +5,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Common;
+using System.Data.SqlClient;
 
 namespace ClusterConnector.Processors
 {
     public class DBUserProcessor
     {
-        public DBUser getByKey(int user_id)
+        public DBUser getByKey(string user_id)
         {
-            String sqlCommand = "Select * From dbo.Users _user Where _user.user_id = " + user_id + ";";
+            String sqlCommand = "Select * From dbo.Users Where user_id = '" + user_id + "';";
             DBManager manager = new DBManager(true);
             var reader = manager.Read(sqlCommand);
-            if (!reader.Read())
+            if (reader == null || !reader.Read())
             {
                 return null;
             }
@@ -30,14 +32,27 @@ namespace ClusterConnector.Processors
             {
                 answer.Last_active = "NULL";
             }
-            answer.Fname = (String)reader["fname"];
+            /*answer.Fname = (String)reader["fname"];
             answer.Lname = (String)reader["lname"];
             answer.Email = (String)reader["email"];
-            answer.Phone = (String)reader["phone"];
+            answer.Phone = (String)reader["phone"];*/
 
             manager.Close();
 
             return answer;
+        }
+
+        public void AddUser(string user_id)
+        {
+            String sqlCommand = "INSERT INTO dbo.Users (user_id) VALUES('" + user_id + "');";
+            DBManager manager = new DBManager(true);
+            var reader = manager.Read(sqlCommand);
+            if (reader == null || !reader.Read())
+            {
+                throw new Exception("User with user id " + user_id + " could not be added to the database.");
+            }
+
+            manager.Close();
         }
 
         public List<DBUser> getByKeys(List<int> keys)

@@ -12,7 +12,7 @@ namespace ClusterAPI.Controllers.DB
 {
     public class DBUserController : ApiController
     {
-        public IHttpActionResult GetDBUser(int user_id)
+        public IHttpActionResult GetDBUser(string user_id)
         {
             DBUserProcessor dBUserProcessor = new DBUserProcessor();
             var result = dBUserProcessor.getByKey(user_id);
