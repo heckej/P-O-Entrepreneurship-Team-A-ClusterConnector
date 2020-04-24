@@ -653,6 +653,7 @@ namespace ClusterClient
             timeout *= 1000;
             bool found = false;
             ISet<ServerMessage> answer = null;
+            Console.WriteLine("No of question messages: " + this.receivedMessages[Actions.Questions].Count);
             try
             {
                 answer = this.receivedMessages[expectedResponseAction][userID];
@@ -664,6 +665,7 @@ namespace ClusterClient
                 double elapsedMs = 0;
                 while (!found & !(elapsedMs > timeout))
                 {
+                    Console.WriteLine("No of question messages: " + this.receivedMessages[Actions.Questions].Count);
                     elapsedMs = watch.ElapsedMilliseconds;
                     try
                     {
