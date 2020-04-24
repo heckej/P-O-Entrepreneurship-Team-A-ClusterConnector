@@ -554,21 +554,53 @@ namespace ClusterClient
         }
 
         /// <summary>
-        /// Returns all available questions addressed to the user identified by the given <paramref name="userID"/>.
+        /// Creates a request to the server to receive unanswered questions for a user.
+        /// This method is CPU-bound (use Task.Run to call from a UI thread).
         /// </summary>
-        /// <param name="userID">The user ID of the user to whom the returned questions should be addressed.</param>
-        /// <returns>A set containing messages of action <paramref name="action"/> addressed to the user identified by the given 
-        /// <paramref name="userID"/>. An empty set if no messages were found.</returns>
-        private ISet<ServerMessage> GetActionMessagesAddressedToUser(string action, string userID)
+        /// <param name="userID">The user ID of the user who should answer the questions.</param>
+        /// <returns>A set of server questions. If the set is empty, no questions are available.</returns>
+        /// <exception cref="Exception">The websocket thread has passed an exception. The passed exception is thrown by this method.</exception>
+        public ISet<ServerQuestion> RequestAndRetrieveUnansweredQuestions(string userID, double timeout = 5)
         {
-            try
+            Console.WriteLine("Request questions method called.");
+            this.CheckoutWebSocket();
+            // Create set of questions
+            ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            // Check if questions offline -> probably not, but if there are any, add them
+            ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
+
+            if (messages.Count > 0)
             {
-                return new HashSet<ServerMessage>(this.receivedMessages[action][userID]);
+                // Fill set of questions
+                this.CopyQuestionsFromResponseToSet(messages, questions);
             }
-            catch (KeyNotFoundException)
+            else
             {
-                return new HashSet<ServerMessage>();
+                // Create request for server
+                UserRequest request = new UserRequest
+                {
+                    user_id = userID,
+                    request = Requests.UnansweredQuestions
+                };
+                this.AddMessageToSendQueue(request);
+
+                // Wait until questions received or timeout
+                Console.WriteLine("Time before response: " + DateTime.Now.ToString());
+                var response = this.GetResponseFromServerToRequest(userID, Actions.Questions, timeout);
+                
+                Console.WriteLine("Time after response: " + DateTime.Now.ToString());
+                if (response != null && response.Count > 0)
+                {
+                    // Fill set of questions
+                    this.CopyQuestionsFromResponseToSet(response, questions);
+
+                    // Remove response messages from received messages.
+                    foreach (ServerMessage responseMessage in response)
+                        this.RemoveReceivedMessage(responseMessage);
+                }
             }
+            Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
+            return questions;
         }
 
         /// <summary>
