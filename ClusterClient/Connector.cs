@@ -210,13 +210,16 @@ namespace ClusterClient
             Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
             string action;
+            Console.WriteLine("Parsed message: " + parsedMessage);
             if (parsedMessage == null)
                 // Ignore useless messages.
                 return;
+            Console.WriteLine("Usefull message.");
             if (Actions.GetActions().Contains(parsedMessage.action))
                 action = parsedMessage.action;
             else
                 action = Actions.Default;
+            Console.WriteLine("Message added under action " + action);
             this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
             this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
         }
