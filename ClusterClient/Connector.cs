@@ -621,6 +621,11 @@ namespace ClusterClient
             return questions;
         }
 
+        /// <summary>
+        /// Copies questions from a set of server messages for every server questions message in the set.
+        /// </summary>
+        /// <param name="response">The source from which the questions should be copied.</param>
+        /// <param name="questions">The destination to which the questions should be added.</param>
         private void CopyQuestionsFromResponseToSet(ISet<ServerMessage> response, ISet<ServerQuestion> questions)
         {
             foreach (ServerMessage message in response)
