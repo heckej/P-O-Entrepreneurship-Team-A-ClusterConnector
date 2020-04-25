@@ -22,7 +22,7 @@ namespace ClusterLogic.Models
 
         public bool IsComplete()
         {
-            return compare_questions != null && _question_id != -1 && _msg_id != -1 && _question != null && _action != null;
+            return compare_questions != null && _msg_id != -1 && _question != null && _action != null;
         }
     }
 
