@@ -112,7 +112,7 @@ namespace ClusterLogic.Models
         /// <summary>
         /// Message id (passed on from MatchQuestionModelResponse)
         /// </summary>
-        public int Msg_id { get; } = -1;
+        public int Msg_id { get; set; } = -1;
 
         /// <summary>
         /// The id of the best match.
