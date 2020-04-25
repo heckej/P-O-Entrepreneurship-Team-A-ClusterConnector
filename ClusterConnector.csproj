@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ITaskInterface.cs" />
     <Compile Include="Processors\DBUserProcessor.cs" />
     <Compile Include="Processors\DBQuestionProcessor.cs" />
     <Compile Include="Processors\DBOpenAnswerProcessor.cs" />

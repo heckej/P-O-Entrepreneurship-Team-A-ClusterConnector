@@ -76,6 +76,10 @@ namespace ClusterAPI.Controllers.NLP
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<MatchQuestionModelRequest>(mqmr, SendQuestionMatchRequest));
+            }
         }
 
         public static void SendQuestionNonsenseRequest(OffensivenessModelRequest offensivenessModel)
@@ -85,6 +89,10 @@ namespace ClusterAPI.Controllers.NLP
                 String json = JsonSerializer.Serialize(offensivenessModel);
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<OffensivenessModelRequest>(offensivenessModel, SendQuestionNonsenseRequest));
             }
         }
 
@@ -96,6 +104,10 @@ namespace ClusterAPI.Controllers.NLP
                 String json = JsonSerializer.Serialize(offensivenessModel);
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<NonsenseLogicResponse>(offensivenessModel, SendQuestionOffenseRequest));
             }
         }
 
@@ -335,6 +347,10 @@ namespace ClusterAPI.Controllers.NLP
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<ChatbotNewQuestionModel>(chatbotNewQuestionModel, CheckIfQuestionIsNonsense));
+            }
         }
 
         private void ProcessNonsenseResult(NonsenseLogicResponse result)
@@ -401,6 +417,10 @@ namespace ClusterAPI.Controllers.NLP
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<NewQuestionNonsenseCheck>(newQuestionNonsenseCheck, SendQuestionOffenseRequest));
+            }
         }
 
         private void SendAnswerOffenseRequest(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
@@ -412,6 +432,10 @@ namespace ClusterAPI.Controllers.NLP
 
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
             }
+            else
+            {
+                taskQueue.Enqueue(new NLPTask<NewAnswerNonsenseCheck>(newAnswerNonsenseCheck,SendAnswerOffenseRequest));
+            }
         }
 
         private void Echo(OffensivenessLogicResponse result)
@@ -419,6 +443,26 @@ namespace ClusterAPI.Controllers.NLP
             if (connections.ContainsKey("NLP") && connections["NLP"] != null && connections["NLP"].State == WebSocketState.Open)
             {
                 connections["NLP"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes("ECHO ECHO TO NLP"), 0, "ECHO ECHO TO NLP".Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
+        static Queue<ITaskInterface> taskQueue = new Queue<ITaskInterface>();
+
+        public struct NLPTask<T> : ITaskInterface
+        {
+            T model;
+            public delegate void TaskMethod(T t);
+            TaskMethod taskMethod;
+
+            public NLPTask(T model, TaskMethod tm)
+            {
+                taskMethod = tm;
+                this.model = model;
+            }
+
+            public void DoTask()
+            {
+                taskMethod.Invoke(model);
             }
         }
     }
