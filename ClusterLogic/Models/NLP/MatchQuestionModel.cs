@@ -22,7 +22,7 @@ namespace ClusterLogic.Models
 
         public bool IsComplete()
         {
-            return compare_questions != null && _question_id != -1 && _msg_id != -1 && _question != null && _action != null;
+            return compare_questions != null && _msg_id != -1 && _question != null && _action != null;
         }
     }
 
@@ -67,7 +67,7 @@ namespace ClusterLogic.Models
 
         public bool IsComplete()
         {
-            return possible_matches != null && _question_id != -1 && _msg_id != -1;
+            return possible_matches != null && _msg_id != -1;
         }
     }
 
@@ -112,7 +112,7 @@ namespace ClusterLogic.Models
         /// <summary>
         /// Message id (passed on from MatchQuestionModelResponse)
         /// </summary>
-        public int Msg_id { get; } = -1;
+        public int Msg_id { get; set; } = -1;
 
         /// <summary>
         /// The id of the best match.
