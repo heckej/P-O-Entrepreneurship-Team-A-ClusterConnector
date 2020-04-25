@@ -79,7 +79,7 @@ class Connector(object):
     .. versionchanged::1.1.3
     """
 
-    __version__ = '1.1.3'
+    __version__ = '1.1.4'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
