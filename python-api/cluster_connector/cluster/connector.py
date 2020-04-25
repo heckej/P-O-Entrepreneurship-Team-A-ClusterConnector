@@ -355,11 +355,12 @@ class Connector(object):
         # return from generic sentence(_id) to question/answer(_id)
         original_task = self._tasks_in_progress[request["msg_id"]]
         if "question" in original_task.keys():
-            parsed_request["question"] = original_task["sentence"]
-            parsed_request["question_id"] = original_task["sentence_id"]
+            parsed_request["question"] = original_task["question"]
+            parsed_request["question_id"] = original_task["question_id"]
         elif "answer" in original_task.keys():
-            parsed_request["answer"] = original_task["sentence"]
-            parsed_request["answer_id"] = original_task["sentence_id"]
+            parsed_request["answer"] = original_task["answer"]
+            parsed_request["answer_id"] = original_task["answer_id"]
+        parsed_request['msg_id'] = original_task['msg_id']
         return parsed_request
 
     def reply(self, response: dict):
