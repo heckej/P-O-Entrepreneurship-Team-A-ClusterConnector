@@ -253,7 +253,7 @@ namespace ClusterAPI.Controllers.NLP
                     try
                     {
                         {
-                            var result = ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
+                            MatchQuestionLogicResponse result = ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
                             
                             if (result != null)
                             {
@@ -279,7 +279,7 @@ namespace ClusterAPI.Controllers.NLP
                                     }
                                     else
                                     {
-                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First()));
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First(), ProcessChatbotLogic.SaveQuestionToDatabase((NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id])));
                                     }
                                 }
                             }
@@ -310,7 +310,7 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
+                            NonsenseLogicResponse result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
                             if (result is NonsenseLogicResponse)
                             {
                                 ProcessNonsenseResult(result);
@@ -366,15 +366,16 @@ namespace ClusterAPI.Controllers.NLP
 
         private void ProcessOffenseResult(OffensivenessLogicResponse result)
         {
-            if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewAnswerNonsenseCheck)
+            if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewAnswerOffenseCheck)
             {
                 if (result.Offensive)
                 {
-                    ProcessChatbotLogic.ProcessOffensiveAnswer((NewAnswerNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ProcessChatbotLogic.ProcessOffensiveAnswer((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
                 else
                 {
-                    ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    //ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)

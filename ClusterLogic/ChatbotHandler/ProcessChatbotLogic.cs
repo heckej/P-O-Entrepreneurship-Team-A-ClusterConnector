@@ -123,15 +123,6 @@ namespace ClusterLogic.ChatbotHandler
         }
 
         /// <summary>
-        /// Perform NLP Nonsense check
-        /// </summary>
-        /// <param name="list"></param>
-        public static OffensivenessModelRequest ProcessChatbotReceiveAnswer(List<ChatbotGivenAnswerModel> list)
-        {
-            return new OffensivenessModelRequest(list[0]);
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="list"></param>
@@ -233,14 +224,14 @@ namespace ClusterLogic.ChatbotHandler
         /// --> Answer is added to bad_answers table
         /// </summary>
         /// <param name="newAnswerNonsenseCheck"></param>
-        public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        public static void ProcessOffensiveAnswer(NewAnswerOffenseCheck newAnswerOffenseCheck)
         {
             DBManager manager = new DBManager(true);
             
             // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.BadAnswers (bad_answer, question_id, answer_author_id) ");
-            sb.Append($"VALUES ('{newAnswerNonsenseCheck.answer}', {newAnswerNonsenseCheck.question_id}, '{newAnswerNonsenseCheck.user_id}') ");
+            sb.Append($"VALUES ('{newAnswerOffenseCheck.answer}', {newAnswerOffenseCheck.question_id}, '{newAnswerOffenseCheck.user_id}') ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -255,7 +246,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newAnswerNonsenseCheck"></param>
         public static void ProcessNonsenseAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
-            ProcessOffensiveAnswer(newAnswerNonsenseCheck); // Just adds answer to bad_answer table 
+            ProcessOffensiveAnswer(new NewAnswerOffenseCheck(newAnswerNonsenseCheck)); // Just adds answer to bad_answer table 
         }
 
         /// <summary>
@@ -391,9 +382,6 @@ namespace ClusterLogic.ChatbotHandler
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
-            manager.Close();
-
-            manager = new DBManager(true);
 
             sb = new StringBuilder();
             sb.Append("SELECT answer_id ");
@@ -414,36 +402,23 @@ namespace ClusterLogic.ChatbotHandler
             return res;
         }
 
-
         /// <summary>
         /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
         /// close it.
         /// </summary>
         /// <param name="newAnswerNonsenseCheck">The model containing the answer to add, the user who wrote it, and the question_id to refer to.</param>
-        public static void SaveAnswerToOpenQuestion(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        public static void SaveAnswerToOpenQuestion(NewAnswerOffenseCheck newAnswerNonsenseCheck)
         {
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
 
-            // Default answer id -1 when answer is null
-            if (ansId < 0)
-                return;
-
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
 
-            // Add the new answer to the answers-table
-            StringBuilder sb1 = new StringBuilder();
-            sb1.Append("INSERT INTO dbo.Answers (answer_id, answer, user_id, positive_feedback, negative_feedback, approved) ");
-            sb1.Append($"VALUES ({ansId},'{newAnswerNonsenseCheck.answer}','{newAnswerNonsenseCheck.user_id}', {0}, {0}, {0})");
-            String sqlCommand1 = sb1.ToString();
-
-            manager.Read(sqlCommand1);
-
             // Reference the new answer from the questions table
             StringBuilder sb = new StringBuilder();
-            sb.Append("INSERT INTO dbo.Questions (answer_id) ");
-            sb.Append($"VALUES ({ansId}) ");
+            sb.Append("UPDATE dbo.Questions ");
+            sb.Append($"SET answer_id = {ansId} ");
             sb.Append($"WHERE question_id = {newAnswerNonsenseCheck.question_id}; ");
             String sqlCommand = sb.ToString();
 
@@ -456,9 +431,11 @@ namespace ClusterLogic.ChatbotHandler
         /// </summary>
         /// <param name="newQuestionNonsenseCheck">The model containing all the information about the question to add.</param>
         /// <returns>The id of the question that was just added.</returns>
-        public static int SaveQuestionToDatabase(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        
+
+        public static int SaveQuestionToDatabase(NewOpenQuestion serverData)
         {
-            return assignQuestionIdToNewQuestion(new NewOpenQuestion(1, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.user_id));
+            return assignQuestionIdToNewQuestion(serverData);
         }
     }
 }

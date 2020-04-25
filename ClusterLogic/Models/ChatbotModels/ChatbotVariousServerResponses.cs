@@ -50,14 +50,14 @@ namespace ClusterLogic.Models.ChatbotModels
         private String _question = null;
         private int _chatbot_temp_id = -1;
 
-        public ServerResponseNoAnswerToQuestion(MatchQuestionLogicResponse new_result, MatchQuestionModelResponse baseModel)
+        public ServerResponseNoAnswerToQuestion(MatchQuestionLogicResponse result, MatchQuestionModelResponse baseModel, int v)
         {
             {
                 NewOpenQuestion temp = (NewOpenQuestion)ServerUtilities.msgIdToUserID[baseModel.msg_id];
                 user_id = temp.user_id;
                 question = temp.question;
                 chatbot_temp_id = temp.chatbot_temp_id;
-                question_id = ProcessChatbotLogic.assignQuestionIdToNewQuestion(temp);
+                question_id =v;
             }
         }
 

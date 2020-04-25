@@ -11,9 +11,9 @@ namespace ClusterConnector
         readonly static public String DATE_TIME_FORMAT = "dd/mm/yyyy HH:mm:ss";
 #if DEBUG
         //readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster_Copy;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
-        readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true";
 #else
-        readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False";
+        readonly static public String SQLSource = "Data Source=clusterbot.database.windows.net;Initial Catalog=Cluster;User ID=public_access;Password=]JT87v\"4*/}&5BFK;Connect Timeout=30;Encrypt=True;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;MultipleActiveResultSets=true";
 #endif
 
         private static int msg_id = 0;
@@ -49,6 +49,14 @@ namespace ClusterConnector
             msg_id++;
 
             msgIdToUserID.Add(msg_id, new NewOpenQuestion(chatbot_temp_id, question, user_id));
+            return msg_id;
+        }
+
+        public static int getAndGenerateMsgIDForGivenAnswerOffensive(string user_id, string answer, int question_id)
+        {
+            msg_id++;
+
+            msgIdToUserID.Add(msg_id, new NewAnswerOffenseCheck(question_id, answer, user_id));
             return msg_id;
         }
     }
@@ -105,6 +113,11 @@ namespace ClusterConnector
     public struct NewAnswerOffenseCheck : ServerData
     {
         public int question_id; public string answer; public string user_id;
+
+        public NewAnswerOffenseCheck(NewAnswerNonsenseCheck newAnswerNonsenseCheck) : this(newAnswerNonsenseCheck.question_id, newAnswerNonsenseCheck.answer,newAnswerNonsenseCheck.user_id)
+        {
+        }
+
         public NewAnswerOffenseCheck(int question_id, string answer, string user_id)
         {
             this.question_id = question_id;
