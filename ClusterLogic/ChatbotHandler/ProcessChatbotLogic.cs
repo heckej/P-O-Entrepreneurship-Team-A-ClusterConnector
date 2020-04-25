@@ -382,9 +382,6 @@ namespace ClusterLogic.ChatbotHandler
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
-            manager.Close();
-
-            manager = new DBManager(true);
 
             sb = new StringBuilder();
             sb.Append("SELECT answer_id ");
