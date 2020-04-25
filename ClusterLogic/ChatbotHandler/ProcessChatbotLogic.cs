@@ -415,20 +415,8 @@ namespace ClusterLogic.ChatbotHandler
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
 
-            // Default answer id -1 when answer is null
-            if (ansId < 0)
-                return;
-
             // Add a reference to the answer to the question
             DBManager manager = new DBManager(true);
-
-            // Add the new answer to the answers-table
-            StringBuilder sb1 = new StringBuilder();
-            sb1.Append("INSERT INTO dbo.Answers (answer_id, answer, user_id, positive_feedback, negative_feedback, approved) ");
-            sb1.Append($"VALUES ({ansId},'{newAnswerNonsenseCheck.answer}','{newAnswerNonsenseCheck.user_id}', {0}, {0}, {0})");
-            String sqlCommand1 = sb1.ToString();
-
-            manager.Read(sqlCommand1);
 
             // Reference the new answer from the questions table
             StringBuilder sb = new StringBuilder();
