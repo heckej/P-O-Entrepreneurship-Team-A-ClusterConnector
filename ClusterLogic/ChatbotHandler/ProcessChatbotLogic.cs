@@ -417,8 +417,8 @@ namespace ClusterLogic.ChatbotHandler
 
             // Reference the new answer from the questions table
             StringBuilder sb = new StringBuilder();
-            sb.Append("INSERT INTO dbo.Questions (answer_id) ");
-            sb.Append($"VALUES ({ansId}) ");
+            sb.Append("UPDATE dbo.Questions ");
+            sb.Append($"SET answer_id = {ansId} ");
             sb.Append($"WHERE question_id = {newAnswerNonsenseCheck.question_id}; ");
             String sqlCommand = sb.ToString();
 
