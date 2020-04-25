@@ -53,16 +53,16 @@ namespace ClusterLogic.Models
         {
             this.question = newQuestionNonsenseCheck.question;
             this.question_id = newQuestionNonsenseCheck.question_id;
-            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswerOffensive(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
-        public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer, Boolean checkForNonsense = true)
+        public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer)
         {
             this.question = item.answer;
             this.question_id = item.question_id;
             this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(chatbotGivesAnswersToQuestionsToServer.user_id, item.answer, item.question_id); //TODO: what should this be?
-            this.action = checkForNonsense ? "IS_NONSENSE".ToLower() : "ESTIMATE_OFFENSIVENESS".ToLower();
+            this.action = "IS_NONSENSE".ToLower();
         }
 
         public int question_id { get => _question_id; set => _question_id = value; }

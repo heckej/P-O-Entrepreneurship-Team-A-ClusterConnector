@@ -51,6 +51,14 @@ namespace ClusterConnector
             msgIdToUserID.Add(msg_id, new NewOpenQuestion(chatbot_temp_id, question, user_id));
             return msg_id;
         }
+
+        public static int getAndGenerateMsgIDForGivenAnswerOffensive(string user_id, string answer, int question_id)
+        {
+            msg_id++;
+
+            msgIdToUserID.Add(msg_id, new NewAnswerOffenseCheck(question_id, answer, user_id));
+            return msg_id;
+        }
     }
 
     public interface ServerData
