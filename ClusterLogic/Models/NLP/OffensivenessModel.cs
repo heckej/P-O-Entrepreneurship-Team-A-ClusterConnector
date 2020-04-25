@@ -17,14 +17,7 @@ namespace ClusterLogic.Models
 
         public OffensivenessModelRequest() { }
 
-        public OffensivenessModelRequest(ChatbotGivenAnswerModel chatbotGivenAnswerModel)
-        {
-            this.question = chatbotGivenAnswerModel.answer;
-            this.question_id = chatbotGivenAnswerModel.question_id;
-            this.msg_id = -1; //TODO: what should this be?
-            this.action = "IS_NONSENSE".ToLower();
-        }
-
+        /*
         public OffensivenessModelRequest(NonsenseModelResponse nonsenseModelResponse)
         {
             this.msg_id = nonsenseModelResponse.msg_id;
@@ -32,15 +25,18 @@ namespace ClusterLogic.Models
             this.question_id = nonsenseModelResponse.question_id;
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
+        */
 
+        //NLP Answer Nonsense -> NLP answer Offense model
         public OffensivenessModelRequest(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
             this.question = newAnswerNonsenseCheck.answer;
             this.question_id = newAnswerNonsenseCheck.question_id;
-            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newAnswerNonsenseCheck.user_id, newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.question_id);
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswerOffensive(newAnswerNonsenseCheck.user_id, newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.question_id);
             this.action =   "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
+        //Chatbot Question -> NLP Nonsense model
         public OffensivenessModelRequest(ChatbotNewQuestionModel chatbotNewQuestionModel)
         {
             this.question = chatbotNewQuestionModel.question;
@@ -49,20 +45,22 @@ namespace ClusterLogic.Models
             this.action = "IS_NONSENSE".ToLower();
         }
 
+        //NLP Nonsense -> NLP Offense model
         public OffensivenessModelRequest(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
         {
             this.question = newQuestionNonsenseCheck.question;
             this.question_id = newQuestionNonsenseCheck.question_id;
-            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenQuestion(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
-        public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer, Boolean checkForNonsense = true)
+        //Chatbot answer -> Nonsense to NLP model
+        public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer)
         {
             this.question = item.answer;
             this.question_id = item.question_id;
             this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(chatbotGivesAnswersToQuestionsToServer.user_id, item.answer, item.question_id); //TODO: what should this be?
-            this.action = checkForNonsense ? "IS_NONSENSE".ToLower() : "ESTIMATE_OFFENSIVENESS".ToLower();
+            this.action = "IS_NONSENSE".ToLower();
         }
 
         public int question_id { get => _question_id; set => _question_id = value; }

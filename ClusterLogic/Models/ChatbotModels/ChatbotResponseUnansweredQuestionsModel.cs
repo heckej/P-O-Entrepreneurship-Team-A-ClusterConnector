@@ -10,14 +10,15 @@ namespace ClusterLogic.Models.ChatbotModels
 	[Serializable]
 	public class ChatbotResponseUnansweredQuestionsModel
 	{
-
+        private string _action = "questions";
 		private string _user_id = null; 
 		private ChatbotQuestionHasNoAnswerModel[] _openQuestions = null; 
 
 		public string user_id { get => _user_id; set => _user_id = value; }
 		public ChatbotQuestionHasNoAnswerModel[] openQuestions { get => _openQuestions; set => _openQuestions = value; }
+        public string action { get => _action; set => _action = value; }
 
-		public ChatbotResponseUnansweredQuestionsModel(ChatbotQuestionHasNoAnswerModel[] openQuestions, string userID)
+        public ChatbotResponseUnansweredQuestionsModel(ChatbotQuestionHasNoAnswerModel[] openQuestions, string userID)
         {
 			_user_id = userID;
 			_openQuestions = openQuestions; 

@@ -316,7 +316,7 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            foreach (var item in model.Value.Cast<ChatbotGivesAnswersToQuestionsToServer>().First().answer_questions)
+                            foreach (ChatbotGivesAnswerModelToServer item in model.Value.Cast<ChatbotGivesAnswersToQuestionsToServer>().First().answer_questions)
                             {
                                 var result = ProcessChatbotLogic.ProcessChatbotReceiveAnswer(item, model.Value.Cast<ChatbotGivesAnswersToQuestionsToServer>().First());
 
