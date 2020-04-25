@@ -17,14 +17,7 @@ namespace ClusterLogic.Models
 
         public OffensivenessModelRequest() { }
 
-        public OffensivenessModelRequest(ChatbotGivenAnswerModel chatbotGivenAnswerModel)
-        {
-            this.question = chatbotGivenAnswerModel.answer;
-            this.question_id = chatbotGivenAnswerModel.question_id;
-            this.msg_id = -1; //TODO: what should this be?
-            this.action = "IS_NONSENSE".ToLower();
-        }
-
+        /*
         public OffensivenessModelRequest(NonsenseModelResponse nonsenseModelResponse)
         {
             this.msg_id = nonsenseModelResponse.msg_id;
@@ -32,6 +25,7 @@ namespace ClusterLogic.Models
             this.question_id = nonsenseModelResponse.question_id;
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
+        */
 
         //NLP Answer Nonsense -> NLP answer Offense model
         public OffensivenessModelRequest(NewAnswerNonsenseCheck newAnswerNonsenseCheck)

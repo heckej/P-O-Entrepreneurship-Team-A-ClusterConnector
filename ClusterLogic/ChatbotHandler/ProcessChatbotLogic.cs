@@ -123,15 +123,6 @@ namespace ClusterLogic.ChatbotHandler
         }
 
         /// <summary>
-        /// Perform NLP Nonsense check
-        /// </summary>
-        /// <param name="list"></param>
-        public static OffensivenessModelRequest ProcessChatbotReceiveAnswer(List<ChatbotGivenAnswerModel> list)
-        {
-            return new OffensivenessModelRequest(list[0]);
-        }
-
-        /// <summary>
         /// 
         /// </summary>
         /// <param name="list"></param>
