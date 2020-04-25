@@ -33,14 +33,16 @@ namespace ClusterLogic.Models
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
+        //NLP Answer Nonsense -> NLP answer Offense model
         public OffensivenessModelRequest(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
             this.question = newAnswerNonsenseCheck.answer;
             this.question_id = newAnswerNonsenseCheck.question_id;
-            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswer(newAnswerNonsenseCheck.user_id, newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.question_id);
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswerOffensive(newAnswerNonsenseCheck.user_id, newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.question_id);
             this.action =   "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
+        //Chatbot Question -> NLP Nonsense model
         public OffensivenessModelRequest(ChatbotNewQuestionModel chatbotNewQuestionModel)
         {
             this.question = chatbotNewQuestionModel.question;
@@ -49,14 +51,16 @@ namespace ClusterLogic.Models
             this.action = "IS_NONSENSE".ToLower();
         }
 
+        //NLP Nonsense -> NLP Offense model
         public OffensivenessModelRequest(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
         {
             this.question = newQuestionNonsenseCheck.question;
             this.question_id = newQuestionNonsenseCheck.question_id;
-            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenAnswerOffensive(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
+            this.msg_id = ServerUtilities.getAndGenerateMsgIDForGivenQuestion(newQuestionNonsenseCheck.user_id, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.question_id);
             this.action = "ESTIMATE_OFFENSIVENESS".ToLower();
         }
 
+        //Chatbot answer -> Nonsense to NLP model
         public OffensivenessModelRequest(ChatbotGivesAnswerModelToServer item, ChatbotGivesAnswersToQuestionsToServer chatbotGivesAnswersToQuestionsToServer)
         {
             this.question = item.answer;
