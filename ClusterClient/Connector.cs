@@ -473,14 +473,14 @@ namespace ClusterClient
         ///             then the server answer has been removed now from the received messages.</description>
         ///     </item>
         /// </list>
-        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID)
+        private ServerAnswer GetAnswerToQuestionOfUserByTempChatbotID(int chatbotTempID, string userID, bool retry = true)
         {
             try
             {
                 foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
                     try
                     {
-                        if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID)
+                        if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID || ((ServerAnswer)answer).status_code > 0)
                         {
                             this.receivedMessages[Actions.Answer][userID].Remove(answer);
                             return (ServerAnswer)answer;
@@ -497,6 +497,15 @@ namespace ClusterClient
             catch(KeyNotFoundException)
             {
                 // userID not in message dictionary under answer key.
+            }
+            catch(NullReferenceException)
+            {
+                // A NullReferenceException might occur for apparently no reason, so retry once, after sleeping 1ms.
+                if (retry)
+                {
+                    Thread.Sleep(1);
+                    return this.GetAnswerToQuestionOfUserByTempChatbotID(chatbotTempID, userID, false);
+                }
             }
             return null;
         }
