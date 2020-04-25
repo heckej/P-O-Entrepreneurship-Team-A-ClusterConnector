@@ -310,7 +310,7 @@ namespace ClusterAPI.Controllers.NLP
                     {
                         try
                         {
-                            var result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
+                            NonsenseLogicResponse result = ProcessNLPResponse.ProcessNLPNonsenseResponse(model.Value.Cast<NonsenseModelResponse>().ToList().First());
                             if (result is NonsenseLogicResponse)
                             {
                                 ProcessNonsenseResult(result);
