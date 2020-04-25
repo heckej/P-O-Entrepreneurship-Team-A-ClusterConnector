@@ -25,6 +25,7 @@ namespace ClusterConnector.Manager
 
         public SqlDataReader Read(String sqlCommand)
         {
+            SqlCommand command = null;
             try
             {
                 if (sqlConnection != null && sqlConnection.State == System.Data.ConnectionState.Closed)
@@ -37,7 +38,7 @@ namespace ClusterConnector.Manager
                     sqlConnection = new SqlConnection(ServerUtilities.SQLSource);
                 }
 
-                SqlCommand command = new SqlCommand(sqlCommand, sqlConnection);
+                command = new SqlCommand(sqlCommand, sqlConnection);
                 if(command.Connection.State != System.Data.ConnectionState.Open)
                     command.Connection.Open();
                 command.ExecuteNonQuery();
@@ -48,6 +49,12 @@ namespace ClusterConnector.Manager
                 }
 
                 return command.ExecuteReader();
+            }
+            catch(InvalidOperationException e)
+            {
+                if (command != null && command.Connection.State == System.Data.ConnectionState.Closed)
+                    return Read(sqlCommand);
+                return null;
             }
             catch (Exception e)
             {
