@@ -366,16 +366,16 @@ namespace ClusterAPI.Controllers.NLP
 
         private void ProcessOffenseResult(OffensivenessLogicResponse result)
         {
-            if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewAnswerNonsenseCheck)
+            if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewAnswerOffenseCheck)
             {
                 if (result.Offensive)
                 {
-                    ProcessChatbotLogic.ProcessOffensiveAnswer((NewAnswerNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ProcessChatbotLogic.ProcessOffensiveAnswer((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
                 else
                 {
                     //ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
-                    ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)

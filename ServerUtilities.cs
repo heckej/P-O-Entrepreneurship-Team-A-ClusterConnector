@@ -113,6 +113,11 @@ namespace ClusterConnector
     public struct NewAnswerOffenseCheck : ServerData
     {
         public int question_id; public string answer; public string user_id;
+
+        public NewAnswerOffenseCheck(NewAnswerNonsenseCheck newAnswerNonsenseCheck) : this(newAnswerNonsenseCheck.question_id, newAnswerNonsenseCheck.answer,newAnswerNonsenseCheck.user_id)
+        {
+        }
+
         public NewAnswerOffenseCheck(int question_id, string answer, string user_id)
         {
             this.question_id = question_id;

@@ -224,14 +224,14 @@ namespace ClusterLogic.ChatbotHandler
         /// --> Answer is added to bad_answers table
         /// </summary>
         /// <param name="newAnswerNonsenseCheck"></param>
-        public static void ProcessOffensiveAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        public static void ProcessOffensiveAnswer(NewAnswerOffenseCheck newAnswerOffenseCheck)
         {
             DBManager manager = new DBManager(true);
             
             // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.BadAnswers (bad_answer, question_id, answer_author_id) ");
-            sb.Append($"VALUES ('{newAnswerNonsenseCheck.answer}', {newAnswerNonsenseCheck.question_id}, '{newAnswerNonsenseCheck.user_id}') ");
+            sb.Append($"VALUES ('{newAnswerOffenseCheck.answer}', {newAnswerOffenseCheck.question_id}, '{newAnswerOffenseCheck.user_id}') ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -246,7 +246,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="newAnswerNonsenseCheck"></param>
         public static void ProcessNonsenseAnswer(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
         {
-            ProcessOffensiveAnswer(newAnswerNonsenseCheck); // Just adds answer to bad_answer table 
+            ProcessOffensiveAnswer(new NewAnswerOffenseCheck(newAnswerNonsenseCheck)); // Just adds answer to bad_answer table 
         }
 
         /// <summary>
@@ -405,13 +405,12 @@ namespace ClusterLogic.ChatbotHandler
             return res;
         }
 
-
         /// <summary>
         /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
         /// close it.
         /// </summary>
         /// <param name="newAnswerNonsenseCheck">The model containing the answer to add, the user who wrote it, and the question_id to refer to.</param>
-        public static void SaveAnswerToOpenQuestion(NewAnswerNonsenseCheck newAnswerNonsenseCheck)
+        public static void SaveAnswerToOpenQuestion(NewAnswerOffenseCheck newAnswerNonsenseCheck)
         {
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
