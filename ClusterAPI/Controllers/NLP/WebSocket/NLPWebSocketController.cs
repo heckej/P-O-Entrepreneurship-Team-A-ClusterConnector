@@ -156,6 +156,12 @@ namespace ClusterAPI.Controllers.NLP
                 }
             }
 
+
+            while (taskQueue.Count > 0)
+            {
+                taskQueue.Dequeue().DoTask();
+            }
+
             await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes("Hello NLP")), WebSocketMessageType.Text, true, CancellationToken.None);
 
             ArraySegment<byte> buffer = new ArraySegment<byte>(new byte[2048]);
