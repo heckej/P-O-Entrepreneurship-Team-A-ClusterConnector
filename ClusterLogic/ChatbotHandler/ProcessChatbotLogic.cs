@@ -446,9 +446,11 @@ namespace ClusterLogic.ChatbotHandler
         /// </summary>
         /// <param name="newQuestionNonsenseCheck">The model containing all the information about the question to add.</param>
         /// <returns>The id of the question that was just added.</returns>
-        public static int SaveQuestionToDatabase(NewQuestionNonsenseCheck newQuestionNonsenseCheck)
+        
+
+        public static int SaveQuestionToDatabase(NewOpenQuestion serverData)
         {
-            return assignQuestionIdToNewQuestion(new NewOpenQuestion(1, newQuestionNonsenseCheck.question, newQuestionNonsenseCheck.user_id));
+            return assignQuestionIdToNewQuestion(serverData);
         }
     }
 }

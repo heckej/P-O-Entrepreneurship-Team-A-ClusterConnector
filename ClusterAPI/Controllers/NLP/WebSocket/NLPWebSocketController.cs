@@ -279,7 +279,7 @@ namespace ClusterAPI.Controllers.NLP
                                     }
                                     else
                                     {
-                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First()));
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First(), ProcessChatbotLogic.SaveQuestionToDatabase((NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id])));
                                     }
                                 }
                             }
