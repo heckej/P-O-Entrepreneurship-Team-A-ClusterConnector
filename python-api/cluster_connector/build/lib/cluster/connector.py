@@ -7,6 +7,8 @@ import asyncio
 import logging
 # import sys
 from enum import Enum
+
+
 # logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
 
 
@@ -34,7 +36,7 @@ class Actions(Enum):
 
     IS_NONSENSE = "is_nonsense"
     """Find out if a string contains nonsense
-    
+
     .. versionadded::1.0.0
     """
 
@@ -76,10 +78,9 @@ class Connector(object):
     """Set of actions that can be applied on both questions and answers.
 
     .. versionadded::1.0.0
-    .. versionchanged::1.1.3
     """
 
-    __version__ = '1.1.3'
+    __version__ = '1.1.4'
 
     def __init__(self, websocket_uri="wss://clusterapi20200320113808.azurewebsites.net/api/NLP/WS",
                  websocket_connection_timeout=10, authorization="843iu233d3m4pxb1"):
@@ -353,13 +354,14 @@ class Connector(object):
         """
         parsed_request = dict(request)
         # return from generic sentence(_id) to question/answer(_id)
-        original_task = self._tasks_in_progress[request["msg_id"]]
+        original_task = self._tasks_in_progress[int(request["msg_id"])]
         if "question" in original_task.keys():
-            parsed_request["question"] = original_task["sentence"]
-            parsed_request["question_id"] = original_task["sentence_id"]
+            parsed_request["question"] = original_task["question"]
+            parsed_request["question_id"] = original_task["question_id"]
         elif "answer" in original_task.keys():
-            parsed_request["answer"] = original_task["sentence"]
-            parsed_request["answer_id"] = original_task["sentence_id"]
+            parsed_request["answer"] = original_task["answer"]
+            parsed_request["answer_id"] = original_task["answer_id"]
+        parsed_request['msg_id'] = original_task['msg_id']
         return parsed_request
 
     def reply(self, response: dict):
@@ -420,8 +422,9 @@ class Connector(object):
                 possible, so any implementation changes don't effect these specifications.
         """
         self._checkout_websocket()
-        action = self._tasks_in_progress[response['msg_id']]['action'].lower()
-        if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
+        action = self._tasks_in_progress[int(response['msg_id'])]['action'].lower()
+        if Actions.has_value(action) \
+                and int(response['msg_id']) in self._tasks_in_progress.keys():
             data = self._parse_request(response)
-            del self._tasks_in_progress[response['msg_id']]
+            del self._tasks_in_progress[int(response['msg_id'])]
             self._reply_queue.append(json.dumps(data))
