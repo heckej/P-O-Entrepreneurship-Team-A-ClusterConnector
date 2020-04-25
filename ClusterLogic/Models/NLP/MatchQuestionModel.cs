@@ -52,9 +52,10 @@ namespace ClusterLogic.Models
         public MatchQuestionModelInfo[] possible_matches { get => _possible_matches; set => _possible_matches = value; }
         public int msg_id { get => _msg_id; set => _msg_id = value; }
 
-        public bool IsComplete()
+
+        public MatchQuestionModelResponse()
         {
-            return possible_matches != null && _question_id != -1 && _msg_id != -1;
+
         }
 
         public MatchQuestionModelResponse(int question_id = -1, MatchQuestionModelInfo[] possible_matches = null, int msg_id = -1)
@@ -62,6 +63,11 @@ namespace ClusterLogic.Models
             _question_id = question_id;
             _possible_matches = possible_matches;
             _msg_id = msg_id;
+        }
+
+        public bool IsComplete()
+        {
+            return possible_matches != null && _question_id != -1 && _msg_id != -1;
         }
     }
 
@@ -78,6 +84,11 @@ namespace ClusterLogic.Models
         public bool IsComplete()
         {
             return _question_id != -1 && prob != -1;
+        }
+
+        public MatchQuestionModelInfo()
+        {
+
         }
 
         public MatchQuestionModelInfo(int question_id = -1, float prob = 0)
