@@ -67,7 +67,7 @@ namespace ClusterLogic.Models
 
         public bool IsComplete()
         {
-            return possible_matches != null && _question_id != -1 && _msg_id != -1;
+            return possible_matches != null && _msg_id != -1;
         }
     }
 
