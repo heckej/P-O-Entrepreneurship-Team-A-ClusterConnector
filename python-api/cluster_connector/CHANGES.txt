@@ -2,6 +2,11 @@
 CHANGES.txt - Cluster Connector NLP API
 =======================================
 
+v1.1.4
+---------------------------------------
+* `KeyError` solved when original task doesn't contain a `sentence` key.
+* Original `question_id`/`answer_id` sent to server with response.
+
 v1.1.3
 ---------------------------------------
 * `sentence` and `sentence_id` keys correctly added to nonsense task.
