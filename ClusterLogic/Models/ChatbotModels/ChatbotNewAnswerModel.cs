@@ -39,14 +39,29 @@ namespace ClusterLogic.Models.ChatbotModels
 
         public ChatbotNewAnswerModel(MatchQuestionLogicResponse result)
         {
-            NewQuestion temp = (NewQuestion)ServerUtilities.msgIdToUserID[result.Msg_id];
-            this.question_id = result.Question_id;
-            this.certainty = 0.75f;
-            this.question = temp.question;
-            this.user_id = temp.user_id;
-            this.answer = result.Answer;
-            this.answer_id = LogicUtility.getAnswerId(result.Answer, this.question_id);
-            this.chatbot_temp_id = temp.chatbot_temp_id;
+            if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestion)
+            {
+                NewQuestion temp = (NewQuestion)ServerUtilities.msgIdToUserID[result.Msg_id];
+                this.question_id = result.Question_id;
+                this.certainty = 0.75f;
+                this.question = temp.question;
+                this.user_id = temp.user_id;
+                this.answer = result.Answer;
+                this.answer_id = LogicUtility.getAnswerId(result.Answer, this.question_id);
+                this.chatbot_temp_id = temp.chatbot_temp_id;
+            }
+            else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewOpenQuestion)
+            {
+                NewOpenQuestion temp = (NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id];
+                this.question_id = result.Question_id;
+                this.certainty = 0.75f;
+                this.question = temp.question;
+                this.user_id = temp.user_id;
+                this.answer = result.Answer;
+                this.answer_id = LogicUtility.getAnswerId(result.Answer, this.question_id);
+                this.chatbot_temp_id = temp.chatbot_temp_id;
+            }
+
         }
     }
 }
