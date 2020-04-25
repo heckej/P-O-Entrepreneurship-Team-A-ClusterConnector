@@ -10,6 +10,7 @@ namespace ClusterLogic.Models.ChatbotModels
     //From wiki https://github.com/heckej/P-O-Entrepreneurship-Team-A-code/wiki/Server-to-Chatbot-Communication
     public class ChatbotNewAnswerModel
     {
+        private string _action = "answers";
         private string _user_id = null;
         private String _question = null;
         private int _question_id = -1;
@@ -25,6 +26,7 @@ namespace ClusterLogic.Models.ChatbotModels
         public int answer_id { get => _answer_id; set => _answer_id = value; }
         public string answer { get => _answer; set => _answer = value; }
         public float certainty { get => _certainty; set => _certainty = value; }
+        public string action { get => _action; set => _action = value; }
 
         public ChatbotNewAnswerModel(string user_id, string question, int question_id, int temporary_chatbot_id, string answer, int answer_id, int certainty)
         {

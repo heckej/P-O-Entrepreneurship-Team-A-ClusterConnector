@@ -253,7 +253,7 @@ namespace ClusterAPI.Controllers.NLP
                     try
                     {
                         {
-                            var result = ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
+                            MatchQuestionLogicResponse result = ProcessNLPResponse.ProcessNLPMatchQuestionsResponse(model.Value.Cast<MatchQuestionModelResponse>().ToList().First());
                             
                             if (result != null)
                             {
