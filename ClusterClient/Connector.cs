@@ -416,7 +416,10 @@ namespace ClusterClient
         /// <returns>A set containing all answers received from the serverin response to questions from this client.</returns>
         public ISet<ServerAnswer> GetNewResponses()
         {
-            return (ISet<ServerAnswer>) this.receivedMessages[Actions.Answer].SelectMany(d => d.Value);
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
+            foreach (ServerAnswer answer in this.receivedMessages[Actions.Answer].SelectMany(d => d.Value))
+                answers.Add(answer);
+            return answers;
         }
 
         /// <summary>
@@ -427,8 +430,29 @@ namespace ClusterClient
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
         public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
-            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
-            this.receivedMessages[Actions.Answer][userID].Clear();
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
+            try
+            {
+                if (this.receivedMessages[Actions.Answer].ContainsKey(userID))
+                {
+                    foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                        try
+                        {
+                            answers.Add((ServerAnswer)answer);
+                        }
+                        catch (InvalidCastException)
+                        {
+                            Console.WriteLine("Illegal message under answer key, under userID " + userID);
+                        }
+                    this.receivedMessages[Actions.Answer][userID].Clear();
+                }
+            }
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Unexpected error when looking for answers:\n" + e);
+            }
+            
+                
             return answers;
         }
 
