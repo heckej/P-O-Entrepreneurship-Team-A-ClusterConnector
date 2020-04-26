@@ -407,7 +407,7 @@ namespace ClusterLogic.ChatbotHandler
         /// close it.
         /// </summary>
         /// <param name="newAnswerNonsenseCheck">The model containing the answer to add, the user who wrote it, and the question_id to refer to.</param>
-        public static void SaveAnswerToOpenQuestion(NewAnswerOffenseCheck newAnswerNonsenseCheck)
+        public static int SaveAnswerToOpenQuestion(NewAnswerOffenseCheck newAnswerNonsenseCheck)
         {
             // Store the answer
             int ansId = assignAnswerIdToNewAnswer(newAnswerNonsenseCheck.answer, newAnswerNonsenseCheck.user_id);
@@ -424,6 +424,8 @@ namespace ClusterLogic.ChatbotHandler
 
             manager.Read(sqlCommand);
             manager.Close();
+
+            return ansId;
         }
 
         /// <summary>
