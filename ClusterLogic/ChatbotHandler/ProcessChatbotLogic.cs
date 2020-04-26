@@ -447,17 +447,28 @@ namespace ClusterLogic.ChatbotHandler
                 res = reader.GetString(0);
             }
 
-            sb = new StringBuilder();
+            manager.Close();
+
+            return res;
+        }
+
+        /// <summary>
+        /// Close the open answer entry. This function should be called after the actual answer has been found.
+        /// </summary>
+        /// <param name="question_id">The question_id of the entry to close.</param>
+        public static void CloseOpenAnswer(int question_id)
+        {
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
             sb.Append("DELETE ");
             sb.Append("FROM dbo.OpenAnswers ");
             sb.Append($"WHERE question_id = {question_id}; ");
-            sqlCommand = sb.ToString();
+            string sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
 
             manager.Close();
-
-            return res;
         }
 
         /// <summary>
