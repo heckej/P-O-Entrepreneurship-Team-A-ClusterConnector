@@ -6,7 +6,10 @@ namespace ClusterClient.Models
 {
     public class ServerQuestion
     {
-        public int question_id { get; set; }
-        public string question { get; set; }
+        private int _question_id = -1;
+        private string _question = null;
+
+        public int question_id { get => _question_id; set => _question_id = value; }
+        public string question { get => _question; set => _question = value; }
     }
 }

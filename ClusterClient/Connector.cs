@@ -459,26 +459,37 @@ namespace ClusterClient
         {
             try
             {
-                foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
-                    try
+                if (this.receivedMessages.ContainsKey(Actions.Answer)
+                        && this.receivedMessages[Actions.Answer] != null && this.receivedMessages[Actions.Answer] is Dictionary<string, ISet<ServerMessage>>)
+                {
+                    Thread.Sleep(1);
+                    if (this.receivedMessages[Actions.Answer].ContainsKey(userID) && this.receivedMessages[Actions.Answer][userID] != null
+                        && this.receivedMessages[Actions.Answer][userID].Count > 0)
                     {
-                        if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID || ((ServerAnswer)answer).status_code > 0)
-                        {
-                            this.receivedMessages[Actions.Answer][userID].Remove(answer);
-                            return (ServerAnswer)answer;
-                        }
+                        ISet<ServerMessage> answersForUser = new HashSet<ServerMessage>(this.receivedMessages[Actions.Answer][userID]);
+                        foreach (ServerMessage answer in answersForUser)
+                            try
+                            {
+                                if (((ServerAnswer)answer).chatbot_temp_id == chatbotTempID || ((ServerAnswer)answer).status_code > 0)
+                                {
+                                    this.receivedMessages[Actions.Answer][userID].Remove(answer);
+                                    return (ServerAnswer)answer;
+                                }
+                            }
+                            catch (InvalidCastException)
+                            {
+                                Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                                    " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                                Console.WriteLine("Illegal server message added to server answers for user with id " + userID +
+                                    " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
+                            }
                     }
-                    catch (InvalidCastException)
-                    {
-                        Debug.WriteLine("Illegal server message added to server answers for user with id " + userID +
-                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
-                        Console.WriteLine("Illegal server message added to server answers for user with id " + userID +
-                            " when looking for question with ChatbotTempID " + chatbotTempID + ": " + answer);
-                    }
+                }
             }
             catch(KeyNotFoundException)
             {
                 // userID not in message dictionary under answer key.
+                // should not occur anymore
             }
             catch(NullReferenceException)
             {
@@ -608,8 +619,9 @@ namespace ClusterClient
             bool found = false;
             ISet<ServerMessage> response = null;
 
-            if (this.receivedMessages.ContainsKey(expectedResponseAction) && this.receivedMessages[expectedResponseAction].ContainsKey(userID)
-                && this.receivedMessages[expectedResponseAction][userID].Count > 0)
+            if (this.receivedMessages.ContainsKey(expectedResponseAction) && this.receivedMessages[expectedResponseAction] != null
+                    && this.receivedMessages[expectedResponseAction].ContainsKey(userID) && this.receivedMessages[expectedResponseAction][userID] != null
+                    && this.receivedMessages[expectedResponseAction][userID].Count > 0)
                 response = this.receivedMessages[expectedResponseAction][userID];
             else
             {
@@ -620,12 +632,19 @@ namespace ClusterClient
                     elapsedMs = watch.ElapsedMilliseconds;
                     /*Console.WriteLine("Contains key " + expectedResponseAction + ": " + this.receivedMessages.ContainsKey(expectedResponseAction));
                     Console.WriteLine("Contains userID: " + this.receivedMessages[expectedResponseAction].ContainsKey(userID));*/
-                    Thread.Sleep(1);
-                    if (this.receivedMessages.ContainsKey(expectedResponseAction) && this.receivedMessages[expectedResponseAction].ContainsKey(userID)
-                        && this.receivedMessages[expectedResponseAction][userID].Count > 0)
+                    //Thread.Sleep(1);
+                    if (this.receivedMessages.ContainsKey(expectedResponseAction)
+                        && this.receivedMessages[expectedResponseAction] != null && this.receivedMessages[expectedResponseAction] is Dictionary<string, ISet<ServerMessage>>)
                     {
-                        response = this.receivedMessages[expectedResponseAction][userID];
-                        found = response != null;
+                        Thread.Sleep(1);
+                        if (this.receivedMessages[expectedResponseAction].ContainsKey(userID) && this.receivedMessages[expectedResponseAction][userID] != null
+                            && this.receivedMessages[expectedResponseAction][userID].Count > 0)
+                        {
+                            response = this.receivedMessages[expectedResponseAction][userID];
+                            found = response != null;
+                        }
+                        else
+                            response = null;
                     }
                     else
                         response = null;

@@ -8,8 +8,11 @@ namespace ClusterClient.Models
 {
     class UserQuestion : UserMessage
     {
-        public string question { get; set; }
-        public int chatbot_temp_id { get; set; }
+        private string _question = null;
+        private int _chatbot_temp_id = -1;
+
+        public string question { get => _question; set => _question = value; }
+        public int chatbot_temp_id { get => _chatbot_temp_id; set => _chatbot_temp_id = value; }
 
         public override string ToJson()
         {
