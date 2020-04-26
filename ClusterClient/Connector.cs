@@ -431,16 +431,28 @@ namespace ClusterClient
         public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
             ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
-            foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
-                try
+            try
+            {
+                if (this.receivedMessages[Actions.Answer].ContainsKey(userID))
                 {
-                    answers.Add((ServerAnswer)answer);
-                } 
-                catch(InvalidCastException)
-                {
-                    Console.WriteLine("Illegal message under answer key, under userID " + userID);
+                    foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                        try
+                        {
+                            answers.Add((ServerAnswer)answer);
+                        }
+                        catch (InvalidCastException)
+                        {
+                            Console.WriteLine("Illegal message under answer key, under userID " + userID);
+                        }
+                    this.receivedMessages[Actions.Answer][userID].Clear();
                 }
-            this.receivedMessages[Actions.Answer][userID].Clear();
+            }
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Unexpected error when looking for answers:\n" + e);
+            }
+            
+                
             return answers;
         }
 
