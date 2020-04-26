@@ -78,9 +78,9 @@ namespace ClusterLogic.Models.ChatbotModels
         private float _certainty;
         private string _question = null;
 
-        public ServerAnswerAfterQuestion(NewAnswerOffenseCheck newAnswerOffenseCheck, OffensivenessLogicResponse result, int answerId, string question)
+        public ServerAnswerAfterQuestion(object openAnswerModel, NewAnswerOffenseCheck newAnswerOffenseCheck, OffensivenessLogicResponse result, int answerId, string question)
         {
-            user_id = newAnswerOffenseCheck.user_id;
+            user_id = newAnswerOffenseCheck.user_id; //openAnswerModel.user_id
             question_id = result.Question_id;
             answer_id = answerId;
             answer = newAnswerOffenseCheck.answer;

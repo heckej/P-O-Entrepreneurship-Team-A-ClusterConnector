@@ -403,6 +403,28 @@ namespace ClusterLogic.ChatbotHandler
         }
 
         /// <summary>
+        /// This method gets called when an Open Question has just been created.
+        /// 
+        /// </summary>
+        /// <param name="user_id">User who asked the question</param>
+        /// <param name="question_id">Question ID assigned to user's question</param>
+        public static void AddNewOpenAnswer(string user_id, int question_id)
+        {
+            
+        }
+
+
+        /// <summary>
+        /// Should return the model containing table values of OpenAnswer entry
+        /// </summary>
+        /// <param name="question_id"></param>
+        /// <returns></returns>
+        public static Object RetrieveOpenAnswer(int question_id)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// This method gets called when the Server detects a new Answer to an Open Question. Add this answer to the open questions and
         /// close it.
         /// </summary>
