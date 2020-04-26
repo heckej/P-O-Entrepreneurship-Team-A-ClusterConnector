@@ -410,18 +410,54 @@ namespace ClusterLogic.ChatbotHandler
         /// <param name="question_id">Question ID assigned to user's question</param>
         public static void AddNewOpenAnswer(string user_id, int question_id)
         {
-            
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("INSERT INTO dbo.OpenAnswers (question_id, user_id) ");
+            sb.Append($"VALUES ({question_id}, '{user_id}'); ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
         }
 
 
         /// <summary>
-        /// Should return the model containing table values of OpenAnswer entry
+        /// Should return the model containing table values of OpenAnswer entry. After retrieving it, the entry from OpenAnswers with question_id is removed.
         /// </summary>
         /// <param name="question_id"></param>
-        /// <returns></returns>
-        public static Object RetrieveOpenAnswer(int question_id)
+        /// <returns>null if this question is not present in the OpenAnswers or the user_id of the user who asked the question otherwise.</returns>
+        public static string RetrieveOpenAnswer(int question_id)
         {
-            return null;
+            string res = null;
+
+            DBManager manager = new DBManager(true);
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT user_id ");
+            sb.Append("FROM dbo.OpenAnswers ");
+            sb.Append($"WHERE question_id = {question_id}; ");
+            string sqlCommand = sb.ToString();
+
+            var reader = manager.Read(sqlCommand);
+
+            // Get the new unique id
+            if (reader.Read()) // We only expect one result
+            {
+                res = reader.GetString(0);
+            }
+
+            sb = new StringBuilder();
+            sb.Append("DELETE ");
+            sb.Append("FROM dbo.OpenAnswers ");
+            sb.Append($"WHERE question_id = {question_id}; ");
+            sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+
+            manager.Close();
+
+            return res;
         }
 
         /// <summary>
