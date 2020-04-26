@@ -106,6 +106,25 @@ namespace ClusterConnector
             forbiddenSQL = new Dictionary<char, string>();
             forbiddenSQL.Add('\'', "_char1");
             forbiddenSQL.Add('"', "_char2");
+            forbiddenSQL.Add('%', "_char3");
+            forbiddenSQL.Add('?', "_char4");
+            forbiddenSQL.Add('!', "_char5");
+            forbiddenSQL.Add('@', "_char6");
+            forbiddenSQL.Add('#', "_char7");
+            forbiddenSQL.Add('$', "_char8");
+            forbiddenSQL.Add('*', "_char9");
+            forbiddenSQL.Add('+', "_char10");
+            forbiddenSQL.Add('/', "_char11");
+            forbiddenSQL.Add('-', "_char12");
+            forbiddenSQL.Add('(', "_char13");
+            forbiddenSQL.Add(')', "_char14");
+            forbiddenSQL.Add('{', "_char15");
+            forbiddenSQL.Add('}', "_char16");
+            forbiddenSQL.Add('[', "_char17");
+            forbiddenSQL.Add(']', "_char18");
+            forbiddenSQL.Add('<', "_char19");
+            forbiddenSQL.Add('>', "_char20");
+            forbiddenSQL.Add('|', "_char21");
         }
     }
 
