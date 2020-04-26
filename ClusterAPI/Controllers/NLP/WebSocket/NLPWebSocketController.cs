@@ -397,7 +397,8 @@ namespace ClusterAPI.Controllers.NLP
                 else
                 {
                     //ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
-                    ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    int answerId = ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    ChatbotWebSocketController.SendAnswerToQuestion(new ServerAnswerAfterQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id], result, answerId));
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)

@@ -119,6 +119,16 @@ namespace ClusterAPI.Controllers.NLP
             }
         }
 
+
+        internal static void SendAnswerToQuestion(ServerAnswerAfterQuestion serverAnswerAfterQuestion)
+        {
+            if (connections.ContainsKey("Chatbot") && connections["Chatbot"] != null && connections["Chatbot"].State == WebSocketState.Open)
+            {
+                String json = JsonSerializer.Serialize<ServerAnswerAfterQuestion>(serverAnswerAfterQuestion);
+                connections["Chatbot"].SendAsync(new ArraySegment<byte>(usedEncoding.GetBytes(json), 0, json.Length), WebSocketMessageType.Text, true, CancellationToken.None);
+            }
+        }
+
         private async Task ProcessRequestInternal(AspNetWebSocketContext ctx)
         {
             System.Diagnostics.Debug.WriteLine("In chatbot socket");
