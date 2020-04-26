@@ -332,7 +332,7 @@ namespace ClusterLogic.ChatbotHandler
 
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Questions (question, answer_id) ");
-            sb.Append($"VALUES ({openQuestion.question}, NULL); ");
+            sb.Append($"VALUES ('{openQuestion.question}', NULL); ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -343,7 +343,7 @@ namespace ClusterLogic.ChatbotHandler
             sb = new StringBuilder();
             sb.Append("SELECT question_id ");
             sb.Append("FROM dbo.Questions ");
-            sb.Append($"WHERE question = {openQuestion.question}");
+            sb.Append($"WHERE question = '{openQuestion.question}'");
             sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);
