@@ -40,6 +40,10 @@ namespace ClusterLogic.ChatbotHandler
                     sqlResult.Question = (String)reader["question"];
                     sqlResult.Answer_id = (int)reader["answer_id"];
                     sqlResult.Answer = (String)reader["answer"];
+                    /****/
+                    sqlResult.Answer = ServerUtilities.SQLSafeToUserInput(sqlResult.Answer);
+                    sqlResult.Question = ServerUtilities.SQLSafeToUserInput(sqlResult.Question);
+                    /****/
                 }
             }
 
@@ -98,6 +102,10 @@ namespace ClusterLogic.ChatbotHandler
                 answer.Question = (String)reader["question"];
                 answer.Answer_id = (int)reader["answer_id"];
 
+                /****/
+                answer.Question = ServerUtilities.SQLSafeToUserInput(answer.Question);
+                /****/
+
                 result.Add(answer);
             }
             manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
@@ -149,6 +157,10 @@ namespace ClusterLogic.ChatbotHandler
                     sqlResult = new DBQuestion();
                     sqlResult.Answer_id = (int)reader["answer_id"];
                     sqlResult.Answer = (String)reader["answer"];
+
+                    /****/
+                    sqlResult.Answer = ServerUtilities.SQLSafeToUserInput(sqlResult.Answer);
+                    /****/
                 }
             }
 
@@ -201,6 +213,10 @@ namespace ClusterLogic.ChatbotHandler
                 DBQuestion answer = new DBQuestion();
                 answer.Question_id = (int)reader["question_id"];
                 answer.Question = (String)reader["question"];
+
+                /****/
+                answer.Question = ServerUtilities.SQLSafeToUserInput(answer.Question);
+                /****/
                 result.Add(answer);
             }
             manager.Close(); //IMPORTANT! Should happen automatically, but better safe than sorry.
@@ -227,11 +243,14 @@ namespace ClusterLogic.ChatbotHandler
         public static void ProcessOffensiveAnswer(NewAnswerOffenseCheck newAnswerOffenseCheck)
         {
             DBManager manager = new DBManager(true);
-            
+            /****/
+            String sqlSafeAnswer = ServerUtilities.UserInputToSQLSafe(newAnswerOffenseCheck.answer);
+            /****/
+
             // Add a reference to the answer in the bad_answer table
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.BadAnswers (bad_answer, question_id, answer_author_id) ");
-            sb.Append($"VALUES ('{newAnswerOffenseCheck.answer}', {newAnswerOffenseCheck.question_id}, '{newAnswerOffenseCheck.user_id}') ");
+            sb.Append($"VALUES ('{sqlSafeAnswer}', {newAnswerOffenseCheck.question_id}, '{newAnswerOffenseCheck.user_id}') ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -275,6 +294,10 @@ namespace ClusterLogic.ChatbotHandler
                 answer.Question_id = (int)reader["question_id"];
                 answer.Question = (String)reader["question"];
                 answer.Answer_id = (int)reader["answer_id"];
+
+                /****/
+                answer.Question = ServerUtilities.SQLSafeToUserInput(answer.Question);
+                /****/
 
                 result.Add(answer);
             }
@@ -330,9 +353,13 @@ namespace ClusterLogic.ChatbotHandler
 
             DBManager manager = new DBManager(true);
 
+            /****/
+            String sqlSafeQuestion = ServerUtilities.UserInputToSQLSafe(openQuestion.question);
+            /****/
+
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Questions (question, answer_id) ");
-            sb.Append($"VALUES ('{openQuestion.question}', NULL); ");
+            sb.Append($"VALUES ('{sqlSafeQuestion}', NULL); ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -343,7 +370,7 @@ namespace ClusterLogic.ChatbotHandler
             sb = new StringBuilder();
             sb.Append("SELECT question_id ");
             sb.Append("FROM dbo.Questions ");
-            sb.Append($"WHERE question = '{openQuestion.question}'");
+            sb.Append($"WHERE question = '{sqlSafeQuestion}'");
             sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);
@@ -376,9 +403,13 @@ namespace ClusterLogic.ChatbotHandler
 
             DBManager manager = new DBManager(true);
 
+            /****/
+            String sqlSafeAnswer = ServerUtilities.UserInputToSQLSafe(answer);
+            /****/
+
             StringBuilder sb = new StringBuilder();
             sb.Append("INSERT INTO dbo.Answers (answer, user_id) ");
-            sb.Append($"VALUES ('{answer}', '{user_id}'); ");
+            sb.Append($"VALUES ('{sqlSafeAnswer}', '{user_id}'); ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -386,7 +417,7 @@ namespace ClusterLogic.ChatbotHandler
             sb = new StringBuilder();
             sb.Append("SELECT answer_id ");
             sb.Append("FROM dbo.Answers ");
-            sb.Append($"WHERE answer = '{answer}'; ");
+            sb.Append($"WHERE answer = '{sqlSafeAnswer}'; ");
             sqlCommand = sb.ToString();
 
             var reader = manager.Read(sqlCommand);

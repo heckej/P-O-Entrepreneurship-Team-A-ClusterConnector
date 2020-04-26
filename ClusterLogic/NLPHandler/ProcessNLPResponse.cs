@@ -8,6 +8,7 @@ using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using ClusterConnector;
 
 namespace ClusterLogic.NLPHandler
 {
@@ -101,7 +102,10 @@ namespace ClusterLogic.NLPHandler
                 // This query should only return 0 or 1 result
                 if (reader.Read())
                 {
-                    result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, reader.GetString(0));
+                    /****/
+                    String sqlSafeAnswer = ServerUtilities.SQLSafeToUserInput(reader.GetString(0));
+                    /****/
+                    result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, sqlSafeAnswer);
                 }
             }
 
@@ -242,6 +246,9 @@ namespace ClusterLogic.NLPHandler
                 if (reader.Read())
                 {
                     result = reader.GetString(0);
+                    /****/
+                    result = ServerUtilities.SQLSafeToUserInput(result);
+                    /****/
                 }
             }
 
