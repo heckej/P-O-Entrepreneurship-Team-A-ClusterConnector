@@ -33,7 +33,7 @@ namespace ClusterLogic.NLPHandler
         public static MatchQuestionLogicResponse ProcessNLPMatchQuestionsResponse(MatchQuestionModelResponse matchQuestionModel)
         {
             // Create a "no match" response
-            MatchQuestionLogicResponse nullResponse = new MatchQuestionLogicResponse();
+            MatchQuestionLogicResponse nullResponse = new MatchQuestionLogicResponse() { Msg_id = matchQuestionModel.msg_id};
 
             // Check to see whether there is at least a valid answer given
             if (matchQuestionModel == null || 
@@ -67,7 +67,7 @@ namespace ClusterLogic.NLPHandler
             MatchQuestionModelInfo bestInfo = null;
             
             if (match_candidates.Count == 0)
-            { return null; }
+            { return new MatchQuestionLogicResponse() { Msg_id = matchQuestionModel.msg_id }; }
             else
             {
                 // get best match of all candidates
@@ -83,7 +83,7 @@ namespace ClusterLogic.NLPHandler
             }
 
             if (bestInfo == null)
-            { return null; }
+            { return new MatchQuestionLogicResponse() { Msg_id = matchQuestionModel.msg_id }; }
 
             // Perform query to get the answer to the best match
             DBManager manager = new DBManager(true);

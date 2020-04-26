@@ -7,7 +7,9 @@ namespace ClusterClient.Models
 {
     class UserRequest : UserMessage
     {
-        public string request { get; set; }
+        private string _request = Requests.Default;
+
+        public string request { get => _request; set => _request = value; }
 
         public override string ToJson()
         {
