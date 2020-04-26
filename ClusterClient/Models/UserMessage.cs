@@ -6,7 +6,9 @@ namespace ClusterClient.Models
 {
     public abstract class UserMessage
     {
-        public string user_id { get; set; }
+        private string _user_id = null;
+
+        public string user_id { get => _user_id; set => _user_id = value; }
 
         public abstract string ToJson();
     }

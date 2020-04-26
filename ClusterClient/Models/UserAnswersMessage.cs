@@ -8,10 +8,10 @@ namespace ClusterClient.Models
 {
     public class UserAnswersMessage : UserMessage
     {
-        private List<UserAnswer> answerQuestions = new List<UserAnswer>();
+        private List<UserAnswer> _answer_questions = new List<UserAnswer>();
 
         public List<UserAnswer> answer_questions {
-            get  => this.answerQuestions;
+            get  => this._answer_questions;
             set
             {
                 foreach(UserAnswer answer in value)
@@ -21,13 +21,13 @@ namespace ClusterClient.Models
 
         public void AddAnswer(UserAnswer answer)
         {
-            this.answerQuestions.Add(answer);
+            this._answer_questions.Add(answer);
         }
 
         public void AddAnswers(ICollection<UserAnswer> userAnswers)
         {
-            this.answerQuestions = this.answerQuestions.Union(userAnswers).ToList();
-            //((ISet<UserAnswer>) this.answerQuestions).UnionWith(userAnswers);
+            this._answer_questions = this._answer_questions.Union(userAnswers).ToList();
+            //((ISet<UserAnswer>) this._answer_questions).UnionWith(userAnswers);
         }
 
         public override string ToJson()
