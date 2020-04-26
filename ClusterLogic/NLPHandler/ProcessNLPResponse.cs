@@ -223,5 +223,31 @@ namespace ClusterLogic.NLPHandler
                 nonsenseModelResponse.msg_id
                 );
         }
+
+        public static string getQuestionFromID(int question_id)
+        {
+            DBManager manager = new DBManager(true);
+
+            String result = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT question ");
+            sb.Append("FROM Questions q ");
+            sb.Append($"WHERE q.question_id = {question_id}; ");
+            String sql = sb.ToString();
+
+            using (SqlDataReader reader = manager.Read(sql))
+            {
+                // This query should only return 0 or 1 result
+                if (reader.Read())
+                {
+                    result = reader.GetString(0);
+                }
+            }
+
+            manager.Close();
+
+            return result;
+        }
     }
 }
