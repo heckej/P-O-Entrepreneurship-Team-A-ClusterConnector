@@ -321,9 +321,16 @@ namespace ClusterClient
                 action = parsedMessage.action;
             else
                 action = Actions.Default;
-            Console.WriteLine("Message added under action " + action);
-            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
-            this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
+
+            bool addToReceivedMessages = this.ProactiveMessagingBlockedForUser(parsedMessage.user_id);
+            if (!addToReceivedMessages)
+                addToReceivedMessages = await this.SendMessageToEndPoint(serverMessage);
+            if (addToReceivedMessages)
+            {
+                this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
+                this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
+                this.SetMissedProactiveMessagesForUser(true, parsedMessage.user_id);
+            }
         }
 
         /// <summary>
@@ -472,11 +479,13 @@ namespace ClusterClient
                 question = question,
                 chatbot_temp_id = this.GetNextTempChatbotID()
             };
+            this.BlockProactiveMessagingForUser(userID);
             this.AddMessageToSendQueue(request);
             var answer = this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout);
             /*if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
                     "Try again later or use a higher timeout.");*/
+            this.UnblockProactiveMessagingForUser(userID);
             return answer;
         }
 
@@ -522,6 +531,7 @@ namespace ClusterClient
             ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
             foreach (ServerAnswer answer in this.receivedMessages[Actions.Answer].SelectMany(d => d.Value))
                 answers.Add(answer);
+            this.ClearMissedProactiveMessagesFlagForAllUsers();
             return answers;
         }
 
@@ -554,7 +564,7 @@ namespace ClusterClient
             {
                 Console.WriteLine("Unexpected error when looking for answers:\n" + e);
             }
-            
+            this.SetMissedProactiveMessagesForUser(false, userID);
                 
             return answers;
         }
@@ -684,6 +694,7 @@ namespace ClusterClient
             this.CheckoutWebSocket();
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            this.BlockProactiveMessagingForUser(userID);
             // Check if questions offline -> probably not, but if there are any, add them
             ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
 
@@ -717,6 +728,7 @@ namespace ClusterClient
                         this.RemoveReceivedMessage(responseMessage);
                 }
             }
+            this.UnblockProactiveMessagingForUser(userID);
             Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
             return questions;
         }
