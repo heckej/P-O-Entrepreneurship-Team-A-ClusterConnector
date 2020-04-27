@@ -231,7 +231,7 @@ namespace ClusterAPI.Controllers.NLP
 
                 if (dict.Keys.Contains<String>("user_id") &&
                     dict.Keys.Contains<String>("question") &&
-                    dict.Keys.Contains<String>("chatbot_temp_id") && dict.Count == 3)
+                    dict.Keys.Contains<String>("chatbot_temp_id"))
                 {
                     return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.NEW_QUESTION, new List<BaseModel>() { new ChatbotNewQuestionModel(dict) });
                 }
