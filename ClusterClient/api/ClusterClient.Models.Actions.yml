@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Actions
     path: Models/Actions.cs
@@ -60,7 +60,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Questions
     path: Models/Actions.cs
@@ -93,7 +93,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Answer
     path: Models/Actions.cs
@@ -126,7 +126,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Default
     path: Models/Actions.cs
@@ -159,7 +159,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetActions
     path: Models/Actions.cs

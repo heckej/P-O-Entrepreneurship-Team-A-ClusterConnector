@@ -35,7 +35,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Connector
     path: Connector.cs
@@ -78,7 +78,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: .ctor
     path: Connector.cs
@@ -120,7 +120,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ResetConnection
     path: Connector.cs
@@ -152,7 +152,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: CloseWebSocketConnection
     path: Connector.cs
@@ -184,7 +184,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: EnableWebSocketStateCheck
     path: Connector.cs
@@ -220,7 +220,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SurpressConnectionErrors
     path: Connector.cs
@@ -252,7 +252,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: EndPointAddress
     path: Connector.cs
@@ -289,7 +289,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: BlockProactiveMessagingForUser
     path: Connector.cs
@@ -325,7 +325,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UnblockProactiveMessagingForUser
     path: Connector.cs
@@ -361,7 +361,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ProactiveMessagingBlockedForUser
     path: Connector.cs
@@ -400,7 +400,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: MissedProactiveMessagesForUser
     path: Connector.cs
@@ -439,7 +439,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: StoreMessageFromServerAsync
     path: Connector.cs
@@ -477,7 +477,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SendQuestionAndWaitForAnswer
     path: Connector.cs
@@ -526,7 +526,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetNewResponses
     path: Connector.cs
@@ -561,7 +561,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetNewAnswersForUser
     path: Connector.cs
@@ -600,7 +600,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: HasAnswerToQuestionOfUser
     path: Connector.cs
@@ -642,7 +642,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: RequestAndRetrieveUnansweredQuestions
     path: Connector.cs
@@ -687,11 +687,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestion
     path: Connector.cs
-    startLine: 860
+    startLine: 859
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -733,11 +733,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestion
     path: Connector.cs
-    startLine: 876
+    startLine: 875
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -776,11 +776,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestions
     path: Connector.cs
-    startLine: 899
+    startLine: 898
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -821,11 +821,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: cluster-client-c#
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SendFeedbackOnAnswer
     path: Connector.cs
-    startLine: 924
+    startLine: 923
   assemblies:
   - ClusterClient
   namespace: ClusterClient
