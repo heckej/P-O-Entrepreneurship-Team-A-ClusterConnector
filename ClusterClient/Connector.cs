@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Mime;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -253,10 +254,18 @@ namespace ClusterClient
         /// </summary>
         /// <param name="content">The json string to be sent.</param>
         /// <returns>True if and only if the end point address of this connector is set and the response code is 2xx.</returns>
-        private async Task<bool> SendMessageToEndPoint(string content)
+        public async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
         {
+            Console.WriteLine("Sending proactive message: " + content);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await Connector.httpClient.PostAsync(this.EndPointAddress, httpContent);
+            var httpRequest = new HttpRequestMessage
+            {
+                Content = httpContent,
+                Method = HttpMethod.Post
+            };
+            httpRequest.Headers.Add("Authorization", this.authorization);
+            var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
+            Console.WriteLine("Response status code: " + response.StatusCode);
             return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
 
         }
@@ -334,7 +343,7 @@ namespace ClusterClient
 
             bool addToReceivedMessages = this.ProactiveMessagingBlockedForUser(parsedMessage.user_id);
             if (!addToReceivedMessages)
-                addToReceivedMessages = await this.SendMessageToEndPoint(serverMessage);
+                addToReceivedMessages = await this.SendMessageToEndPointAsync(serverMessage, action);
             if (addToReceivedMessages)
             {
                 this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
