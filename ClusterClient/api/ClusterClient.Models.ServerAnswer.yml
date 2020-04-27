@@ -5,12 +5,12 @@ items:
   id: ServerAnswer
   parent: ClusterClient.Models
   children:
-  - ClusterClient.Models.ServerAnswer.Answer
-  - ClusterClient.Models.ServerAnswer.AnswerID
-  - ClusterClient.Models.ServerAnswer.Certainty
-  - ClusterClient.Models.ServerAnswer.ChatbotTempID
-  - ClusterClient.Models.ServerAnswer.Question
-  - ClusterClient.Models.ServerAnswer.QuestionID
+  - ClusterClient.Models.ServerAnswer.answer
+  - ClusterClient.Models.ServerAnswer.answer_id
+  - ClusterClient.Models.ServerAnswer.certainty
+  - ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  - ClusterClient.Models.ServerAnswer.question
+  - ClusterClient.Models.ServerAnswer.question_id
   langs:
   - csharp
   - vb
@@ -21,11 +21,11 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerAnswer
     path: Models/ServerAnswer.cs
-    startLine: 6
+    startLine: 7
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
@@ -38,10 +38,10 @@ items:
   - System.Object
   - ClusterClient.Models.ServerMessage
   inheritedMembers:
-  - ClusterClient.Models.ServerMessage.Action
-  - ClusterClient.Models.ServerMessage.UserID
-  - ClusterClient.Models.ServerMessage.StatusMessage
-  - ClusterClient.Models.ServerMessage.StatusCode
+  - ClusterClient.Models.ServerMessage.action
+  - ClusterClient.Models.ServerMessage.user_id
+  - ClusterClient.Models.ServerMessage.status_msg
+  - ClusterClient.Models.ServerMessage.status_code
   - System.Object.Equals(System.Object)
   - System.Object.Equals(System.Object,System.Object)
   - System.Object.GetHashCode
@@ -55,210 +55,210 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: ClusterClient.Models.ServerAnswer.QuestionID
-  commentId: P:ClusterClient.Models.ServerAnswer.QuestionID
-  id: QuestionID
+- uid: ClusterClient.Models.ServerAnswer.question_id
+  commentId: P:ClusterClient.Models.ServerAnswer.question_id
+  id: question_id
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: QuestionID
-  nameWithType: ServerAnswer.QuestionID
-  fullName: ClusterClient.Models.ServerAnswer.QuestionID
+  name: question_id
+  nameWithType: ServerAnswer.question_id
+  fullName: ClusterClient.Models.ServerAnswer.question_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: QuestionID
+    id: question_id
     path: Models/ServerAnswer.cs
-    startLine: 8
+    startLine: 16
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int QuestionID { get; set; }
+    content: public int question_id { get; set; }
     parameters: []
     return:
       type: System.Int32
-    content.vb: Public Property QuestionID As Integer
-  overload: ClusterClient.Models.ServerAnswer.QuestionID*
+    content.vb: Public Property question_id As Integer
+  overload: ClusterClient.Models.ServerAnswer.question_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerAnswer.Question
-  commentId: P:ClusterClient.Models.ServerAnswer.Question
-  id: Question
+- uid: ClusterClient.Models.ServerAnswer.question
+  commentId: P:ClusterClient.Models.ServerAnswer.question
+  id: question
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: Question
-  nameWithType: ServerAnswer.Question
-  fullName: ClusterClient.Models.ServerAnswer.Question
+  name: question
+  nameWithType: ServerAnswer.question
+  fullName: ClusterClient.Models.ServerAnswer.question
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: Question
+    id: question
     path: Models/ServerAnswer.cs
-    startLine: 9
+    startLine: 17
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public string Question { get; set; }
+    content: public string question { get; set; }
     parameters: []
     return:
       type: System.String
-    content.vb: Public Property Question As String
-  overload: ClusterClient.Models.ServerAnswer.Question*
+    content.vb: Public Property question As String
+  overload: ClusterClient.Models.ServerAnswer.question*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerAnswer.AnswerID
-  commentId: P:ClusterClient.Models.ServerAnswer.AnswerID
-  id: AnswerID
+- uid: ClusterClient.Models.ServerAnswer.answer_id
+  commentId: P:ClusterClient.Models.ServerAnswer.answer_id
+  id: answer_id
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: AnswerID
-  nameWithType: ServerAnswer.AnswerID
-  fullName: ClusterClient.Models.ServerAnswer.AnswerID
+  name: answer_id
+  nameWithType: ServerAnswer.answer_id
+  fullName: ClusterClient.Models.ServerAnswer.answer_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: AnswerID
+    id: answer_id
     path: Models/ServerAnswer.cs
-    startLine: 10
+    startLine: 18
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int AnswerID { get; set; }
+    content: public int answer_id { get; set; }
     parameters: []
     return:
       type: System.Int32
-    content.vb: Public Property AnswerID As Integer
-  overload: ClusterClient.Models.ServerAnswer.AnswerID*
+    content.vb: Public Property answer_id As Integer
+  overload: ClusterClient.Models.ServerAnswer.answer_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerAnswer.Answer
-  commentId: P:ClusterClient.Models.ServerAnswer.Answer
-  id: Answer
+- uid: ClusterClient.Models.ServerAnswer.answer
+  commentId: P:ClusterClient.Models.ServerAnswer.answer
+  id: answer
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: Answer
-  nameWithType: ServerAnswer.Answer
-  fullName: ClusterClient.Models.ServerAnswer.Answer
+  name: answer
+  nameWithType: ServerAnswer.answer
+  fullName: ClusterClient.Models.ServerAnswer.answer
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: Answer
+    id: answer
     path: Models/ServerAnswer.cs
-    startLine: 11
+    startLine: 19
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public string Answer { get; set; }
+    content: public string answer { get; set; }
     parameters: []
     return:
       type: System.String
-    content.vb: Public Property Answer As String
-  overload: ClusterClient.Models.ServerAnswer.Answer*
+    content.vb: Public Property answer As String
+  overload: ClusterClient.Models.ServerAnswer.answer*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerAnswer.ChatbotTempID
-  commentId: P:ClusterClient.Models.ServerAnswer.ChatbotTempID
-  id: ChatbotTempID
+- uid: ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  commentId: P:ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  id: chatbot_temp_id
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: ChatbotTempID
-  nameWithType: ServerAnswer.ChatbotTempID
-  fullName: ClusterClient.Models.ServerAnswer.ChatbotTempID
+  name: chatbot_temp_id
+  nameWithType: ServerAnswer.chatbot_temp_id
+  fullName: ClusterClient.Models.ServerAnswer.chatbot_temp_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: ChatbotTempID
+    id: chatbot_temp_id
     path: Models/ServerAnswer.cs
-    startLine: 12
+    startLine: 20
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int ChatbotTempID { get; set; }
+    content: public int chatbot_temp_id { get; set; }
     parameters: []
     return:
       type: System.Int32
-    content.vb: Public Property ChatbotTempID As Integer
-  overload: ClusterClient.Models.ServerAnswer.ChatbotTempID*
+    content.vb: Public Property chatbot_temp_id As Integer
+  overload: ClusterClient.Models.ServerAnswer.chatbot_temp_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerAnswer.Certainty
-  commentId: P:ClusterClient.Models.ServerAnswer.Certainty
-  id: Certainty
+- uid: ClusterClient.Models.ServerAnswer.certainty
+  commentId: P:ClusterClient.Models.ServerAnswer.certainty
+  id: certainty
   parent: ClusterClient.Models.ServerAnswer
   langs:
   - csharp
   - vb
-  name: Certainty
-  nameWithType: ServerAnswer.Certainty
-  fullName: ClusterClient.Models.ServerAnswer.Certainty
+  name: certainty
+  nameWithType: ServerAnswer.certainty
+  fullName: ClusterClient.Models.ServerAnswer.certainty
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: Certainty
+    id: certainty
     path: Models/ServerAnswer.cs
-    startLine: 13
+    startLine: 21
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public double Certainty { get; set; }
+    content: public double certainty { get; set; }
     parameters: []
     return:
       type: System.Double
-    content.vb: Public Property Certainty As Double
-  overload: ClusterClient.Models.ServerAnswer.Certainty*
+    content.vb: Public Property certainty As Double
+  overload: ClusterClient.Models.ServerAnswer.certainty*
   modifiers.csharp:
   - public
   - get
@@ -284,30 +284,30 @@ references:
   name: ServerMessage
   nameWithType: ServerMessage
   fullName: ClusterClient.Models.ServerMessage
-- uid: ClusterClient.Models.ServerMessage.Action
-  commentId: P:ClusterClient.Models.ServerMessage.Action
+- uid: ClusterClient.Models.ServerMessage.action
+  commentId: P:ClusterClient.Models.ServerMessage.action
   parent: ClusterClient.Models.ServerMessage
-  name: Action
-  nameWithType: ServerMessage.Action
-  fullName: ClusterClient.Models.ServerMessage.Action
-- uid: ClusterClient.Models.ServerMessage.UserID
-  commentId: P:ClusterClient.Models.ServerMessage.UserID
+  name: action
+  nameWithType: ServerMessage.action
+  fullName: ClusterClient.Models.ServerMessage.action
+- uid: ClusterClient.Models.ServerMessage.user_id
+  commentId: P:ClusterClient.Models.ServerMessage.user_id
   parent: ClusterClient.Models.ServerMessage
-  name: UserID
-  nameWithType: ServerMessage.UserID
-  fullName: ClusterClient.Models.ServerMessage.UserID
-- uid: ClusterClient.Models.ServerMessage.StatusMessage
-  commentId: P:ClusterClient.Models.ServerMessage.StatusMessage
+  name: user_id
+  nameWithType: ServerMessage.user_id
+  fullName: ClusterClient.Models.ServerMessage.user_id
+- uid: ClusterClient.Models.ServerMessage.status_msg
+  commentId: P:ClusterClient.Models.ServerMessage.status_msg
   parent: ClusterClient.Models.ServerMessage
-  name: StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-- uid: ClusterClient.Models.ServerMessage.StatusCode
-  commentId: P:ClusterClient.Models.ServerMessage.StatusCode
+  name: status_msg
+  nameWithType: ServerMessage.status_msg
+  fullName: ClusterClient.Models.ServerMessage.status_msg
+- uid: ClusterClient.Models.ServerMessage.status_code
+  commentId: P:ClusterClient.Models.ServerMessage.status_code
   parent: ClusterClient.Models.ServerMessage
-  name: StatusCode
-  nameWithType: ServerMessage.StatusCode
-  fullName: ClusterClient.Models.ServerMessage.StatusCode
+  name: status_code
+  nameWithType: ServerMessage.status_code
+  fullName: ClusterClient.Models.ServerMessage.status_code
 - uid: System.Object.Equals(System.Object)
   commentId: M:System.Object.Equals(System.Object)
   parent: System.Object
@@ -593,11 +593,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.ServerAnswer.QuestionID*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.QuestionID
-  name: QuestionID
-  nameWithType: ServerAnswer.QuestionID
-  fullName: ClusterClient.Models.ServerAnswer.QuestionID
+- uid: ClusterClient.Models.ServerAnswer.question_id*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.question_id
+  name: question_id
+  nameWithType: ServerAnswer.question_id
+  fullName: ClusterClient.Models.ServerAnswer.question_id
 - uid: System.Int32
   commentId: T:System.Int32
   parent: System
@@ -605,11 +605,11 @@ references:
   name: Int32
   nameWithType: Int32
   fullName: System.Int32
-- uid: ClusterClient.Models.ServerAnswer.Question*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Question
-  name: Question
-  nameWithType: ServerAnswer.Question
-  fullName: ClusterClient.Models.ServerAnswer.Question
+- uid: ClusterClient.Models.ServerAnswer.question*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.question
+  name: question
+  nameWithType: ServerAnswer.question
+  fullName: ClusterClient.Models.ServerAnswer.question
 - uid: System.String
   commentId: T:System.String
   parent: System
@@ -617,26 +617,26 @@ references:
   name: String
   nameWithType: String
   fullName: System.String
-- uid: ClusterClient.Models.ServerAnswer.AnswerID*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.AnswerID
-  name: AnswerID
-  nameWithType: ServerAnswer.AnswerID
-  fullName: ClusterClient.Models.ServerAnswer.AnswerID
-- uid: ClusterClient.Models.ServerAnswer.Answer*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Answer
-  name: Answer
-  nameWithType: ServerAnswer.Answer
-  fullName: ClusterClient.Models.ServerAnswer.Answer
-- uid: ClusterClient.Models.ServerAnswer.ChatbotTempID*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.ChatbotTempID
-  name: ChatbotTempID
-  nameWithType: ServerAnswer.ChatbotTempID
-  fullName: ClusterClient.Models.ServerAnswer.ChatbotTempID
-- uid: ClusterClient.Models.ServerAnswer.Certainty*
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Certainty
-  name: Certainty
-  nameWithType: ServerAnswer.Certainty
-  fullName: ClusterClient.Models.ServerAnswer.Certainty
+- uid: ClusterClient.Models.ServerAnswer.answer_id*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.answer_id
+  name: answer_id
+  nameWithType: ServerAnswer.answer_id
+  fullName: ClusterClient.Models.ServerAnswer.answer_id
+- uid: ClusterClient.Models.ServerAnswer.answer*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.answer
+  name: answer
+  nameWithType: ServerAnswer.answer
+  fullName: ClusterClient.Models.ServerAnswer.answer
+- uid: ClusterClient.Models.ServerAnswer.chatbot_temp_id*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  name: chatbot_temp_id
+  nameWithType: ServerAnswer.chatbot_temp_id
+  fullName: ClusterClient.Models.ServerAnswer.chatbot_temp_id
+- uid: ClusterClient.Models.ServerAnswer.certainty*
+  commentId: Overload:ClusterClient.Models.ServerAnswer.certainty
+  name: certainty
+  nameWithType: ServerAnswer.certainty
+  fullName: ClusterClient.Models.ServerAnswer.certainty
 - uid: System.Double
   commentId: T:System.Double
   parent: System

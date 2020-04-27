@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Connector.html",
-          "hash": "PNhzrXpUYXgOOmOae0HqEQ=="
+          "hash": "mUFWwAosMCZrd9gXGN0juA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -21,7 +21,19 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.Actions.html",
-          "hash": "u1PChcFVmNzE9C/P1beokw=="
+          "hash": "EC3+AVjxPfi6rrjb80DIBA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.Requests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.Requests.html",
+          "hash": "zbG8g8e47DuY7J07OJDXmw=="
         }
       },
       "is_incremental": true,
@@ -33,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerAnswer.html",
-          "hash": "CSDxmm9s2PpqP5oOB0VONQ=="
+          "hash": "5EgDgCIenuiqgpjO3OTYIA=="
         }
       },
       "is_incremental": true,
@@ -45,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerMessage.html",
-          "hash": "gUXDAFa5z4Xa8V7OHIqpsg=="
+          "hash": "2RmjM4Jirtyw0ubFBJcE6g=="
         }
       },
       "is_incremental": true,
@@ -57,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestion.html",
-          "hash": "6kVxDAHX/N1iY/zI0Qm3aQ=="
+          "hash": "ZOZgjuIYPrl8sM5tnLqmkA=="
         }
       },
       "is_incremental": true,
@@ -69,7 +81,19 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestionsMessage.html",
-          "hash": "thGjlTnXDdK1UMk67uDxQw=="
+          "hash": "cMCWagfB4Ko/lQKeYqKA+Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerStatusCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerStatusCode.html",
+          "hash": "JTiJEA2TeFLrVO70E/MTPg=="
         }
       },
       "is_incremental": true,
@@ -81,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswer.html",
-          "hash": "UqMpo5TMptJ27a77UmOaAQ=="
+          "hash": "COZAmkVH2o9HtgLvPdUmYw=="
         }
       },
       "is_incremental": true,
@@ -93,7 +117,19 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswersMessage.html",
-          "hash": "0hyAH505gKTwypm7y6x9Bw=="
+          "hash": "qgfF79Drpl+Br8EEPKEW0g=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserFeedback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserFeedback.html",
+          "hash": "9it7RRtbzADD02k07QtmoA=="
         }
       },
       "is_incremental": true,
@@ -105,7 +141,31 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserMessage.html",
-          "hash": "nBwtaKflvKSBBrFwg/TU7A=="
+          "hash": "fJvLFyjKc9qxtDerY42GVw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserQuestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserQuestion.html",
+          "hash": "hqxjckSZOS5Tt+NyjjFTyw=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserRequest.html",
+          "hash": "2uI5o4FabMDFNO1klg1V+A=="
         }
       },
       "is_incremental": true,
@@ -117,7 +177,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.html",
-          "hash": "1e44843KYmvqwDlFkYM/Qw=="
+          "hash": "hEVYVm7KEvZhpCcQcL80mA=="
         }
       },
       "is_incremental": true,
@@ -132,7 +192,7 @@
           "hash": "pOsMqYS9Q423MQYKo6cHaA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -141,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "Stno84inTiE8lU+wRd3ZlQ=="
+          "hash": "pygCN02xu6dd5lt5Yj9MGA=="
         }
       },
       "is_incremental": true,
@@ -153,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "zcp/VsR0+WeOE7F6b0pocQ=="
+          "hash": "rqFLJlH4sCo5t/uaTsBqpQ=="
         }
       },
       "is_incremental": false,
@@ -165,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "HAr0vx6vlozUOYjDyMxHrw=="
+          "hash": "jtci4za2zKtIUMA/cUNoDg=="
         }
       },
       "is_incremental": true,
@@ -189,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "expNMGSQd+ZP3KWXWTTJVw=="
+          "hash": "2Hslm9YMsnbMXP+M8+WK6Q=="
         }
       },
       "is_incremental": true,
@@ -226,8 +286,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 11,
-          "skipped_file_count": 11
+          "total_file_count": 16,
+          "skipped_file_count": 15
         },
         "TocDocumentProcessor": {
           "can_incremental": false,

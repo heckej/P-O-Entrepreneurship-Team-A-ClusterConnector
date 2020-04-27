@@ -26,18 +26,18 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.Connector
   nameWithType: Connector.Connector
-- uid: ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
-  name: AnswerQuestion(Int32, UserAnswer)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestion_System_Int32_ClusterClient_Models_UserAnswer_
-  commentId: M:ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)
-  fullName: ClusterClient.Connector.AnswerQuestion(System.Int32, ClusterClient.Models.UserAnswer)
-  nameWithType: Connector.AnswerQuestion(Int32, UserAnswer)
-- uid: ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)
-  name: AnswerQuestion(Int32, Int32, String)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestion_System_Int32_System_Int32_System_String_
-  commentId: M:ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)
-  fullName: ClusterClient.Connector.AnswerQuestion(System.Int32, System.Int32, System.String)
-  nameWithType: Connector.AnswerQuestion(Int32, Int32, String)
+- uid: ClusterClient.Connector.AnswerQuestion(System.String,ClusterClient.Models.UserAnswer)
+  name: AnswerQuestion(String, UserAnswer)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestion_System_String_ClusterClient_Models_UserAnswer_
+  commentId: M:ClusterClient.Connector.AnswerQuestion(System.String,ClusterClient.Models.UserAnswer)
+  fullName: ClusterClient.Connector.AnswerQuestion(System.String, ClusterClient.Models.UserAnswer)
+  nameWithType: Connector.AnswerQuestion(String, UserAnswer)
+- uid: ClusterClient.Connector.AnswerQuestion(System.String,System.Int32,System.String)
+  name: AnswerQuestion(String, Int32, String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestion_System_String_System_Int32_System_String_
+  commentId: M:ClusterClient.Connector.AnswerQuestion(System.String,System.Int32,System.String)
+  fullName: ClusterClient.Connector.AnswerQuestion(System.String, System.Int32, System.String)
+  nameWithType: Connector.AnswerQuestion(String, Int32, String)
 - uid: ClusterClient.Connector.AnswerQuestion*
   name: AnswerQuestion
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestion_
@@ -45,24 +45,15 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.AnswerQuestion
   nameWithType: Connector.AnswerQuestion
-- uid: ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
-  name: AnswerQuestions(Int32, ICollection<UserAnswer>)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_ClusterClient_Models_UserAnswer__
-  commentId: M:ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
-  name.vb: AnswerQuestions(Int32, ICollection(Of UserAnswer))
-  fullName: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection<ClusterClient.Models.UserAnswer>)
-  fullName.vb: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection(Of ClusterClient.Models.UserAnswer))
-  nameWithType: Connector.AnswerQuestions(Int32, ICollection<UserAnswer>)
-  nameWithType.vb: Connector.AnswerQuestions(Int32, ICollection(Of UserAnswer))
-- uid: ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
-  name: AnswerQuestions(Int32, ICollection<Tuple<Int32, String>>)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_System_Tuple_System_Int32_System_String___
-  commentId: M:ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})
-  name.vb: AnswerQuestions(Int32, ICollection(Of Tuple(Of Int32, String)))
-  fullName: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection<System.Tuple<System.Int32, System.String>>)
-  fullName.vb: ClusterClient.Connector.AnswerQuestions(System.Int32, System.Collections.Generic.ICollection(Of System.Tuple(Of System.Int32, System.String)))
-  nameWithType: Connector.AnswerQuestions(Int32, ICollection<Tuple<Int32, String>>)
-  nameWithType.vb: Connector.AnswerQuestions(Int32, ICollection(Of Tuple(Of Int32, String)))
+- uid: ClusterClient.Connector.AnswerQuestions(System.String,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  name: AnswerQuestions(String, ICollection<UserAnswer>)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestions_System_String_System_Collections_Generic_ICollection_ClusterClient_Models_UserAnswer__
+  commentId: M:ClusterClient.Connector.AnswerQuestions(System.String,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
+  name.vb: AnswerQuestions(String, ICollection(Of UserAnswer))
+  fullName: ClusterClient.Connector.AnswerQuestions(System.String, System.Collections.Generic.ICollection<ClusterClient.Models.UserAnswer>)
+  fullName.vb: ClusterClient.Connector.AnswerQuestions(System.String, System.Collections.Generic.ICollection(Of ClusterClient.Models.UserAnswer))
+  nameWithType: Connector.AnswerQuestions(String, ICollection<UserAnswer>)
+  nameWithType.vb: Connector.AnswerQuestions(String, ICollection(Of UserAnswer))
 - uid: ClusterClient.Connector.AnswerQuestions*
   name: AnswerQuestions
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_AnswerQuestions_
@@ -70,6 +61,19 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.AnswerQuestions
   nameWithType: Connector.AnswerQuestions
+- uid: ClusterClient.Connector.BlockProactiveMessagingForUser(System.String)
+  name: BlockProactiveMessagingForUser(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_BlockProactiveMessagingForUser_System_String_
+  commentId: M:ClusterClient.Connector.BlockProactiveMessagingForUser(System.String)
+  fullName: ClusterClient.Connector.BlockProactiveMessagingForUser(System.String)
+  nameWithType: Connector.BlockProactiveMessagingForUser(String)
+- uid: ClusterClient.Connector.BlockProactiveMessagingForUser*
+  name: BlockProactiveMessagingForUser
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_BlockProactiveMessagingForUser_
+  commentId: Overload:ClusterClient.Connector.BlockProactiveMessagingForUser
+  isSpec: "True"
+  fullName: ClusterClient.Connector.BlockProactiveMessagingForUser
+  nameWithType: Connector.BlockProactiveMessagingForUser
 - uid: ClusterClient.Connector.CloseWebSocketConnection
   name: CloseWebSocketConnection()
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_CloseWebSocketConnection
@@ -83,12 +87,38 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.CloseWebSocketConnection
   nameWithType: Connector.CloseWebSocketConnection
-- uid: ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
-  name: GetNewAnswersForUser(Int32)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetNewAnswersForUser_System_Int32_
-  commentId: M:ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
-  fullName: ClusterClient.Connector.GetNewAnswersForUser(System.Int32)
-  nameWithType: Connector.GetNewAnswersForUser(Int32)
+- uid: ClusterClient.Connector.EnableWebSocketStateCheck(System.Boolean)
+  name: EnableWebSocketStateCheck(Boolean)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_EnableWebSocketStateCheck_System_Boolean_
+  commentId: M:ClusterClient.Connector.EnableWebSocketStateCheck(System.Boolean)
+  fullName: ClusterClient.Connector.EnableWebSocketStateCheck(System.Boolean)
+  nameWithType: Connector.EnableWebSocketStateCheck(Boolean)
+- uid: ClusterClient.Connector.EnableWebSocketStateCheck*
+  name: EnableWebSocketStateCheck
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_EnableWebSocketStateCheck_
+  commentId: Overload:ClusterClient.Connector.EnableWebSocketStateCheck
+  isSpec: "True"
+  fullName: ClusterClient.Connector.EnableWebSocketStateCheck
+  nameWithType: Connector.EnableWebSocketStateCheck
+- uid: ClusterClient.Connector.EndPointAddress
+  name: EndPointAddress
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_EndPointAddress
+  commentId: P:ClusterClient.Connector.EndPointAddress
+  fullName: ClusterClient.Connector.EndPointAddress
+  nameWithType: Connector.EndPointAddress
+- uid: ClusterClient.Connector.EndPointAddress*
+  name: EndPointAddress
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_EndPointAddress_
+  commentId: Overload:ClusterClient.Connector.EndPointAddress
+  isSpec: "True"
+  fullName: ClusterClient.Connector.EndPointAddress
+  nameWithType: Connector.EndPointAddress
+- uid: ClusterClient.Connector.GetNewAnswersForUser(System.String)
+  name: GetNewAnswersForUser(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetNewAnswersForUser_System_String_
+  commentId: M:ClusterClient.Connector.GetNewAnswersForUser(System.String)
+  fullName: ClusterClient.Connector.GetNewAnswersForUser(System.String)
+  nameWithType: Connector.GetNewAnswersForUser(String)
 - uid: ClusterClient.Connector.GetNewAnswersForUser*
   name: GetNewAnswersForUser
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetNewAnswersForUser_
@@ -109,38 +139,12 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.GetNewResponses
   nameWithType: Connector.GetNewResponses
-- uid: ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
-  name: GetQuestionsAddressedToUser(Int32)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetQuestionsAddressedToUser_System_Int32_
-  commentId: M:ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
-  fullName: ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)
-  nameWithType: Connector.GetQuestionsAddressedToUser(Int32)
-- uid: ClusterClient.Connector.GetQuestionsAddressedToUser*
-  name: GetQuestionsAddressedToUser
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetQuestionsAddressedToUser_
-  commentId: Overload:ClusterClient.Connector.GetQuestionsAddressedToUser
-  isSpec: "True"
-  fullName: ClusterClient.Connector.GetQuestionsAddressedToUser
-  nameWithType: Connector.GetQuestionsAddressedToUser
-- uid: ClusterClient.Connector.GetQuestionsToBeAnswered
-  name: GetQuestionsToBeAnswered()
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetQuestionsToBeAnswered
-  commentId: M:ClusterClient.Connector.GetQuestionsToBeAnswered
-  fullName: ClusterClient.Connector.GetQuestionsToBeAnswered()
-  nameWithType: Connector.GetQuestionsToBeAnswered()
-- uid: ClusterClient.Connector.GetQuestionsToBeAnswered*
-  name: GetQuestionsToBeAnswered
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_GetQuestionsToBeAnswered_
-  commentId: Overload:ClusterClient.Connector.GetQuestionsToBeAnswered
-  isSpec: "True"
-  fullName: ClusterClient.Connector.GetQuestionsToBeAnswered
-  nameWithType: Connector.GetQuestionsToBeAnswered
-- uid: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)
-  name: HasAnswerToQuestionOfUser(Int32, Int32)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_HasAnswerToQuestionOfUser_System_Int32_System_Int32_
-  commentId: M:ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)
-  fullName: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32, System.Int32)
-  nameWithType: Connector.HasAnswerToQuestionOfUser(Int32, Int32)
+- uid: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.String)
+  name: HasAnswerToQuestionOfUser(Int32, String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_HasAnswerToQuestionOfUser_System_Int32_System_String_
+  commentId: M:ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.String)
+  fullName: ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32, System.String)
+  nameWithType: Connector.HasAnswerToQuestionOfUser(Int32, String)
 - uid: ClusterClient.Connector.HasAnswerToQuestionOfUser*
   name: HasAnswerToQuestionOfUser
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_HasAnswerToQuestionOfUser_
@@ -148,6 +152,45 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.HasAnswerToQuestionOfUser
   nameWithType: Connector.HasAnswerToQuestionOfUser
+- uid: ClusterClient.Connector.MissedProactiveMessagesForUser(System.String)
+  name: MissedProactiveMessagesForUser(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_MissedProactiveMessagesForUser_System_String_
+  commentId: M:ClusterClient.Connector.MissedProactiveMessagesForUser(System.String)
+  fullName: ClusterClient.Connector.MissedProactiveMessagesForUser(System.String)
+  nameWithType: Connector.MissedProactiveMessagesForUser(String)
+- uid: ClusterClient.Connector.MissedProactiveMessagesForUser*
+  name: MissedProactiveMessagesForUser
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_MissedProactiveMessagesForUser_
+  commentId: Overload:ClusterClient.Connector.MissedProactiveMessagesForUser
+  isSpec: "True"
+  fullName: ClusterClient.Connector.MissedProactiveMessagesForUser
+  nameWithType: Connector.MissedProactiveMessagesForUser
+- uid: ClusterClient.Connector.ProactiveMessagingBlockedForUser(System.String)
+  name: ProactiveMessagingBlockedForUser(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_ProactiveMessagingBlockedForUser_System_String_
+  commentId: M:ClusterClient.Connector.ProactiveMessagingBlockedForUser(System.String)
+  fullName: ClusterClient.Connector.ProactiveMessagingBlockedForUser(System.String)
+  nameWithType: Connector.ProactiveMessagingBlockedForUser(String)
+- uid: ClusterClient.Connector.ProactiveMessagingBlockedForUser*
+  name: ProactiveMessagingBlockedForUser
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_ProactiveMessagingBlockedForUser_
+  commentId: Overload:ClusterClient.Connector.ProactiveMessagingBlockedForUser
+  isSpec: "True"
+  fullName: ClusterClient.Connector.ProactiveMessagingBlockedForUser
+  nameWithType: Connector.ProactiveMessagingBlockedForUser
+- uid: ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions(System.String,System.Double)
+  name: RequestAndRetrieveUnansweredQuestions(String, Double)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_RequestAndRetrieveUnansweredQuestions_System_String_System_Double_
+  commentId: M:ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions(System.String,System.Double)
+  fullName: ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions(System.String, System.Double)
+  nameWithType: Connector.RequestAndRetrieveUnansweredQuestions(String, Double)
+- uid: ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions*
+  name: RequestAndRetrieveUnansweredQuestions
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_RequestAndRetrieveUnansweredQuestions_
+  commentId: Overload:ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions
+  isSpec: "True"
+  fullName: ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions
+  nameWithType: Connector.RequestAndRetrieveUnansweredQuestions
 - uid: ClusterClient.Connector.ResetConnection
   name: ResetConnection()
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_ResetConnection
@@ -161,12 +204,12 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.ResetConnection
   nameWithType: Connector.ResetConnection
-- uid: ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
-  name: SendFeedbackOnAnswer(Int32, Int32, Int32, Int32)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendFeedbackOnAnswer_System_Int32_System_Int32_System_Int32_System_Int32_
-  commentId: M:ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)
-  fullName: ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32, System.Int32, System.Int32, System.Int32)
-  nameWithType: Connector.SendFeedbackOnAnswer(Int32, Int32, Int32, Int32)
+- uid: ClusterClient.Connector.SendFeedbackOnAnswer(System.String,System.Int32,System.Int32,System.Int32)
+  name: SendFeedbackOnAnswer(String, Int32, Int32, Int32)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendFeedbackOnAnswer_System_String_System_Int32_System_Int32_System_Int32_
+  commentId: M:ClusterClient.Connector.SendFeedbackOnAnswer(System.String,System.Int32,System.Int32,System.Int32)
+  fullName: ClusterClient.Connector.SendFeedbackOnAnswer(System.String, System.Int32, System.Int32, System.Int32)
+  nameWithType: Connector.SendFeedbackOnAnswer(String, Int32, Int32, Int32)
 - uid: ClusterClient.Connector.SendFeedbackOnAnswer*
   name: SendFeedbackOnAnswer
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendFeedbackOnAnswer_
@@ -174,32 +217,58 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.SendFeedbackOnAnswer
   nameWithType: Connector.SendFeedbackOnAnswer
-- uid: ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)
-  name: SendQuestion(Int32, String, Double)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendQuestion_System_Int32_System_String_System_Double_
-  commentId: M:ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)
-  fullName: ClusterClient.Connector.SendQuestion(System.Int32, System.String, System.Double)
-  nameWithType: Connector.SendQuestion(Int32, String, Double)
-- uid: ClusterClient.Connector.SendQuestion*
-  name: SendQuestion
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendQuestion_
-  commentId: Overload:ClusterClient.Connector.SendQuestion
+- uid: ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
+  name: SendQuestionAndWaitForAnswer(String, String, Double)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendQuestionAndWaitForAnswer_System_String_System_String_System_Double_
+  commentId: M:ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
+  fullName: ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String, System.String, System.Double)
+  nameWithType: Connector.SendQuestionAndWaitForAnswer(String, String, Double)
+- uid: ClusterClient.Connector.SendQuestionAndWaitForAnswer*
+  name: SendQuestionAndWaitForAnswer
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendQuestionAndWaitForAnswer_
+  commentId: Overload:ClusterClient.Connector.SendQuestionAndWaitForAnswer
   isSpec: "True"
-  fullName: ClusterClient.Connector.SendQuestion
-  nameWithType: Connector.SendQuestion
-- uid: ClusterClient.Connector.StoreMessageFromServer(System.String)
-  name: StoreMessageFromServer(String)
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_StoreMessageFromServer_System_String_
-  commentId: M:ClusterClient.Connector.StoreMessageFromServer(System.String)
-  fullName: ClusterClient.Connector.StoreMessageFromServer(System.String)
-  nameWithType: Connector.StoreMessageFromServer(String)
-- uid: ClusterClient.Connector.StoreMessageFromServer*
-  name: StoreMessageFromServer
-  href: api/ClusterClient.Connector.html#ClusterClient_Connector_StoreMessageFromServer_
-  commentId: Overload:ClusterClient.Connector.StoreMessageFromServer
+  fullName: ClusterClient.Connector.SendQuestionAndWaitForAnswer
+  nameWithType: Connector.SendQuestionAndWaitForAnswer
+- uid: ClusterClient.Connector.StoreMessageFromServerAsync(System.String)
+  name: StoreMessageFromServerAsync(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_StoreMessageFromServerAsync_System_String_
+  commentId: M:ClusterClient.Connector.StoreMessageFromServerAsync(System.String)
+  fullName: ClusterClient.Connector.StoreMessageFromServerAsync(System.String)
+  nameWithType: Connector.StoreMessageFromServerAsync(String)
+- uid: ClusterClient.Connector.StoreMessageFromServerAsync*
+  name: StoreMessageFromServerAsync
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_StoreMessageFromServerAsync_
+  commentId: Overload:ClusterClient.Connector.StoreMessageFromServerAsync
   isSpec: "True"
-  fullName: ClusterClient.Connector.StoreMessageFromServer
-  nameWithType: Connector.StoreMessageFromServer
+  fullName: ClusterClient.Connector.StoreMessageFromServerAsync
+  nameWithType: Connector.StoreMessageFromServerAsync
+- uid: ClusterClient.Connector.SurpressConnectionErrors
+  name: SurpressConnectionErrors()
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SurpressConnectionErrors
+  commentId: M:ClusterClient.Connector.SurpressConnectionErrors
+  fullName: ClusterClient.Connector.SurpressConnectionErrors()
+  nameWithType: Connector.SurpressConnectionErrors()
+- uid: ClusterClient.Connector.SurpressConnectionErrors*
+  name: SurpressConnectionErrors
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SurpressConnectionErrors_
+  commentId: Overload:ClusterClient.Connector.SurpressConnectionErrors
+  isSpec: "True"
+  fullName: ClusterClient.Connector.SurpressConnectionErrors
+  nameWithType: Connector.SurpressConnectionErrors
+- uid: ClusterClient.Connector.UnblockProactiveMessagingForUser(System.String)
+  name: UnblockProactiveMessagingForUser(String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_UnblockProactiveMessagingForUser_System_String_
+  commentId: M:ClusterClient.Connector.UnblockProactiveMessagingForUser(System.String)
+  fullName: ClusterClient.Connector.UnblockProactiveMessagingForUser(System.String)
+  nameWithType: Connector.UnblockProactiveMessagingForUser(String)
+- uid: ClusterClient.Connector.UnblockProactiveMessagingForUser*
+  name: UnblockProactiveMessagingForUser
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_UnblockProactiveMessagingForUser_
+  commentId: Overload:ClusterClient.Connector.UnblockProactiveMessagingForUser
+  isSpec: "True"
+  fullName: ClusterClient.Connector.UnblockProactiveMessagingForUser
+  nameWithType: Connector.UnblockProactiveMessagingForUser
 - uid: ClusterClient.Models
   name: ClusterClient.Models
   href: api/ClusterClient.Models.html
@@ -243,231 +312,292 @@ references:
   commentId: F:ClusterClient.Models.Actions.Questions
   fullName: ClusterClient.Models.Actions.Questions
   nameWithType: Actions.Questions
+- uid: ClusterClient.Models.Requests
+  name: Requests
+  href: api/ClusterClient.Models.Requests.html
+  commentId: T:ClusterClient.Models.Requests
+  fullName: ClusterClient.Models.Requests
+  nameWithType: Requests
+- uid: ClusterClient.Models.Requests.Default
+  name: Default
+  href: api/ClusterClient.Models.Requests.html#ClusterClient_Models_Requests_Default
+  commentId: F:ClusterClient.Models.Requests.Default
+  fullName: ClusterClient.Models.Requests.Default
+  nameWithType: Requests.Default
+- uid: ClusterClient.Models.Requests.GetRequests
+  name: GetRequests()
+  href: api/ClusterClient.Models.Requests.html#ClusterClient_Models_Requests_GetRequests
+  commentId: M:ClusterClient.Models.Requests.GetRequests
+  fullName: ClusterClient.Models.Requests.GetRequests()
+  nameWithType: Requests.GetRequests()
+- uid: ClusterClient.Models.Requests.GetRequests*
+  name: GetRequests
+  href: api/ClusterClient.Models.Requests.html#ClusterClient_Models_Requests_GetRequests_
+  commentId: Overload:ClusterClient.Models.Requests.GetRequests
+  isSpec: "True"
+  fullName: ClusterClient.Models.Requests.GetRequests
+  nameWithType: Requests.GetRequests
+- uid: ClusterClient.Models.Requests.UnansweredQuestions
+  name: UnansweredQuestions
+  href: api/ClusterClient.Models.Requests.html#ClusterClient_Models_Requests_UnansweredQuestions
+  commentId: F:ClusterClient.Models.Requests.UnansweredQuestions
+  fullName: ClusterClient.Models.Requests.UnansweredQuestions
+  nameWithType: Requests.UnansweredQuestions
 - uid: ClusterClient.Models.ServerAnswer
   name: ServerAnswer
   href: api/ClusterClient.Models.ServerAnswer.html
   commentId: T:ClusterClient.Models.ServerAnswer
   fullName: ClusterClient.Models.ServerAnswer
   nameWithType: ServerAnswer
-- uid: ClusterClient.Models.ServerAnswer.Answer
-  name: Answer
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Answer
-  commentId: P:ClusterClient.Models.ServerAnswer.Answer
-  fullName: ClusterClient.Models.ServerAnswer.Answer
-  nameWithType: ServerAnswer.Answer
-- uid: ClusterClient.Models.ServerAnswer.Answer*
-  name: Answer
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Answer_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Answer
+- uid: ClusterClient.Models.ServerAnswer.answer
+  name: answer
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_answer
+  commentId: P:ClusterClient.Models.ServerAnswer.answer
+  fullName: ClusterClient.Models.ServerAnswer.answer
+  nameWithType: ServerAnswer.answer
+- uid: ClusterClient.Models.ServerAnswer.answer*
+  name: answer
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_answer_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.answer
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.Answer
-  nameWithType: ServerAnswer.Answer
-- uid: ClusterClient.Models.ServerAnswer.AnswerID
-  name: AnswerID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_AnswerID
-  commentId: P:ClusterClient.Models.ServerAnswer.AnswerID
-  fullName: ClusterClient.Models.ServerAnswer.AnswerID
-  nameWithType: ServerAnswer.AnswerID
-- uid: ClusterClient.Models.ServerAnswer.AnswerID*
-  name: AnswerID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_AnswerID_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.AnswerID
+  fullName: ClusterClient.Models.ServerAnswer.answer
+  nameWithType: ServerAnswer.answer
+- uid: ClusterClient.Models.ServerAnswer.answer_id
+  name: answer_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_answer_id
+  commentId: P:ClusterClient.Models.ServerAnswer.answer_id
+  fullName: ClusterClient.Models.ServerAnswer.answer_id
+  nameWithType: ServerAnswer.answer_id
+- uid: ClusterClient.Models.ServerAnswer.answer_id*
+  name: answer_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_answer_id_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.answer_id
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.AnswerID
-  nameWithType: ServerAnswer.AnswerID
-- uid: ClusterClient.Models.ServerAnswer.Certainty
-  name: Certainty
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Certainty
-  commentId: P:ClusterClient.Models.ServerAnswer.Certainty
-  fullName: ClusterClient.Models.ServerAnswer.Certainty
-  nameWithType: ServerAnswer.Certainty
-- uid: ClusterClient.Models.ServerAnswer.Certainty*
-  name: Certainty
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Certainty_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Certainty
+  fullName: ClusterClient.Models.ServerAnswer.answer_id
+  nameWithType: ServerAnswer.answer_id
+- uid: ClusterClient.Models.ServerAnswer.certainty
+  name: certainty
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_certainty
+  commentId: P:ClusterClient.Models.ServerAnswer.certainty
+  fullName: ClusterClient.Models.ServerAnswer.certainty
+  nameWithType: ServerAnswer.certainty
+- uid: ClusterClient.Models.ServerAnswer.certainty*
+  name: certainty
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_certainty_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.certainty
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.Certainty
-  nameWithType: ServerAnswer.Certainty
-- uid: ClusterClient.Models.ServerAnswer.ChatbotTempID
-  name: ChatbotTempID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_ChatbotTempID
-  commentId: P:ClusterClient.Models.ServerAnswer.ChatbotTempID
-  fullName: ClusterClient.Models.ServerAnswer.ChatbotTempID
-  nameWithType: ServerAnswer.ChatbotTempID
-- uid: ClusterClient.Models.ServerAnswer.ChatbotTempID*
-  name: ChatbotTempID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_ChatbotTempID_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.ChatbotTempID
+  fullName: ClusterClient.Models.ServerAnswer.certainty
+  nameWithType: ServerAnswer.certainty
+- uid: ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  name: chatbot_temp_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_chatbot_temp_id
+  commentId: P:ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  fullName: ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  nameWithType: ServerAnswer.chatbot_temp_id
+- uid: ClusterClient.Models.ServerAnswer.chatbot_temp_id*
+  name: chatbot_temp_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_chatbot_temp_id_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.chatbot_temp_id
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.ChatbotTempID
-  nameWithType: ServerAnswer.ChatbotTempID
-- uid: ClusterClient.Models.ServerAnswer.Question
-  name: Question
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Question
-  commentId: P:ClusterClient.Models.ServerAnswer.Question
-  fullName: ClusterClient.Models.ServerAnswer.Question
-  nameWithType: ServerAnswer.Question
-- uid: ClusterClient.Models.ServerAnswer.Question*
-  name: Question
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_Question_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.Question
+  fullName: ClusterClient.Models.ServerAnswer.chatbot_temp_id
+  nameWithType: ServerAnswer.chatbot_temp_id
+- uid: ClusterClient.Models.ServerAnswer.question
+  name: question
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_question
+  commentId: P:ClusterClient.Models.ServerAnswer.question
+  fullName: ClusterClient.Models.ServerAnswer.question
+  nameWithType: ServerAnswer.question
+- uid: ClusterClient.Models.ServerAnswer.question*
+  name: question
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_question_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.question
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.Question
-  nameWithType: ServerAnswer.Question
-- uid: ClusterClient.Models.ServerAnswer.QuestionID
-  name: QuestionID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_QuestionID
-  commentId: P:ClusterClient.Models.ServerAnswer.QuestionID
-  fullName: ClusterClient.Models.ServerAnswer.QuestionID
-  nameWithType: ServerAnswer.QuestionID
-- uid: ClusterClient.Models.ServerAnswer.QuestionID*
-  name: QuestionID
-  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_QuestionID_
-  commentId: Overload:ClusterClient.Models.ServerAnswer.QuestionID
+  fullName: ClusterClient.Models.ServerAnswer.question
+  nameWithType: ServerAnswer.question
+- uid: ClusterClient.Models.ServerAnswer.question_id
+  name: question_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_question_id
+  commentId: P:ClusterClient.Models.ServerAnswer.question_id
+  fullName: ClusterClient.Models.ServerAnswer.question_id
+  nameWithType: ServerAnswer.question_id
+- uid: ClusterClient.Models.ServerAnswer.question_id*
+  name: question_id
+  href: api/ClusterClient.Models.ServerAnswer.html#ClusterClient_Models_ServerAnswer_question_id_
+  commentId: Overload:ClusterClient.Models.ServerAnswer.question_id
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerAnswer.QuestionID
-  nameWithType: ServerAnswer.QuestionID
+  fullName: ClusterClient.Models.ServerAnswer.question_id
+  nameWithType: ServerAnswer.question_id
 - uid: ClusterClient.Models.ServerMessage
   name: ServerMessage
   href: api/ClusterClient.Models.ServerMessage.html
   commentId: T:ClusterClient.Models.ServerMessage
   fullName: ClusterClient.Models.ServerMessage
   nameWithType: ServerMessage
-- uid: ClusterClient.Models.ServerMessage.Action
-  name: Action
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_Action
-  commentId: P:ClusterClient.Models.ServerMessage.Action
-  fullName: ClusterClient.Models.ServerMessage.Action
-  nameWithType: ServerMessage.Action
-- uid: ClusterClient.Models.ServerMessage.Action*
-  name: Action
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_Action_
-  commentId: Overload:ClusterClient.Models.ServerMessage.Action
+- uid: ClusterClient.Models.ServerMessage.action
+  name: action
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_action
+  commentId: P:ClusterClient.Models.ServerMessage.action
+  fullName: ClusterClient.Models.ServerMessage.action
+  nameWithType: ServerMessage.action
+- uid: ClusterClient.Models.ServerMessage.action*
+  name: action
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_action_
+  commentId: Overload:ClusterClient.Models.ServerMessage.action
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerMessage.Action
-  nameWithType: ServerMessage.Action
-- uid: ClusterClient.Models.ServerMessage.StatusCode
-  name: StatusCode
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_StatusCode
-  commentId: P:ClusterClient.Models.ServerMessage.StatusCode
-  fullName: ClusterClient.Models.ServerMessage.StatusCode
-  nameWithType: ServerMessage.StatusCode
-- uid: ClusterClient.Models.ServerMessage.StatusCode*
-  name: StatusCode
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_StatusCode_
-  commentId: Overload:ClusterClient.Models.ServerMessage.StatusCode
+  fullName: ClusterClient.Models.ServerMessage.action
+  nameWithType: ServerMessage.action
+- uid: ClusterClient.Models.ServerMessage.status_code
+  name: status_code
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_status_code
+  commentId: P:ClusterClient.Models.ServerMessage.status_code
+  fullName: ClusterClient.Models.ServerMessage.status_code
+  nameWithType: ServerMessage.status_code
+- uid: ClusterClient.Models.ServerMessage.status_code*
+  name: status_code
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_status_code_
+  commentId: Overload:ClusterClient.Models.ServerMessage.status_code
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerMessage.StatusCode
-  nameWithType: ServerMessage.StatusCode
-- uid: ClusterClient.Models.ServerMessage.StatusMessage
-  name: StatusMessage
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_StatusMessage
-  commentId: P:ClusterClient.Models.ServerMessage.StatusMessage
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-- uid: ClusterClient.Models.ServerMessage.StatusMessage*
-  name: StatusMessage
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_StatusMessage_
-  commentId: Overload:ClusterClient.Models.ServerMessage.StatusMessage
+  fullName: ClusterClient.Models.ServerMessage.status_code
+  nameWithType: ServerMessage.status_code
+- uid: ClusterClient.Models.ServerMessage.status_msg
+  name: status_msg
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_status_msg
+  commentId: P:ClusterClient.Models.ServerMessage.status_msg
+  fullName: ClusterClient.Models.ServerMessage.status_msg
+  nameWithType: ServerMessage.status_msg
+- uid: ClusterClient.Models.ServerMessage.status_msg*
+  name: status_msg
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_status_msg_
+  commentId: Overload:ClusterClient.Models.ServerMessage.status_msg
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-- uid: ClusterClient.Models.ServerMessage.UserID
-  name: UserID
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_UserID
-  commentId: P:ClusterClient.Models.ServerMessage.UserID
-  fullName: ClusterClient.Models.ServerMessage.UserID
-  nameWithType: ServerMessage.UserID
-- uid: ClusterClient.Models.ServerMessage.UserID*
-  name: UserID
-  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_UserID_
-  commentId: Overload:ClusterClient.Models.ServerMessage.UserID
+  fullName: ClusterClient.Models.ServerMessage.status_msg
+  nameWithType: ServerMessage.status_msg
+- uid: ClusterClient.Models.ServerMessage.user_id
+  name: user_id
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_user_id
+  commentId: P:ClusterClient.Models.ServerMessage.user_id
+  fullName: ClusterClient.Models.ServerMessage.user_id
+  nameWithType: ServerMessage.user_id
+- uid: ClusterClient.Models.ServerMessage.user_id*
+  name: user_id
+  href: api/ClusterClient.Models.ServerMessage.html#ClusterClient_Models_ServerMessage_user_id_
+  commentId: Overload:ClusterClient.Models.ServerMessage.user_id
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerMessage.UserID
-  nameWithType: ServerMessage.UserID
+  fullName: ClusterClient.Models.ServerMessage.user_id
+  nameWithType: ServerMessage.user_id
 - uid: ClusterClient.Models.ServerQuestion
   name: ServerQuestion
   href: api/ClusterClient.Models.ServerQuestion.html
   commentId: T:ClusterClient.Models.ServerQuestion
   fullName: ClusterClient.Models.ServerQuestion
   nameWithType: ServerQuestion
-- uid: ClusterClient.Models.ServerQuestion.Question
-  name: Question
-  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_Question
-  commentId: P:ClusterClient.Models.ServerQuestion.Question
-  fullName: ClusterClient.Models.ServerQuestion.Question
-  nameWithType: ServerQuestion.Question
-- uid: ClusterClient.Models.ServerQuestion.Question*
-  name: Question
-  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_Question_
-  commentId: Overload:ClusterClient.Models.ServerQuestion.Question
+- uid: ClusterClient.Models.ServerQuestion.question
+  name: question
+  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_question
+  commentId: P:ClusterClient.Models.ServerQuestion.question
+  fullName: ClusterClient.Models.ServerQuestion.question
+  nameWithType: ServerQuestion.question
+- uid: ClusterClient.Models.ServerQuestion.question*
+  name: question
+  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_question_
+  commentId: Overload:ClusterClient.Models.ServerQuestion.question
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerQuestion.Question
-  nameWithType: ServerQuestion.Question
-- uid: ClusterClient.Models.ServerQuestion.QuestionID
-  name: QuestionID
-  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_QuestionID
-  commentId: P:ClusterClient.Models.ServerQuestion.QuestionID
-  fullName: ClusterClient.Models.ServerQuestion.QuestionID
-  nameWithType: ServerQuestion.QuestionID
-- uid: ClusterClient.Models.ServerQuestion.QuestionID*
-  name: QuestionID
-  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_QuestionID_
-  commentId: Overload:ClusterClient.Models.ServerQuestion.QuestionID
+  fullName: ClusterClient.Models.ServerQuestion.question
+  nameWithType: ServerQuestion.question
+- uid: ClusterClient.Models.ServerQuestion.question_id
+  name: question_id
+  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_question_id
+  commentId: P:ClusterClient.Models.ServerQuestion.question_id
+  fullName: ClusterClient.Models.ServerQuestion.question_id
+  nameWithType: ServerQuestion.question_id
+- uid: ClusterClient.Models.ServerQuestion.question_id*
+  name: question_id
+  href: api/ClusterClient.Models.ServerQuestion.html#ClusterClient_Models_ServerQuestion_question_id_
+  commentId: Overload:ClusterClient.Models.ServerQuestion.question_id
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerQuestion.QuestionID
-  nameWithType: ServerQuestion.QuestionID
+  fullName: ClusterClient.Models.ServerQuestion.question_id
+  nameWithType: ServerQuestion.question_id
 - uid: ClusterClient.Models.ServerQuestionsMessage
   name: ServerQuestionsMessage
   href: api/ClusterClient.Models.ServerQuestionsMessage.html
   commentId: T:ClusterClient.Models.ServerQuestionsMessage
   fullName: ClusterClient.Models.ServerQuestionsMessage
   nameWithType: ServerQuestionsMessage
-- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  name: AnswerQuestions
-  href: api/ClusterClient.Models.ServerQuestionsMessage.html#ClusterClient_Models_ServerQuestionsMessage_AnswerQuestions
-  commentId: P:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  nameWithType: ServerQuestionsMessage.AnswerQuestions
-- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions*
-  name: AnswerQuestions
-  href: api/ClusterClient.Models.ServerQuestionsMessage.html#ClusterClient_Models_ServerQuestionsMessage_AnswerQuestions_
-  commentId: Overload:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+- uid: ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  name: answer_questions
+  href: api/ClusterClient.Models.ServerQuestionsMessage.html#ClusterClient_Models_ServerQuestionsMessage_answer_questions
+  commentId: P:ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  nameWithType: ServerQuestionsMessage.answer_questions
+- uid: ClusterClient.Models.ServerQuestionsMessage.answer_questions*
+  name: answer_questions
+  href: api/ClusterClient.Models.ServerQuestionsMessage.html#ClusterClient_Models_ServerQuestionsMessage_answer_questions_
+  commentId: Overload:ClusterClient.Models.ServerQuestionsMessage.answer_questions
   isSpec: "True"
-  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  nameWithType: ServerQuestionsMessage.AnswerQuestions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  nameWithType: ServerQuestionsMessage.answer_questions
+- uid: ClusterClient.Models.ServerStatusCode
+  name: ServerStatusCode
+  href: api/ClusterClient.Models.ServerStatusCode.html
+  commentId: T:ClusterClient.Models.ServerStatusCode
+  fullName: ClusterClient.Models.ServerStatusCode
+  nameWithType: ServerStatusCode
+- uid: ClusterClient.Models.ServerStatusCode.None
+  name: None
+  href: api/ClusterClient.Models.ServerStatusCode.html#ClusterClient_Models_ServerStatusCode_None
+  commentId: F:ClusterClient.Models.ServerStatusCode.None
+  fullName: ClusterClient.Models.ServerStatusCode.None
+  nameWithType: ServerStatusCode.None
+- uid: ClusterClient.Models.ServerStatusCode.Nonsense
+  name: Nonsense
+  href: api/ClusterClient.Models.ServerStatusCode.html#ClusterClient_Models_ServerStatusCode_Nonsense
+  commentId: F:ClusterClient.Models.ServerStatusCode.Nonsense
+  fullName: ClusterClient.Models.ServerStatusCode.Nonsense
+  nameWithType: ServerStatusCode.Nonsense
+- uid: ClusterClient.Models.ServerStatusCode.Offensive
+  name: Offensive
+  href: api/ClusterClient.Models.ServerStatusCode.html#ClusterClient_Models_ServerStatusCode_Offensive
+  commentId: F:ClusterClient.Models.ServerStatusCode.Offensive
+  fullName: ClusterClient.Models.ServerStatusCode.Offensive
+  nameWithType: ServerStatusCode.Offensive
+- uid: ClusterClient.Models.ServerStatusCode.OK
+  name: OK
+  href: api/ClusterClient.Models.ServerStatusCode.html#ClusterClient_Models_ServerStatusCode_OK
+  commentId: F:ClusterClient.Models.ServerStatusCode.OK
+  fullName: ClusterClient.Models.ServerStatusCode.OK
+  nameWithType: ServerStatusCode.OK
 - uid: ClusterClient.Models.UserAnswer
   name: UserAnswer
   href: api/ClusterClient.Models.UserAnswer.html
   commentId: T:ClusterClient.Models.UserAnswer
   fullName: ClusterClient.Models.UserAnswer
   nameWithType: UserAnswer
-- uid: ClusterClient.Models.UserAnswer.Answer
-  name: Answer
-  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_Answer
-  commentId: P:ClusterClient.Models.UserAnswer.Answer
-  fullName: ClusterClient.Models.UserAnswer.Answer
-  nameWithType: UserAnswer.Answer
-- uid: ClusterClient.Models.UserAnswer.Answer*
-  name: Answer
-  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_Answer_
-  commentId: Overload:ClusterClient.Models.UserAnswer.Answer
+- uid: ClusterClient.Models.UserAnswer.answer
+  name: answer
+  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_answer
+  commentId: P:ClusterClient.Models.UserAnswer.answer
+  fullName: ClusterClient.Models.UserAnswer.answer
+  nameWithType: UserAnswer.answer
+- uid: ClusterClient.Models.UserAnswer.answer*
+  name: answer
+  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_answer_
+  commentId: Overload:ClusterClient.Models.UserAnswer.answer
   isSpec: "True"
-  fullName: ClusterClient.Models.UserAnswer.Answer
-  nameWithType: UserAnswer.Answer
-- uid: ClusterClient.Models.UserAnswer.QuestionID
-  name: QuestionID
-  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_QuestionID
-  commentId: P:ClusterClient.Models.UserAnswer.QuestionID
-  fullName: ClusterClient.Models.UserAnswer.QuestionID
-  nameWithType: UserAnswer.QuestionID
-- uid: ClusterClient.Models.UserAnswer.QuestionID*
-  name: QuestionID
-  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_QuestionID_
-  commentId: Overload:ClusterClient.Models.UserAnswer.QuestionID
+  fullName: ClusterClient.Models.UserAnswer.answer
+  nameWithType: UserAnswer.answer
+- uid: ClusterClient.Models.UserAnswer.question_id
+  name: question_id
+  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_question_id
+  commentId: P:ClusterClient.Models.UserAnswer.question_id
+  fullName: ClusterClient.Models.UserAnswer.question_id
+  nameWithType: UserAnswer.question_id
+- uid: ClusterClient.Models.UserAnswer.question_id*
+  name: question_id
+  href: api/ClusterClient.Models.UserAnswer.html#ClusterClient_Models_UserAnswer_question_id_
+  commentId: Overload:ClusterClient.Models.UserAnswer.question_id
   isSpec: "True"
-  fullName: ClusterClient.Models.UserAnswer.QuestionID
-  nameWithType: UserAnswer.QuestionID
+  fullName: ClusterClient.Models.UserAnswer.question_id
+  nameWithType: UserAnswer.question_id
 - uid: ClusterClient.Models.UserAnswersMessage
   name: UserAnswersMessage
   href: api/ClusterClient.Models.UserAnswersMessage.html
@@ -503,35 +633,196 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Models.UserAnswersMessage.AddAnswers
   nameWithType: UserAnswersMessage.AddAnswers
-- uid: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  name: AnswerQuestions
-  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_AnswerQuestions
-  commentId: P:ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  fullName: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  nameWithType: UserAnswersMessage.AnswerQuestions
-- uid: ClusterClient.Models.UserAnswersMessage.AnswerQuestions*
-  name: AnswerQuestions
-  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_AnswerQuestions_
-  commentId: Overload:ClusterClient.Models.UserAnswersMessage.AnswerQuestions
+- uid: ClusterClient.Models.UserAnswersMessage.answer_questions
+  name: answer_questions
+  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_answer_questions
+  commentId: P:ClusterClient.Models.UserAnswersMessage.answer_questions
+  fullName: ClusterClient.Models.UserAnswersMessage.answer_questions
+  nameWithType: UserAnswersMessage.answer_questions
+- uid: ClusterClient.Models.UserAnswersMessage.answer_questions*
+  name: answer_questions
+  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_answer_questions_
+  commentId: Overload:ClusterClient.Models.UserAnswersMessage.answer_questions
   isSpec: "True"
-  fullName: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  nameWithType: UserAnswersMessage.AnswerQuestions
+  fullName: ClusterClient.Models.UserAnswersMessage.answer_questions
+  nameWithType: UserAnswersMessage.answer_questions
+- uid: ClusterClient.Models.UserAnswersMessage.ToJson
+  name: ToJson()
+  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_ToJson
+  commentId: M:ClusterClient.Models.UserAnswersMessage.ToJson
+  fullName: ClusterClient.Models.UserAnswersMessage.ToJson()
+  nameWithType: UserAnswersMessage.ToJson()
+- uid: ClusterClient.Models.UserAnswersMessage.ToJson*
+  name: ToJson
+  href: api/ClusterClient.Models.UserAnswersMessage.html#ClusterClient_Models_UserAnswersMessage_ToJson_
+  commentId: Overload:ClusterClient.Models.UserAnswersMessage.ToJson
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserAnswersMessage.ToJson
+  nameWithType: UserAnswersMessage.ToJson
+- uid: ClusterClient.Models.UserFeedback
+  name: UserFeedback
+  href: api/ClusterClient.Models.UserFeedback.html
+  commentId: T:ClusterClient.Models.UserFeedback
+  fullName: ClusterClient.Models.UserFeedback
+  nameWithType: UserFeedback
+- uid: ClusterClient.Models.UserFeedback.answer_id
+  name: answer_id
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_answer_id
+  commentId: P:ClusterClient.Models.UserFeedback.answer_id
+  fullName: ClusterClient.Models.UserFeedback.answer_id
+  nameWithType: UserFeedback.answer_id
+- uid: ClusterClient.Models.UserFeedback.answer_id*
+  name: answer_id
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_answer_id_
+  commentId: Overload:ClusterClient.Models.UserFeedback.answer_id
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserFeedback.answer_id
+  nameWithType: UserFeedback.answer_id
+- uid: ClusterClient.Models.UserFeedback.feedback_code
+  name: feedback_code
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_feedback_code
+  commentId: P:ClusterClient.Models.UserFeedback.feedback_code
+  fullName: ClusterClient.Models.UserFeedback.feedback_code
+  nameWithType: UserFeedback.feedback_code
+- uid: ClusterClient.Models.UserFeedback.feedback_code*
+  name: feedback_code
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_feedback_code_
+  commentId: Overload:ClusterClient.Models.UserFeedback.feedback_code
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserFeedback.feedback_code
+  nameWithType: UserFeedback.feedback_code
+- uid: ClusterClient.Models.UserFeedback.question_id
+  name: question_id
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_question_id
+  commentId: P:ClusterClient.Models.UserFeedback.question_id
+  fullName: ClusterClient.Models.UserFeedback.question_id
+  nameWithType: UserFeedback.question_id
+- uid: ClusterClient.Models.UserFeedback.question_id*
+  name: question_id
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_question_id_
+  commentId: Overload:ClusterClient.Models.UserFeedback.question_id
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserFeedback.question_id
+  nameWithType: UserFeedback.question_id
+- uid: ClusterClient.Models.UserFeedback.ToJson
+  name: ToJson()
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_ToJson
+  commentId: M:ClusterClient.Models.UserFeedback.ToJson
+  fullName: ClusterClient.Models.UserFeedback.ToJson()
+  nameWithType: UserFeedback.ToJson()
+- uid: ClusterClient.Models.UserFeedback.ToJson*
+  name: ToJson
+  href: api/ClusterClient.Models.UserFeedback.html#ClusterClient_Models_UserFeedback_ToJson_
+  commentId: Overload:ClusterClient.Models.UserFeedback.ToJson
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserFeedback.ToJson
+  nameWithType: UserFeedback.ToJson
 - uid: ClusterClient.Models.UserMessage
   name: UserMessage
   href: api/ClusterClient.Models.UserMessage.html
   commentId: T:ClusterClient.Models.UserMessage
   fullName: ClusterClient.Models.UserMessage
   nameWithType: UserMessage
-- uid: ClusterClient.Models.UserMessage.UserID
-  name: UserID
-  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_UserID
-  commentId: P:ClusterClient.Models.UserMessage.UserID
-  fullName: ClusterClient.Models.UserMessage.UserID
-  nameWithType: UserMessage.UserID
-- uid: ClusterClient.Models.UserMessage.UserID*
-  name: UserID
-  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_UserID_
-  commentId: Overload:ClusterClient.Models.UserMessage.UserID
+- uid: ClusterClient.Models.UserMessage.ToJson
+  name: ToJson()
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_ToJson
+  commentId: M:ClusterClient.Models.UserMessage.ToJson
+  fullName: ClusterClient.Models.UserMessage.ToJson()
+  nameWithType: UserMessage.ToJson()
+- uid: ClusterClient.Models.UserMessage.ToJson*
+  name: ToJson
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_ToJson_
+  commentId: Overload:ClusterClient.Models.UserMessage.ToJson
   isSpec: "True"
-  fullName: ClusterClient.Models.UserMessage.UserID
-  nameWithType: UserMessage.UserID
+  fullName: ClusterClient.Models.UserMessage.ToJson
+  nameWithType: UserMessage.ToJson
+- uid: ClusterClient.Models.UserMessage.user_id
+  name: user_id
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_user_id
+  commentId: P:ClusterClient.Models.UserMessage.user_id
+  fullName: ClusterClient.Models.UserMessage.user_id
+  nameWithType: UserMessage.user_id
+- uid: ClusterClient.Models.UserMessage.user_id*
+  name: user_id
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_user_id_
+  commentId: Overload:ClusterClient.Models.UserMessage.user_id
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserMessage.user_id
+  nameWithType: UserMessage.user_id
+- uid: ClusterClient.Models.UserQuestion
+  name: UserQuestion
+  href: api/ClusterClient.Models.UserQuestion.html
+  commentId: T:ClusterClient.Models.UserQuestion
+  fullName: ClusterClient.Models.UserQuestion
+  nameWithType: UserQuestion
+- uid: ClusterClient.Models.UserQuestion.chatbot_temp_id
+  name: chatbot_temp_id
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_chatbot_temp_id
+  commentId: P:ClusterClient.Models.UserQuestion.chatbot_temp_id
+  fullName: ClusterClient.Models.UserQuestion.chatbot_temp_id
+  nameWithType: UserQuestion.chatbot_temp_id
+- uid: ClusterClient.Models.UserQuestion.chatbot_temp_id*
+  name: chatbot_temp_id
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_chatbot_temp_id_
+  commentId: Overload:ClusterClient.Models.UserQuestion.chatbot_temp_id
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserQuestion.chatbot_temp_id
+  nameWithType: UserQuestion.chatbot_temp_id
+- uid: ClusterClient.Models.UserQuestion.question
+  name: question
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_question
+  commentId: P:ClusterClient.Models.UserQuestion.question
+  fullName: ClusterClient.Models.UserQuestion.question
+  nameWithType: UserQuestion.question
+- uid: ClusterClient.Models.UserQuestion.question*
+  name: question
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_question_
+  commentId: Overload:ClusterClient.Models.UserQuestion.question
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserQuestion.question
+  nameWithType: UserQuestion.question
+- uid: ClusterClient.Models.UserQuestion.ToJson
+  name: ToJson()
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_ToJson
+  commentId: M:ClusterClient.Models.UserQuestion.ToJson
+  fullName: ClusterClient.Models.UserQuestion.ToJson()
+  nameWithType: UserQuestion.ToJson()
+- uid: ClusterClient.Models.UserQuestion.ToJson*
+  name: ToJson
+  href: api/ClusterClient.Models.UserQuestion.html#ClusterClient_Models_UserQuestion_ToJson_
+  commentId: Overload:ClusterClient.Models.UserQuestion.ToJson
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserQuestion.ToJson
+  nameWithType: UserQuestion.ToJson
+- uid: ClusterClient.Models.UserRequest
+  name: UserRequest
+  href: api/ClusterClient.Models.UserRequest.html
+  commentId: T:ClusterClient.Models.UserRequest
+  fullName: ClusterClient.Models.UserRequest
+  nameWithType: UserRequest
+- uid: ClusterClient.Models.UserRequest.request
+  name: request
+  href: api/ClusterClient.Models.UserRequest.html#ClusterClient_Models_UserRequest_request
+  commentId: P:ClusterClient.Models.UserRequest.request
+  fullName: ClusterClient.Models.UserRequest.request
+  nameWithType: UserRequest.request
+- uid: ClusterClient.Models.UserRequest.request*
+  name: request
+  href: api/ClusterClient.Models.UserRequest.html#ClusterClient_Models_UserRequest_request_
+  commentId: Overload:ClusterClient.Models.UserRequest.request
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserRequest.request
+  nameWithType: UserRequest.request
+- uid: ClusterClient.Models.UserRequest.ToJson
+  name: ToJson()
+  href: api/ClusterClient.Models.UserRequest.html#ClusterClient_Models_UserRequest_ToJson
+  commentId: M:ClusterClient.Models.UserRequest.ToJson
+  fullName: ClusterClient.Models.UserRequest.ToJson()
+  nameWithType: UserRequest.ToJson()
+- uid: ClusterClient.Models.UserRequest.ToJson*
+  name: ToJson
+  href: api/ClusterClient.Models.UserRequest.html#ClusterClient_Models_UserRequest_ToJson_
+  commentId: Overload:ClusterClient.Models.UserRequest.ToJson
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserRequest.ToJson
+  nameWithType: UserRequest.ToJson
