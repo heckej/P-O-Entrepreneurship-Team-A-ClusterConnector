@@ -26,4 +26,17 @@ namespace ClusterClient.Models
         /// </summary>
         Offensive = 3
     }
+    
+    public enum FeedbackStatusCode
+    {
+        /// <summary>
+        /// The user provided negative feedback.
+        /// </summary>
+        Negative = 0,
+
+        /// <summary>
+        /// The user provided positive feedback.
+        /// </summary>
+        Positive = 1
+    }
 }
