@@ -153,16 +153,21 @@ namespace ClusterClient
         /// </summary>
         private void CheckoutWebSocket()
         {
-            if (this.exceptionsFromWebSocketCommunicator.Count > 0)
+            while (this.exceptionsFromWebSocketCommunicator.Count > 0)
             {
-                if (!this.cancellationTokenSource.Token.IsCancellationRequested)
-                    this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
-                Debug.WriteLine("Exception received from websocket thread: " + exception);
-                Console.WriteLine("Exception received from websocket thread: " + exception);
-                throw exception;
+                if (exception is WebSocketException && this._surpressConnectionErrors)
+                    Debug.WriteLine("WebSocketException surpressed: " + exception.Message);
+                else
+                {
+                    if (!this.cancellationTokenSource.Token.IsCancellationRequested)
+                        this.cancellationTokenSource.Cancel();
+                    Console.WriteLine("Exception received from websocket thread: " + exception);
+                    throw exception;
+                }
+                
             }
-            else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
+            if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
                 this.InitializeWebSocketThread();
@@ -185,6 +190,16 @@ namespace ClusterClient
         public void EnableWebSocketStateCheck(bool flag)
         {
             this.webSocketCommunicator.enableCheckWebSocketStateDebugging = flag;
+        }
+
+        private bool _surpressConnectionErrors = false;
+
+        /// <summary>
+        /// Makes the public methods of this connector surpress connection related errors.
+        /// </summary>
+        public void SurpressConnectionErrors()
+        {
+            this._surpressConnectionErrors = true;
         }
 
 
@@ -826,7 +841,6 @@ namespace ClusterClient
             }
             if (response != null)
                 response = new HashSet<ServerMessage>(response);
-            
             return response;
         }
 
