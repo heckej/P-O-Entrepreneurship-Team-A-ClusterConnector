@@ -144,7 +144,7 @@ namespace ClusterClient
             Console.WriteLine("Starting new thread.");
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
-                                                        this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token, this.authorization);
+                                                        this.StoreMessageFromServerAsync, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token, this.authorization);
             
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
             this.webSocketConnectionThread.IsBackground = true;
@@ -319,7 +319,7 @@ namespace ClusterClient
         ///         </description>
         ///     </item>
         /// </list>
-        protected internal async void StoreMessageFromServer(string serverMessage)
+        protected internal async Task StoreMessageFromServerAsync(string serverMessage)
         {
             Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
