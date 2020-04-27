@@ -241,11 +241,11 @@ namespace ClusterClient
         /// <summary>
         /// Checks whether proactive messaging is currently enabled for a user.
         /// </summary>
-        /// <param name="userID">The user id of the user for whom proactive the messaging blocking state should be checked</param>
-        /// <returns></returns>
+        /// <param name="userID">The user id of the user for whom the proactive messaging blocking state should be checked.</param>
+        /// <returns>True if and only if proactive messaging is blocked for the given user or if the <c>EndPointAddress</c> of this null.</returns>
         public bool ProactiveMessagingBlockedForUser(string userID)
         {
-            return this._blockProactiveMessagingUsers.Contains(userID);
+            return this._blockProactiveMessagingUsers.Contains(userID) || EndPointAddress == null;
         }
 
         /// <summary>
