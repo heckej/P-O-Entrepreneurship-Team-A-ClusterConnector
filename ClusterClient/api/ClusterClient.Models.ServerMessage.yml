@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerMessage
     path: Models/ServerMessage.cs
@@ -63,7 +63,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: action
     path: Models/ServerMessage.cs
@@ -98,7 +98,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: user_id
     path: Models/ServerMessage.cs
@@ -133,7 +133,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: status_msg
     path: Models/ServerMessage.cs
@@ -168,7 +168,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: status_code
     path: Models/ServerMessage.cs

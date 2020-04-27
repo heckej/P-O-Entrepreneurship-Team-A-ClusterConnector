@@ -9,7 +9,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Connector.html",
-          "hash": "xS+3Xe9p5c8DQQjwwShr8Q=="
+          "hash": "zXyKLFRfWJElIDPp6MFPEA=="
         }
       },
       "is_incremental": false,
@@ -21,7 +21,19 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.Actions.html",
-          "hash": "ufG3Brgd1QMDtUmiL3ET5Q=="
+          "hash": "QD9OlCU9pSRg2+xPB08l9Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.FeedbackStatusCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.FeedbackStatusCode.html",
+          "hash": "+E3FTr5cYJ0s+l5g8tHdLw=="
         }
       },
       "is_incremental": false,
@@ -33,7 +45,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.Requests.html",
-          "hash": "ujI2wBkzMdvUnvU5uwpvxQ=="
+          "hash": "+HZzrGUgn0CyT9PZ6B6oYQ=="
         }
       },
       "is_incremental": false,
@@ -45,7 +57,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerAnswer.html",
-          "hash": "6ILoSO/q4/vtMNB18OS4Qg=="
+          "hash": "dTk68w0TBoRl5GmJjox6cg=="
         }
       },
       "is_incremental": false,
@@ -57,7 +69,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerMessage.html",
-          "hash": "oq5BaoBU5ekgMWhx0r0W0A=="
+          "hash": "De3YKnIE1Inzsmt97CJOOQ=="
         }
       },
       "is_incremental": false,
@@ -69,7 +81,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestion.html",
-          "hash": "e3aUez4x4bKfLDZuqizp+g=="
+          "hash": "0sK8piVYpaq6c9IrYRP1zQ=="
         }
       },
       "is_incremental": false,
@@ -81,7 +93,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestionsMessage.html",
-          "hash": "juBrWE4Z58fQ0vxr4pNHuQ=="
+          "hash": "qsu4VVdgDG0zKX3ZnuDtUg=="
         }
       },
       "is_incremental": false,
@@ -93,7 +105,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerStatusCode.html",
-          "hash": "WFroJ1UQA635Gqs8rmeGxQ=="
+          "hash": "+mmIM1O1UR/Z0KuO6n9OGg=="
         }
       },
       "is_incremental": false,
@@ -105,7 +117,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswer.html",
-          "hash": "UI8tayeaCnEE4rd03ZJhxg=="
+          "hash": "DgMoe7/ITt5O8bYBd+2wxg=="
         }
       },
       "is_incremental": false,
@@ -117,7 +129,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswersMessage.html",
-          "hash": "jGY+bGaddE77Trb2hD8Wxw=="
+          "hash": "r/6bER3yumM5MvbTW8uLbA=="
         }
       },
       "is_incremental": false,
@@ -141,7 +153,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserMessage.html",
-          "hash": "wAWFPjHReCKXE796gTgDcA=="
+          "hash": "YAwVN9KEIA2JJ0KbM+ipAA=="
         }
       },
       "is_incremental": false,
@@ -177,7 +189,7 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.html",
-          "hash": "hEVYVm7KEvZhpCcQcL80mA=="
+          "hash": "s6lqlwz22LknkBYk6Mcnfw=="
         }
       },
       "is_incremental": false,
@@ -213,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "rqFLJlH4sCo5t/uaTsBqpQ=="
+          "hash": "uZslWPthvnURsJXBFOw6uw=="
         }
       },
       "is_incremental": false,
@@ -286,7 +298,7 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 16,
+          "total_file_count": 17,
           "skipped_file_count": 5
         },
         "TocDocumentProcessor": {

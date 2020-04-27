@@ -4,13 +4,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <UserSecretsId>1062b6d7-a0b4-4604-8c53-edb65d01155c</UserSecretsId>
     <PackageId>ClusterClient</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>heckej</Authors>
     <Company>P&amp;O CW Entrepreneurship - Team A</Company>
     <PackageDescription>A package that provides methods to communicate with a Cluster Connector Server.</PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>New method to avoid trouble with 'lost' old connection errors:
-* SurpressConnectionErrors()</PackageReleaseNotes>
+    <PackageReleaseNotes>New enum for feedback status codes.</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
