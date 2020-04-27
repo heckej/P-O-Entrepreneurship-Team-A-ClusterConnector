@@ -5,7 +5,7 @@ items:
   id: ServerQuestionsMessage
   parent: ClusterClient.Models
   children:
-  - ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  - ClusterClient.Models.ServerQuestionsMessage.answer_questions
   langs:
   - csharp
   - vb
@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestionsMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerQuestionsMessage
     path: Models/ServerQuestionsMessage.cs
@@ -33,10 +33,10 @@ items:
   - System.Object
   - ClusterClient.Models.ServerMessage
   inheritedMembers:
-  - ClusterClient.Models.ServerMessage.Action
-  - ClusterClient.Models.ServerMessage.UserID
-  - ClusterClient.Models.ServerMessage.StatusMessage
-  - ClusterClient.Models.ServerMessage.StatusCode
+  - ClusterClient.Models.ServerMessage.action
+  - ClusterClient.Models.ServerMessage.user_id
+  - ClusterClient.Models.ServerMessage.status_msg
+  - ClusterClient.Models.ServerMessage.status_code
   - System.Object.Equals(System.Object)
   - System.Object.Equals(System.Object,System.Object)
   - System.Object.GetHashCode
@@ -50,35 +50,35 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  commentId: P:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  id: AnswerQuestions
+- uid: ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  commentId: P:ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  id: answer_questions
   parent: ClusterClient.Models.ServerQuestionsMessage
   langs:
   - csharp
   - vb
-  name: AnswerQuestions
-  nameWithType: ServerQuestionsMessage.AnswerQuestions
-  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  name: answer_questions
+  nameWithType: ServerQuestionsMessage.answer_questions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.answer_questions
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerQuestionsMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: AnswerQuestions
+    id: answer_questions
     path: Models/ServerQuestionsMessage.cs
-    startLine: 10
+    startLine: 11
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public List<ServerQuestion> AnswerQuestions { get; set; }
+    content: public List<ServerQuestion> answer_questions { get; set; }
     parameters: []
     return:
       type: System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
-    content.vb: Public Property AnswerQuestions As List(Of ServerQuestion)
-  overload: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions*
+    content.vb: Public Property answer_questions As List(Of ServerQuestion)
+  overload: ClusterClient.Models.ServerQuestionsMessage.answer_questions*
   modifiers.csharp:
   - public
   - get
@@ -104,30 +104,30 @@ references:
   name: ServerMessage
   nameWithType: ServerMessage
   fullName: ClusterClient.Models.ServerMessage
-- uid: ClusterClient.Models.ServerMessage.Action
-  commentId: P:ClusterClient.Models.ServerMessage.Action
+- uid: ClusterClient.Models.ServerMessage.action
+  commentId: P:ClusterClient.Models.ServerMessage.action
   parent: ClusterClient.Models.ServerMessage
-  name: Action
-  nameWithType: ServerMessage.Action
-  fullName: ClusterClient.Models.ServerMessage.Action
-- uid: ClusterClient.Models.ServerMessage.UserID
-  commentId: P:ClusterClient.Models.ServerMessage.UserID
+  name: action
+  nameWithType: ServerMessage.action
+  fullName: ClusterClient.Models.ServerMessage.action
+- uid: ClusterClient.Models.ServerMessage.user_id
+  commentId: P:ClusterClient.Models.ServerMessage.user_id
   parent: ClusterClient.Models.ServerMessage
-  name: UserID
-  nameWithType: ServerMessage.UserID
-  fullName: ClusterClient.Models.ServerMessage.UserID
-- uid: ClusterClient.Models.ServerMessage.StatusMessage
-  commentId: P:ClusterClient.Models.ServerMessage.StatusMessage
+  name: user_id
+  nameWithType: ServerMessage.user_id
+  fullName: ClusterClient.Models.ServerMessage.user_id
+- uid: ClusterClient.Models.ServerMessage.status_msg
+  commentId: P:ClusterClient.Models.ServerMessage.status_msg
   parent: ClusterClient.Models.ServerMessage
-  name: StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-- uid: ClusterClient.Models.ServerMessage.StatusCode
-  commentId: P:ClusterClient.Models.ServerMessage.StatusCode
+  name: status_msg
+  nameWithType: ServerMessage.status_msg
+  fullName: ClusterClient.Models.ServerMessage.status_msg
+- uid: ClusterClient.Models.ServerMessage.status_code
+  commentId: P:ClusterClient.Models.ServerMessage.status_code
   parent: ClusterClient.Models.ServerMessage
-  name: StatusCode
-  nameWithType: ServerMessage.StatusCode
-  fullName: ClusterClient.Models.ServerMessage.StatusCode
+  name: status_code
+  nameWithType: ServerMessage.status_code
+  fullName: ClusterClient.Models.ServerMessage.status_code
 - uid: System.Object.Equals(System.Object)
   commentId: M:System.Object.Equals(System.Object)
   parent: System.Object
@@ -413,11 +413,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions*
-  commentId: Overload:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
-  name: AnswerQuestions
-  nameWithType: ServerQuestionsMessage.AnswerQuestions
-  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+- uid: ClusterClient.Models.ServerQuestionsMessage.answer_questions*
+  commentId: Overload:ClusterClient.Models.ServerQuestionsMessage.answer_questions
+  name: answer_questions
+  nameWithType: ServerQuestionsMessage.answer_questions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.answer_questions
 - uid: System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
   commentId: T:System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
   parent: System.Collections.Generic

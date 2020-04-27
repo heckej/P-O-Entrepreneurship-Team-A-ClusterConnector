@@ -5,8 +5,8 @@ items:
   id: UserAnswer
   parent: ClusterClient.Models
   children:
-  - ClusterClient.Models.UserAnswer.Answer
-  - ClusterClient.Models.UserAnswer.QuestionID
+  - ClusterClient.Models.UserAnswer.answer
+  - ClusterClient.Models.UserAnswer.question_id
   langs:
   - csharp
   - vb
@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserAnswer
     path: Models/UserAnswer.cs
@@ -44,70 +44,70 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: ClusterClient.Models.UserAnswer.QuestionID
-  commentId: P:ClusterClient.Models.UserAnswer.QuestionID
-  id: QuestionID
+- uid: ClusterClient.Models.UserAnswer.question_id
+  commentId: P:ClusterClient.Models.UserAnswer.question_id
+  id: question_id
   parent: ClusterClient.Models.UserAnswer
   langs:
   - csharp
   - vb
-  name: QuestionID
-  nameWithType: UserAnswer.QuestionID
-  fullName: ClusterClient.Models.UserAnswer.QuestionID
+  name: question_id
+  nameWithType: UserAnswer.question_id
+  fullName: ClusterClient.Models.UserAnswer.question_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/UserAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: QuestionID
+    id: question_id
     path: Models/UserAnswer.cs
-    startLine: 8
+    startLine: 11
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int QuestionID { get; set; }
+    content: public int question_id { get; set; }
     parameters: []
     return:
       type: System.Int32
-    content.vb: Public Property QuestionID As Integer
-  overload: ClusterClient.Models.UserAnswer.QuestionID*
+    content.vb: Public Property question_id As Integer
+  overload: ClusterClient.Models.UserAnswer.question_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.UserAnswer.Answer
-  commentId: P:ClusterClient.Models.UserAnswer.Answer
-  id: Answer
+- uid: ClusterClient.Models.UserAnswer.answer
+  commentId: P:ClusterClient.Models.UserAnswer.answer
+  id: answer
   parent: ClusterClient.Models.UserAnswer
   langs:
   - csharp
   - vb
-  name: Answer
-  nameWithType: UserAnswer.Answer
-  fullName: ClusterClient.Models.UserAnswer.Answer
+  name: answer
+  nameWithType: UserAnswer.answer
+  fullName: ClusterClient.Models.UserAnswer.answer
   type: Property
   source:
     remote:
       path: ClusterClient/Models/UserAnswer.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: Answer
+    id: answer
     path: Models/UserAnswer.cs
-    startLine: 9
+    startLine: 12
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public string Answer { get; set; }
+    content: public string answer { get; set; }
     parameters: []
     return:
       type: System.String
-    content.vb: Public Property Answer As String
-  overload: ClusterClient.Models.UserAnswer.Answer*
+    content.vb: Public Property answer As String
+  overload: ClusterClient.Models.UserAnswer.answer*
   modifiers.csharp:
   - public
   - get
@@ -412,11 +412,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.UserAnswer.QuestionID*
-  commentId: Overload:ClusterClient.Models.UserAnswer.QuestionID
-  name: QuestionID
-  nameWithType: UserAnswer.QuestionID
-  fullName: ClusterClient.Models.UserAnswer.QuestionID
+- uid: ClusterClient.Models.UserAnswer.question_id*
+  commentId: Overload:ClusterClient.Models.UserAnswer.question_id
+  name: question_id
+  nameWithType: UserAnswer.question_id
+  fullName: ClusterClient.Models.UserAnswer.question_id
 - uid: System.Int32
   commentId: T:System.Int32
   parent: System
@@ -424,11 +424,11 @@ references:
   name: Int32
   nameWithType: Int32
   fullName: System.Int32
-- uid: ClusterClient.Models.UserAnswer.Answer*
-  commentId: Overload:ClusterClient.Models.UserAnswer.Answer
-  name: Answer
-  nameWithType: UserAnswer.Answer
-  fullName: ClusterClient.Models.UserAnswer.Answer
+- uid: ClusterClient.Models.UserAnswer.answer*
+  commentId: Overload:ClusterClient.Models.UserAnswer.answer
+  name: answer
+  nameWithType: UserAnswer.answer
+  fullName: ClusterClient.Models.UserAnswer.answer
 - uid: System.String
   commentId: T:System.String
   parent: System

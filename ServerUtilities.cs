@@ -69,12 +69,16 @@ namespace ClusterConnector
                 CreateForbiddenDict();
             }
             int index = 0;
-            while (index != userInput.Length)
+            while (index < userInput.Length)
             {
                 char c = userInput[index];
                 if (forbiddenSQL.ContainsKey(c))
                 {
-                    userInput = userInput.Insert(index++, "\\");
+                    String value = " ";
+                    forbiddenSQL.TryGetValue(c, out value);
+                    userInput = userInput.Insert(index, value);
+                    index += value.Length;
+                    userInput = userInput.Remove(index, 1);
                 }
                 index++;
             }
@@ -87,16 +91,12 @@ namespace ClusterConnector
             {
                 CreateForbiddenDict();
             }
-            int index = 1;
-            while (index != userInput.Length)
+            foreach (var item in forbiddenSQL)
             {
-                char c = userInput[index];
-                if (forbiddenSQL.ContainsKey(c) && userInput[index - 1] == '\\')
+                while (userInput.Contains(item.Value))
                 {
-                    userInput = userInput.Remove(index - 1, 1);
-                    index = index - 1;
+                    userInput = userInput.Replace(item.Value, item.Key.ToString());
                 }
-                index++;
             }
             return userInput;
         }
@@ -104,8 +104,27 @@ namespace ClusterConnector
         private static void CreateForbiddenDict()
         {
             forbiddenSQL = new Dictionary<char, string>();
-            forbiddenSQL.Add('\'', "\'");
-            forbiddenSQL.Add('"', "\\\"");
+            forbiddenSQL.Add('\'', "_char1");
+            forbiddenSQL.Add('"', "_char2");
+            forbiddenSQL.Add('%', "_char3");
+            forbiddenSQL.Add('?', "_char4");
+            forbiddenSQL.Add('!', "_char5");
+            forbiddenSQL.Add('@', "_char6");
+            forbiddenSQL.Add('#', "_char7");
+            forbiddenSQL.Add('$', "_char8");
+            forbiddenSQL.Add('*', "_char9");
+            forbiddenSQL.Add('+', "_char10");
+            forbiddenSQL.Add('/', "_char11");
+            forbiddenSQL.Add('-', "_char12");
+            forbiddenSQL.Add('(', "_char13");
+            forbiddenSQL.Add(')', "_char14");
+            forbiddenSQL.Add('{', "_char15");
+            forbiddenSQL.Add('}', "_char16");
+            forbiddenSQL.Add('[', "_char17");
+            forbiddenSQL.Add(']', "_char18");
+            forbiddenSQL.Add('<', "_char19");
+            forbiddenSQL.Add('>', "_char20");
+            forbiddenSQL.Add('|', "_char21");
         }
     }
 

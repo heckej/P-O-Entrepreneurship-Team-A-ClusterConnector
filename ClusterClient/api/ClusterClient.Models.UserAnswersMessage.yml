@@ -7,7 +7,8 @@ items:
   children:
   - ClusterClient.Models.UserAnswersMessage.AddAnswer(ClusterClient.Models.UserAnswer)
   - ClusterClient.Models.UserAnswersMessage.AddAnswers(System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})
-  - ClusterClient.Models.UserAnswersMessage.AnswerQuestions
+  - ClusterClient.Models.UserAnswersMessage.answer_questions
+  - ClusterClient.Models.UserAnswersMessage.ToJson
   langs:
   - csharp
   - vb
@@ -18,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserAnswersMessage
     path: Models/UserAnswersMessage.cs
@@ -35,7 +36,7 @@ items:
   - System.Object
   - ClusterClient.Models.UserMessage
   inheritedMembers:
-  - ClusterClient.Models.UserMessage.UserID
+  - ClusterClient.Models.UserMessage.user_id
   - System.Object.Equals(System.Object)
   - System.Object.Equals(System.Object,System.Object)
   - System.Object.GetHashCode
@@ -49,35 +50,35 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  commentId: P:ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  id: AnswerQuestions
+- uid: ClusterClient.Models.UserAnswersMessage.answer_questions
+  commentId: P:ClusterClient.Models.UserAnswersMessage.answer_questions
+  id: answer_questions
   parent: ClusterClient.Models.UserAnswersMessage
   langs:
   - csharp
   - vb
-  name: AnswerQuestions
-  nameWithType: UserAnswersMessage.AnswerQuestions
-  fullName: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
+  name: answer_questions
+  nameWithType: UserAnswersMessage.answer_questions
+  fullName: ClusterClient.Models.UserAnswersMessage.answer_questions
   type: Property
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: AnswerQuestions
+    id: answer_questions
     path: Models/UserAnswersMessage.cs
     startLine: 12
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public List<UserAnswer> AnswerQuestions { get; set; }
+    content: public List<UserAnswer> answer_questions { get; set; }
     parameters: []
     return:
       type: System.Collections.Generic.List{ClusterClient.Models.UserAnswer}
-    content.vb: Public Property AnswerQuestions As List(Of UserAnswer)
-  overload: ClusterClient.Models.UserAnswersMessage.AnswerQuestions*
+    content.vb: Public Property answer_questions As List(Of UserAnswer)
+  overload: ClusterClient.Models.UserAnswersMessage.answer_questions*
   modifiers.csharp:
   - public
   - get
@@ -98,7 +99,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswer
     path: Models/UserAnswersMessage.cs
@@ -131,7 +132,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswers
     path: Models/UserAnswersMessage.cs
@@ -153,6 +154,41 @@ items:
   - Public
   fullName.vb: ClusterClient.Models.UserAnswersMessage.AddAnswers(System.Collections.Generic.ICollection(Of ClusterClient.Models.UserAnswer))
   name.vb: AddAnswers(ICollection(Of UserAnswer))
+- uid: ClusterClient.Models.UserAnswersMessage.ToJson
+  commentId: M:ClusterClient.Models.UserAnswersMessage.ToJson
+  id: ToJson
+  parent: ClusterClient.Models.UserAnswersMessage
+  langs:
+  - csharp
+  - vb
+  name: ToJson()
+  nameWithType: UserAnswersMessage.ToJson()
+  fullName: ClusterClient.Models.UserAnswersMessage.ToJson()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Models/UserAnswersMessage.cs
+      branch: release-cluster-client-1.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: ToJson
+    path: Models/UserAnswersMessage.cs
+    startLine: 32
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public override string ToJson()
+    return:
+      type: System.String
+    content.vb: Public Overrides Function ToJson As String
+  overridden: ClusterClient.Models.UserMessage.ToJson
+  overload: ClusterClient.Models.UserAnswersMessage.ToJson*
+  modifiers.csharp:
+  - public
+  - override
+  modifiers.vb:
+  - Public
+  - Overrides
 references:
 - uid: ClusterClient.Models
   commentId: N:ClusterClient.Models
@@ -172,12 +208,12 @@ references:
   name: UserMessage
   nameWithType: UserMessage
   fullName: ClusterClient.Models.UserMessage
-- uid: ClusterClient.Models.UserMessage.UserID
-  commentId: P:ClusterClient.Models.UserMessage.UserID
+- uid: ClusterClient.Models.UserMessage.user_id
+  commentId: P:ClusterClient.Models.UserMessage.user_id
   parent: ClusterClient.Models.UserMessage
-  name: UserID
-  nameWithType: UserMessage.UserID
-  fullName: ClusterClient.Models.UserMessage.UserID
+  name: user_id
+  nameWithType: UserMessage.user_id
+  fullName: ClusterClient.Models.UserMessage.user_id
 - uid: System.Object.Equals(System.Object)
   commentId: M:System.Object.Equals(System.Object)
   parent: System.Object
@@ -463,11 +499,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.UserAnswersMessage.AnswerQuestions*
-  commentId: Overload:ClusterClient.Models.UserAnswersMessage.AnswerQuestions
-  name: AnswerQuestions
-  nameWithType: UserAnswersMessage.AnswerQuestions
-  fullName: ClusterClient.Models.UserAnswersMessage.AnswerQuestions
+- uid: ClusterClient.Models.UserAnswersMessage.answer_questions*
+  commentId: Overload:ClusterClient.Models.UserAnswersMessage.answer_questions
+  name: answer_questions
+  nameWithType: UserAnswersMessage.answer_questions
+  fullName: ClusterClient.Models.UserAnswersMessage.answer_questions
 - uid: System.Collections.Generic.List{ClusterClient.Models.UserAnswer}
   commentId: T:System.Collections.Generic.List{ClusterClient.Models.UserAnswer}
   parent: System.Collections.Generic
@@ -652,3 +688,43 @@ references:
   - name: )
     nameWithType: )
     fullName: )
+- uid: ClusterClient.Models.UserMessage.ToJson
+  commentId: M:ClusterClient.Models.UserMessage.ToJson
+  parent: ClusterClient.Models.UserMessage
+  name: ToJson()
+  nameWithType: UserMessage.ToJson()
+  fullName: ClusterClient.Models.UserMessage.ToJson()
+  spec.csharp:
+  - uid: ClusterClient.Models.UserMessage.ToJson
+    name: ToJson
+    nameWithType: UserMessage.ToJson
+    fullName: ClusterClient.Models.UserMessage.ToJson
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: ClusterClient.Models.UserMessage.ToJson
+    name: ToJson
+    nameWithType: UserMessage.ToJson
+    fullName: ClusterClient.Models.UserMessage.ToJson
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: ClusterClient.Models.UserAnswersMessage.ToJson*
+  commentId: Overload:ClusterClient.Models.UserAnswersMessage.ToJson
+  name: ToJson
+  nameWithType: UserAnswersMessage.ToJson
+  fullName: ClusterClient.Models.UserAnswersMessage.ToJson
+- uid: System.String
+  commentId: T:System.String
+  parent: System
+  isExternal: true
+  name: String
+  nameWithType: String
+  fullName: System.String

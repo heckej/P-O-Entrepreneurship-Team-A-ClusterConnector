@@ -5,10 +5,12 @@ items:
   id: ClusterClient.Models
   children:
   - ClusterClient.Models.Actions
+  - ClusterClient.Models.Requests
   - ClusterClient.Models.ServerAnswer
   - ClusterClient.Models.ServerMessage
   - ClusterClient.Models.ServerQuestion
   - ClusterClient.Models.ServerQuestionsMessage
+  - ClusterClient.Models.ServerStatusCode
   - ClusterClient.Models.UserAnswer
   - ClusterClient.Models.UserAnswersMessage
   - ClusterClient.Models.UserMessage
@@ -27,8 +29,14 @@ references:
   name: Actions
   nameWithType: Actions
   fullName: ClusterClient.Models.Actions
+- uid: ClusterClient.Models.Requests
+  commentId: T:ClusterClient.Models.Requests
+  name: Requests
+  nameWithType: Requests
+  fullName: ClusterClient.Models.Requests
 - uid: ClusterClient.Models.ServerAnswer
   commentId: T:ClusterClient.Models.ServerAnswer
+  parent: ClusterClient.Models
   name: ServerAnswer
   nameWithType: ServerAnswer
   fullName: ClusterClient.Models.ServerAnswer
@@ -48,6 +56,12 @@ references:
   name: ServerQuestionsMessage
   nameWithType: ServerQuestionsMessage
   fullName: ClusterClient.Models.ServerQuestionsMessage
+- uid: ClusterClient.Models.ServerStatusCode
+  commentId: T:ClusterClient.Models.ServerStatusCode
+  parent: ClusterClient.Models
+  name: ServerStatusCode
+  nameWithType: ServerStatusCode
+  fullName: ClusterClient.Models.ServerStatusCode
 - uid: ClusterClient.Models.UserAnswer
   commentId: T:ClusterClient.Models.UserAnswer
   parent: ClusterClient.Models

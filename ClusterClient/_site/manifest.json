@@ -9,10 +9,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Connector.html",
-          "hash": "PNhzrXpUYXgOOmOae0HqEQ=="
+          "hash": "xS+3Xe9p5c8DQQjwwShr8Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -21,10 +21,22 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.Actions.html",
-          "hash": "u1PChcFVmNzE9C/P1beokw=="
+          "hash": "ufG3Brgd1QMDtUmiL3ET5Q=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.Requests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.Requests.html",
+          "hash": "ujI2wBkzMdvUnvU5uwpvxQ=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -33,10 +45,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerAnswer.html",
-          "hash": "CSDxmm9s2PpqP5oOB0VONQ=="
+          "hash": "6ILoSO/q4/vtMNB18OS4Qg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -45,10 +57,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerMessage.html",
-          "hash": "gUXDAFa5z4Xa8V7OHIqpsg=="
+          "hash": "oq5BaoBU5ekgMWhx0r0W0A=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -57,10 +69,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestion.html",
-          "hash": "6kVxDAHX/N1iY/zI0Qm3aQ=="
+          "hash": "e3aUez4x4bKfLDZuqizp+g=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -69,10 +81,22 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.ServerQuestionsMessage.html",
-          "hash": "thGjlTnXDdK1UMk67uDxQw=="
+          "hash": "juBrWE4Z58fQ0vxr4pNHuQ=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerStatusCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerStatusCode.html",
+          "hash": "WFroJ1UQA635Gqs8rmeGxQ=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -81,10 +105,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswer.html",
-          "hash": "UqMpo5TMptJ27a77UmOaAQ=="
+          "hash": "UI8tayeaCnEE4rd03ZJhxg=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -93,10 +117,22 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserAnswersMessage.html",
-          "hash": "0hyAH505gKTwypm7y6x9Bw=="
+          "hash": "jGY+bGaddE77Trb2hD8Wxw=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserFeedback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserFeedback.html",
+          "hash": "9it7RRtbzADD02k07QtmoA=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -105,10 +141,34 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.UserMessage.html",
-          "hash": "nBwtaKflvKSBBrFwg/TU7A=="
+          "hash": "wAWFPjHReCKXE796gTgDcA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserQuestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserQuestion.html",
+          "hash": "hqxjckSZOS5Tt+NyjjFTyw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserRequest.html",
+          "hash": "2uI5o4FabMDFNO1klg1V+A=="
+        }
+      },
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -117,10 +177,10 @@
       "output": {
         ".html": {
           "relative_path": "api/ClusterClient.Models.html",
-          "hash": "1e44843KYmvqwDlFkYM/Qw=="
+          "hash": "hEVYVm7KEvZhpCcQcL80mA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -132,7 +192,7 @@
           "hash": "pOsMqYS9Q423MQYKo6cHaA=="
         }
       },
-      "is_incremental": true,
+      "is_incremental": false,
       "version": ""
     },
     {
@@ -141,7 +201,7 @@
       "output": {
         ".html": {
           "relative_path": "api/index.html",
-          "hash": "Stno84inTiE8lU+wRd3ZlQ=="
+          "hash": "pygCN02xu6dd5lt5Yj9MGA=="
         }
       },
       "is_incremental": true,
@@ -153,7 +213,7 @@
       "output": {
         ".html": {
           "relative_path": "api/toc.html",
-          "hash": "zcp/VsR0+WeOE7F6b0pocQ=="
+          "hash": "rqFLJlH4sCo5t/uaTsBqpQ=="
         }
       },
       "is_incremental": false,
@@ -165,7 +225,7 @@
       "output": {
         ".html": {
           "relative_path": "articles/intro.html",
-          "hash": "HAr0vx6vlozUOYjDyMxHrw=="
+          "hash": "jtci4za2zKtIUMA/cUNoDg=="
         }
       },
       "is_incremental": true,
@@ -189,7 +249,7 @@
       "output": {
         ".html": {
           "relative_path": "index.html",
-          "hash": "expNMGSQd+ZP3KWXWTTJVw=="
+          "hash": "2Hslm9YMsnbMXP+M8+WK6Q=="
         }
       },
       "is_incremental": true,
@@ -226,8 +286,8 @@
         "ManagedReferenceDocumentProcessor": {
           "can_incremental": true,
           "incrementalPhase": "build",
-          "total_file_count": 11,
-          "skipped_file_count": 11
+          "total_file_count": 16,
+          "skipped_file_count": 5
         },
         "TocDocumentProcessor": {
           "can_incremental": false,

@@ -153,16 +153,21 @@ namespace ClusterClient
         /// </summary>
         private void CheckoutWebSocket()
         {
-            if (this.exceptionsFromWebSocketCommunicator.Count > 0)
+            while (this.exceptionsFromWebSocketCommunicator.Count > 0)
             {
-                if (!this.cancellationTokenSource.Token.IsCancellationRequested)
-                    this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
-                Debug.WriteLine("Exception received from websocket thread: " + exception);
-                Console.WriteLine("Exception received from websocket thread: " + exception);
-                throw exception;
+                if (exception is WebSocketException && this._surpressConnectionErrors)
+                    Debug.WriteLine("WebSocketException surpressed: " + exception.Message);
+                else
+                {
+                    if (!this.cancellationTokenSource.Token.IsCancellationRequested)
+                        this.cancellationTokenSource.Cancel();
+                    Console.WriteLine("Exception received from websocket thread: " + exception);
+                    throw exception;
+                }
+                
             }
-            else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
+            if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
                 this.InitializeWebSocketThread();
@@ -185,6 +190,16 @@ namespace ClusterClient
         public void EnableWebSocketStateCheck(bool flag)
         {
             this.webSocketCommunicator.enableCheckWebSocketStateDebugging = flag;
+        }
+
+        private bool _surpressConnectionErrors = false;
+
+        /// <summary>
+        /// Makes the public methods of this connector surpress connection related errors.
+        /// </summary>
+        public void SurpressConnectionErrors()
+        {
+            this._surpressConnectionErrors = true;
         }
 
 
@@ -242,7 +257,7 @@ namespace ClusterClient
         /// </summary>
         /// <param name="content">The json string to be sent.</param>
         /// <returns>True if and only if the end point address of this connector is set and the response code is 2xx.</returns>
-        public async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
+        private async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
         {
             Console.WriteLine("Sending proactive message: " + content);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -252,9 +267,19 @@ namespace ClusterClient
                 Method = HttpMethod.Post
             };
             httpRequest.Headers.Add("Authorization", this.authorization);
-            var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
-            Console.WriteLine("Response status code: " + response.StatusCode);
-            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
+            try
+            {
+                var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
+                Console.WriteLine("Response status code: " + response.StatusCode);
+                response.EnsureSuccessStatusCode();
+                return true;
+            } 
+            catch(Exception)
+            {
+                // Proactive message blocked by end point.
+                return false;
+            }
+            
 
         }
 
@@ -816,7 +841,6 @@ namespace ClusterClient
             }
             if (response != null)
                 response = new HashSet<ServerMessage>(response);
-            
             return response;
         }
 
