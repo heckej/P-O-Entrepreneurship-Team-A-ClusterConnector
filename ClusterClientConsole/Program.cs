@@ -8,9 +8,10 @@ namespace ClusterClientConsole
     class Program
     {
         public static Connector con = new Connector("843iu233d3m4pxb1", "ws://localhost:39160/api/Chatbot/WS", 10);
-
+        
         static void Main(string[] args)
         {
+            con.EndPointAddress = "http://localhost:3978/api/ClusterClient";
             bool exit = false;
             string input;
             while (!exit)
@@ -26,6 +27,9 @@ namespace ClusterClientConsole
                         break;
                     case "r":
                         RequestQuestions();
+                        break;
+                    case "t":
+                        TestEndPoint();
                         break;
                     case "stop":
                         return;
@@ -76,6 +80,13 @@ namespace ClusterClientConsole
             {
                 Console.WriteLine(e);
             }
+        }
+
+        static void TestEndPoint()
+        {
+            var task = con.SendMessageToEndPointAsync("test");
+            task.Wait();
+            Console.WriteLine("End point connected: " + task.Result);
         }
     }
 }
