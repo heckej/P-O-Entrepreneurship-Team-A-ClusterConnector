@@ -925,6 +925,7 @@ namespace ClusterClient
         {
             UserFeedback userFeedback = new UserFeedback
             {
+                action = Actions.Feedback,
                 user_id = userID,
                 answer_id = answerID,
                 question_id = questionID,

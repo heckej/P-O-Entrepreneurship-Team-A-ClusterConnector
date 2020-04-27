@@ -9,6 +9,8 @@
   items:
   - uid: ClusterClient.Models.Actions
     name: Actions
+  - uid: ClusterClient.Models.FeedbackStatusCode
+    name: FeedbackStatusCode
   - uid: ClusterClient.Models.Requests
     name: Requests
   - uid: ClusterClient.Models.ServerAnswer

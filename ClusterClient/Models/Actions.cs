@@ -9,6 +9,7 @@ namespace ClusterClient.Models
         public const string Questions = "questions";
         public const string Answer = "answers";
         public const string Default = "no_action";
+        public const string Feedback = "feedback";
         public static ISet<string> GetActions()
         {
             return new HashSet<string>

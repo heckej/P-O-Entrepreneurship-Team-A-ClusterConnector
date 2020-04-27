@@ -539,5 +539,15 @@ namespace ClusterLogic.ChatbotHandler
         {
             return assignQuestionIdToNewQuestion(serverData);
         }
+
+        /// <summary>
+        /// Server receives feedback for a certain answer from a certain user.
+        /// </summary>
+        /// <param name="chatbotFeedbackModel"></param>
+        /// <returns> optional return, can be void </returns>
+        public static object ProcessFeedbackAnswer(ChatbotFeedbackModel chatbotFeedbackModel)
+        {
+            return null;
+        }
     }
 }

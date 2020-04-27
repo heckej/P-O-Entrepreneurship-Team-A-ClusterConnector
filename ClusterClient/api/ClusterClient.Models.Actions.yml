@@ -7,6 +7,7 @@ items:
   children:
   - ClusterClient.Models.Actions.Answer
   - ClusterClient.Models.Actions.Default
+  - ClusterClient.Models.Actions.Feedback
   - ClusterClient.Models.Actions.GetActions
   - ClusterClient.Models.Actions.Questions
   langs:
@@ -19,7 +20,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Actions
     path: Models/Actions.cs
@@ -60,7 +61,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Questions
     path: Models/Actions.cs
@@ -93,7 +94,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Answer
     path: Models/Actions.cs
@@ -126,7 +127,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Default
     path: Models/Actions.cs
@@ -139,6 +140,39 @@ items:
     return:
       type: System.String
     content.vb: Public Const Default As String = "no_action"
+  modifiers.csharp:
+  - public
+  - const
+  modifiers.vb:
+  - Public
+  - Const
+- uid: ClusterClient.Models.Actions.Feedback
+  commentId: F:ClusterClient.Models.Actions.Feedback
+  id: Feedback
+  parent: ClusterClient.Models.Actions
+  langs:
+  - csharp
+  - vb
+  name: Feedback
+  nameWithType: Actions.Feedback
+  fullName: ClusterClient.Models.Actions.Feedback
+  type: Field
+  source:
+    remote:
+      path: ClusterClient/Models/Actions.cs
+      branch: release-cluster-client-1.2.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: Feedback
+    path: Models/Actions.cs
+    startLine: 11
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public const string Feedback = "feedback"
+    return:
+      type: System.String
+    content.vb: Public Const Feedback As String = "feedback"
   modifiers.csharp:
   - public
   - const
@@ -159,11 +193,11 @@ items:
   source:
     remote:
       path: ClusterClient/Models/Actions.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetActions
     path: Models/Actions.cs
-    startLine: 11
+    startLine: 12
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models

@@ -25,7 +25,7 @@ namespace ClusterAPI.Controllers.NLP
     public class ChatbotWebSocketController : ApiController
     {
         private static readonly String DEFAULT_ACTION = "match_questions";
-        private enum WEBSOCKET_RESPONSE_TYPE { NEW_QUESTION ,REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
+        private enum WEBSOCKET_RESPONSE_TYPE { NEW_QUESTION, FEEDBACK ,REQUEST_ANSWER_TO_QUESTION, RECEIVE_ANSWER, REQUEST_UNANSWERED_QUESTIONS , NONE }
         private static readonly Encoding usedEncoding = Encoding.UTF8;
         private static readonly Dictionary<String, WebSocket> connections = new Dictionary<string, WebSocket>();
 
@@ -208,6 +208,15 @@ namespace ClusterAPI.Controllers.NLP
             try
             {
                 var dict = Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonResponse);
+                if (dict.ContainsKey("action"))
+                {
+                    String valueAction = null;
+                    dict.TryGetValue("action", out valueAction);
+                    if (valueAction != null && valueAction.ToLower().Equals("feedback"))
+                    {
+                        return new KeyValuePair<WEBSOCKET_RESPONSE_TYPE, List<BaseModel>>(WEBSOCKET_RESPONSE_TYPE.FEEDBACK, new List<BaseModel>() { new ChatbotFeedbackModel(dict)});
+                    }
+                }
 
                 if (dict.ContainsKey("user_id"))
                     // if user not in database, add user
@@ -375,7 +384,18 @@ namespace ClusterAPI.Controllers.NLP
                         }
                     }
                     break;
-
+                case WEBSOCKET_RESPONSE_TYPE.FEEDBACK:
+                    {
+                        try
+                        {
+                            ProcessChatbotLogic.ProcessFeedbackAnswer(model.Value.Cast<ChatbotFeedbackModel>().First());
+                        }
+                        catch (Exception e)
+                        {
+                            System.Diagnostics.Trace.Write(e.Message);
+                        }
+                    }
+                    break;
             }
         }
 
