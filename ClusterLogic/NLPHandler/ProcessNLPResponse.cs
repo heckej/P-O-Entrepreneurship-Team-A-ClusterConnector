@@ -17,7 +17,7 @@ namespace ClusterLogic.NLPHandler
         /// <summary>
         /// The threshold to find question matches.
         /// </summary>
-        private static double MatchThreshold { get; } = 0.3;
+        private static double MatchThreshold { get; } = 0.25;
 
         /// <summary>
         /// The threshold to find offensive sentences.

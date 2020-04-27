@@ -543,11 +543,56 @@ namespace ClusterLogic.ChatbotHandler
         /// <summary>
         /// Server receives feedback for a certain answer from a certain user.
         /// </summary>
-        /// <param name="chatbotFeedbackModel"></param>
-        /// <returns> optional return, can be void </returns>
-        public static object ProcessFeedbackAnswer(ChatbotFeedbackModel chatbotFeedbackModel)
+        /// <param name="chatbotFeedbackModel">The feedback to process.</param>
+        public static void ProcessFeedbackAnswer(ChatbotFeedbackModel chatbotFeedbackModel)
         {
-            return null;
+            if (chatbotFeedbackModel.feedback_code == 0)
+            {
+                ProcessNegativeFeedback(chatbotFeedbackModel);
+            } else if (chatbotFeedbackModel.feedback_code == 1)
+            {
+                ProcessPositiveFeedback(chatbotFeedbackModel);
+            }
+        }
+
+        /// <summary>
+        /// Process a negative feedback model.
+        /// </summary>
+        /// <param name="chatbotFeedbackModel">The negative model to process.</param>
+        private static void ProcessNegativeFeedback(ChatbotFeedbackModel chatbotFeedbackModel)
+        {
+            // Add a reference to the answer to the question
+            DBManager manager = new DBManager(true);
+
+            // Reference the new answer from the questions table
+            StringBuilder sb = new StringBuilder();
+            sb.Append("UPDATE dbo.Answers ");
+            sb.Append($"SET negative_feedback = negative_feedback + 1 ");
+            sb.Append($"WHERE answer_id = '{chatbotFeedbackModel.answer_id}'; ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+        }
+
+        /// <summary>
+        /// Process a positive feedback model.
+        /// </summary>
+        /// <param name="chatbotFeedbackModel">The positive model to process.</param>
+        private static void ProcessPositiveFeedback(ChatbotFeedbackModel chatbotFeedbackModel)
+        {
+            // Add a reference to the answer to the question
+            DBManager manager = new DBManager(true);
+
+            // Reference the new answer from the questions table
+            StringBuilder sb = new StringBuilder();
+            sb.Append("UPDATE dbo.Answers ");
+            sb.Append($"SET positive_feedback = positive_feedback + 1 ");
+            sb.Append($"WHERE answer_id = '{chatbotFeedbackModel.answer_id}'; ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
         }
     }
 }
