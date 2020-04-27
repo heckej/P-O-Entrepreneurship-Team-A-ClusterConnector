@@ -441,7 +441,7 @@ namespace ClusterClient
         /// <param name="chatbotRequest">The request from the chatbot as a user message object.</param>
         /// <returns>A json string that complies to the structure understood by the server containing the information of the given 
         /// <paramref name="chatbotRequest" /> as far as the structure allows it.</returns>
-        private static string ParseChatbotRequest(UserMessage chatbotRequest)
+        private static string ParseClientRequest(UserMessage chatbotRequest)
         {
             return chatbotRequest.ToJson();
         }
@@ -455,7 +455,7 @@ namespace ClusterClient
         {
             Console.WriteLine("Adding message to send queue: " + chatbotRequest);
             this.CheckoutWebSocket();
-            string message = ParseChatbotRequest(chatbotRequest);
+            string message = ParseClientRequest(chatbotRequest);
             this.messagesToBeSent.Enqueue(message);
         }
 
