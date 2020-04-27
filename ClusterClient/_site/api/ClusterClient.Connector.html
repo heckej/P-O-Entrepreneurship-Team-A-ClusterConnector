@@ -1,0 +1,878 @@
+﻿<!DOCTYPE html>
+<!--[if IE]><![endif]-->
+<html>
+  
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Class Connector
+   </title>
+    <meta name="viewport" content="width=device-width">
+    <meta name="title" content="Class Connector
+   ">
+    <meta name="generator" content="docfx 2.51.0.0">
+    
+    <link rel="shortcut icon" href="../favicon.ico">
+    <link rel="stylesheet" href="../styles/docfx.vendor.css">
+    <link rel="stylesheet" href="../styles/docfx.css">
+    <link rel="stylesheet" href="../styles/main.css">
+    <meta property="docfx:navrel" content="../toc.html">
+    <meta property="docfx:tocrel" content="toc.html">
+    
+    
+    
+  </head>
+  <body data-spy="scroll" data-target="#affix" data-offset="120">
+    <div id="wrapper">
+      <header>
+        
+        <nav id="autocollapse" class="navbar navbar-inverse ng-scope" role="navigation">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+              
+              <a class="navbar-brand" href="../index.html">
+                <img id="logo" class="svg" src="../logo.svg" alt="">
+              </a>
+            </div>
+            <div class="collapse navbar-collapse" id="navbar">
+              <form class="navbar-form navbar-right" role="search" id="search">
+                <div class="form-group">
+                  <input type="text" class="form-control" id="search-query" placeholder="Search" autocomplete="off">
+                </div>
+              </form>
+            </div>
+          </div>
+        </nav>
+        
+        <div class="subnav navbar navbar-default">
+          <div class="container hide-when-search" id="breadcrumb">
+            <ul class="breadcrumb">
+              <li></li>
+            </ul>
+          </div>
+        </div>
+      </header>
+      <div role="main" class="container body-content hide-when-search">
+        
+        <div class="sidenav hide-when-search">
+          <a class="btn toc-toggle collapse" data-toggle="collapse" href="#sidetoggle" aria-expanded="false" aria-controls="sidetoggle">Show / Hide Table of Contents</a>
+          <div class="sidetoggle collapse" id="sidetoggle">
+            <div id="sidetoc"></div>
+          </div>
+        </div>
+        <div class="article row grid-right">
+          <div class="col-md-10">
+            <article class="content wrap" id="_content" data-uid="ClusterClient.Connector">
+  
+  
+  <h1 id="ClusterClient_Connector" data-uid="ClusterClient.Connector" class="text-break">Class Connector
+  </h1>
+  <div class="markdown level0 summary"><p>The class <code>Connector</code> allows communication with the Cluster API server by retrieving and sending questions and answers.</p>
+</div>
+  <div class="markdown level0 conceptual"></div>
+  <div class="inheritance">
+    <h5>Inheritance</h5>
+    <div class="level0"><span class="xref">System.Object</span></div>
+    <div class="level1"><span class="xref">Connector</span></div>
+  </div>
+  <div class="inheritedMembers">
+    <h5>Inherited Members</h5>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.Equals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetHashCode()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.GetType()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.MemberwiseClone()</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ReferenceEquals(System.Object, System.Object)</span>
+    </div>
+    <div>
+      <span class="xref">System.Object.ToString()</span>
+    </div>
+  </div>
+  <h6><strong>Namespace</strong>: <a class="xref" href="ClusterClient.html">ClusterClient</a></h6>
+  <h6><strong>Assembly</strong>: ClusterClient.dll</h6>
+  <h5 id="ClusterClient_Connector_syntax">Syntax</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public class Connector</code></pre>
+  </div>
+  <h3 id="constructors">Constructors
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector__ctor_System_String_System_String_System_Int32_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.%23ctor(System.String%2CSystem.String%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L31">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector__ctor_" data-uid="ClusterClient.Connector.#ctor*"></a>
+  <h4 id="ClusterClient_Connector__ctor_System_String_System_String_System_Int32_" data-uid="ClusterClient.Connector.#ctor(System.String,System.String,System.Int32)">Connector(String, String, Int32)</h4>
+  <div class="markdown level1 summary"><p>Initializes a new connector instance with the given websocket host URI used for its websocket connection and the given timeout set as the timeout
+before giving up on trying to connect to the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Connector(string authorization, string webSocketHostURI = &quot;wss://clusterapi20200320113808.azurewebsites.net/api/Chatbot/WS&quot;, int webSocketConnectionTimeout = 10)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">authorization</span></td>
+        <td><p>The value to be set for the Authorization header in the initial web socket connection request.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">webSocketHostURI</span></td>
+        <td><p>The URI referencing the server address to which a websocket connection should be made.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">webSocketConnectionTimeout</span></td>
+        <td><p>The timeout to be set in seconds for the websocket connection before giving up. By default set to 10 seconds.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3 id="methods">Methods
+  </h3>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_AnswerQuestion_System_Int32_ClusterClient_Models_UserAnswer_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.AnswerQuestion(System.Int32%2CClusterClient.Models.UserAnswer)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L487">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_AnswerQuestion_" data-uid="ClusterClient.Connector.AnswerQuestion*"></a>
+  <h4 id="ClusterClient_Connector_AnswerQuestion_System_Int32_ClusterClient_Models_UserAnswer_" data-uid="ClusterClient.Connector.AnswerQuestion(System.Int32,ClusterClient.Models.UserAnswer)">AnswerQuestion(Int32, UserAnswer)</h4>
+  <div class="markdown level1 summary"><p>Sends an <code data-dev-comment-type="paramref" class="paramref">answer</code> provided by a user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AnswerQuestion(int userID, UserAnswer answer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user ID identifying the user who submitted the answer.</p>
+</td>
+      </tr>
+      <tr>
+        <td><a class="xref" href="ClusterClient.Models.UserAnswer.html">UserAnswer</a></td>
+        <td><span class="parametername">answer</span></td>
+        <td><p>The answer to be sent.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Exception</span></td>
+        <td><p>An exception has been passed by the web socket thread.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_AnswerQuestion_System_Int32_System_Int32_System_String_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.AnswerQuestion(System.Int32%2CSystem.Int32%2CSystem.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L471">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_AnswerQuestion_" data-uid="ClusterClient.Connector.AnswerQuestion*"></a>
+  <h4 id="ClusterClient_Connector_AnswerQuestion_System_Int32_System_Int32_System_String_" data-uid="ClusterClient.Connector.AnswerQuestion(System.Int32,System.Int32,System.String)">AnswerQuestion(Int32, Int32, String)</h4>
+  <div class="markdown level1 summary"><p>Sends an <code data-dev-comment-type="paramref" class="paramref">answer</code> provided by a user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code> to a question identified by
+the given <code data-dev-comment-type="paramref" class="paramref">questionID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AnswerQuestion(int userID, int questionID, string answer)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user ID identifying the user who submitted the answer.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">questionID</span></td>
+        <td><p>The question ID identifying the question for which an <code data-dev-comment-type="paramref" class="paramref">answer</code> is given.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">answer</span></td>
+        <td><p>An answer to the question identified by the given <code data-dev-comment-type="paramref" class="paramref">questionID</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Exception</span></td>
+        <td><p>An exception has been passed by the web socket thread.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_ClusterClient_Models_UserAnswer__.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.AnswerQuestions(System.Int32%2CSystem.Collections.Generic.ICollection%7BClusterClient.Models.UserAnswer%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L545">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_AnswerQuestions_" data-uid="ClusterClient.Connector.AnswerQuestions*"></a>
+  <h4 id="ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_ClusterClient_Models_UserAnswer__" data-uid="ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{ClusterClient.Models.UserAnswer})">AnswerQuestions(Int32, ICollection&lt;UserAnswer&gt;)</h4>
+  <div class="markdown level1 summary"><p>Processes a series of questionID-answer pairs from a user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AnswerQuestions(int userID, ICollection&lt;UserAnswer&gt; userAnswers)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user id of the user who wants to send answers to questions.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.ICollection</span>&lt;<a class="xref" href="ClusterClient.Models.UserAnswer.html">UserAnswer</a>&gt;</td>
+        <td><span class="parametername">userAnswers</span></td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Exception</span></td>
+        <td><p>An exception has been passed by the web socket thread.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_System_Tuple_System_Int32_System_String___.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.AnswerQuestions(System.Int32%2CSystem.Collections.Generic.ICollection%7BSystem.Tuple%7BSystem.Int32%2CSystem.String%7D%7D)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L510">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_AnswerQuestions_" data-uid="ClusterClient.Connector.AnswerQuestions*"></a>
+  <h4 id="ClusterClient_Connector_AnswerQuestions_System_Int32_System_Collections_Generic_ICollection_System_Tuple_System_Int32_System_String___" data-uid="ClusterClient.Connector.AnswerQuestions(System.Int32,System.Collections.Generic.ICollection{System.Tuple{System.Int32,System.String}})">AnswerQuestions(Int32, ICollection&lt;Tuple&lt;Int32, String&gt;&gt;)</h4>
+  <div class="markdown level1 summary"><p>Processes a series of questionID-answer pairs from a user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void AnswerQuestions(int userID, ICollection&lt;Tuple&lt;int, string&gt;&gt; questionIDAnswerPairs)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user id of the user who wants to send answers to questions.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.ICollection</span>&lt;<span class="xref">System.Tuple</span>&lt;<span class="xref">System.Int32</span>, <span class="xref">System.String</span>&gt;&gt;</td>
+        <td><span class="parametername">questionIDAnswerPairs</span></td>
+        <td><p>A collection containing pairs consisting of a question ID and the answer
+provided by the user to the question belonging to the given question ID.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Exception</span></td>
+        <td><p>An exception has been passed by the web socket thread.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_CloseWebSocketConnection.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.CloseWebSocketConnection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L170">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_CloseWebSocketConnection_" data-uid="ClusterClient.Connector.CloseWebSocketConnection*"></a>
+  <h4 id="ClusterClient_Connector_CloseWebSocketConnection" data-uid="ClusterClient.Connector.CloseWebSocketConnection">CloseWebSocketConnection()</h4>
+  <div class="markdown level1 summary"><p>Sends a stop signal to the thread running the websocket connection of this connector to close the connection and stop the thread.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CloseWebSocketConnection()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_GetNewAnswersForUser_System_Int32_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.GetNewAnswersForUser(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L371">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_GetNewAnswersForUser_" data-uid="ClusterClient.Connector.GetNewAnswersForUser*"></a>
+  <h4 id="ClusterClient_Connector_GetNewAnswersForUser_System_Int32_" data-uid="ClusterClient.Connector.GetNewAnswersForUser(System.Int32)">GetNewAnswersForUser(Int32)</h4>
+  <div class="markdown level1 summary"><p>Returns all answers received from the server and addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISet&lt;ServerAnswer&gt; GetNewAnswersForUser(int userID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user ID of the user who wants to receive answers to previously asked questions.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.ISet</span>&lt;<a class="xref" href="ClusterClient.Models.ServerAnswer.html">ServerAnswer</a>&gt;</td>
+        <td><p>A set containing all answers received from the server and addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_GetNewResponses.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.GetNewResponses%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L361">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_GetNewResponses_" data-uid="ClusterClient.Connector.GetNewResponses*"></a>
+  <h4 id="ClusterClient_Connector_GetNewResponses" data-uid="ClusterClient.Connector.GetNewResponses">GetNewResponses()</h4>
+  <div class="markdown level1 summary"><p>Returns all answers received from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISet&lt;ServerAnswer&gt; GetNewResponses()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.ISet</span>&lt;<a class="xref" href="ClusterClient.Models.ServerAnswer.html">ServerAnswer</a>&gt;</td>
+        <td><p>A set containing all answers received from the serverin response to questions from this client.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_GetQuestionsAddressedToUser_System_Int32_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L453">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_GetQuestionsAddressedToUser_" data-uid="ClusterClient.Connector.GetQuestionsAddressedToUser*"></a>
+  <h4 id="ClusterClient_Connector_GetQuestionsAddressedToUser_System_Int32_" data-uid="ClusterClient.Connector.GetQuestionsAddressedToUser(System.Int32)">GetQuestionsAddressedToUser(Int32)</h4>
+  <div class="markdown level1 summary"><p>Returns all available questions addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ISet&lt;ServerQuestionsMessage&gt; GetQuestionsAddressedToUser(int userID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user ID of the user to whom the returned questions should be addressed.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.ISet</span>&lt;<a class="xref" href="ClusterClient.Models.ServerQuestionsMessage.html">ServerQuestionsMessage</a>&gt;</td>
+        <td><p>A set containing questions addressed to the user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_GetQuestionsToBeAnswered.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.GetQuestionsToBeAnswered%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L443">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_GetQuestionsToBeAnswered_" data-uid="ClusterClient.Connector.GetQuestionsToBeAnswered*"></a>
+  <h4 id="ClusterClient_Connector_GetQuestionsToBeAnswered" data-uid="ClusterClient.Connector.GetQuestionsToBeAnswered">GetQuestionsToBeAnswered()</h4>
+  <div class="markdown level1 summary"><p>Returns all available questions that should be answered.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public List&lt;ServerMessage&gt; GetQuestionsToBeAnswered()</code></pre>
+  </div>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Collections.Generic.List</span>&lt;<a class="xref" href="ClusterClient.Models.ServerMessage.html">ServerMessage</a>&gt;</td>
+        <td><p>A set containing questions that should be answered.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_HasAnswerToQuestionOfUser_System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L384">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_HasAnswerToQuestionOfUser_" data-uid="ClusterClient.Connector.HasAnswerToQuestionOfUser*"></a>
+  <h4 id="ClusterClient_Connector_HasAnswerToQuestionOfUser_System_Int32_System_Int32_" data-uid="ClusterClient.Connector.HasAnswerToQuestionOfUser(System.Int32,System.Int32)">HasAnswerToQuestionOfUser(Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Checks whether the server has an answer to the question of the given user, identified by its <code data-dev-comment-type="paramref" class="paramref">questionID</code>
+and <code data-dev-comment-type="paramref" class="paramref">userID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasAnswerToQuestionOfUser(int questionID, int userID)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">questionID</span></td>
+        <td><p>The question ID of the question for which is checked whether an answer is available.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user ID of the user for whom it is checked whether an answer is available.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Boolean</span></td>
+        <td><p>True if and only if there is a server answer for the user identified with the given <code data-dev-comment-type="paramref" class="paramref">userID</code>
+among the received messages which has the given <code data-dev-comment-type="paramref" class="paramref">questionID</code> as its question ID.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_ResetConnection.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.ResetConnection%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L112">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_ResetConnection_" data-uid="ClusterClient.Connector.ResetConnection*"></a>
+  <h4 id="ClusterClient_Connector_ResetConnection" data-uid="ClusterClient.Connector.ResetConnection">ResetConnection()</h4>
+  <div class="markdown level1 summary"><p>Resets the websocket thread by stopping the current thread and starting a new one.</p>
+<table><tbody><tr><td>Post</td><td>If a websocket thread was running, it is stopped and replaced by a new websocket thread running a new connection.
+        If no websocket thread was running, a new one is initialized running a connection.</td></tr></tbody></table>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ResetConnection()</code></pre>
+  </div>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_SendFeedbackOnAnswer_System_Int32_System_Int32_System_Int32_System_Int32_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32%2CSystem.Int32%2CSystem.Int32%2CSystem.Int32)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L570">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_SendFeedbackOnAnswer_" data-uid="ClusterClient.Connector.SendFeedbackOnAnswer*"></a>
+  <h4 id="ClusterClient_Connector_SendFeedbackOnAnswer_System_Int32_System_Int32_System_Int32_System_Int32_" data-uid="ClusterClient.Connector.SendFeedbackOnAnswer(System.Int32,System.Int32,System.Int32,System.Int32)">SendFeedbackOnAnswer(Int32, Int32, Int32, Int32)</h4>
+  <div class="markdown level1 summary"><p>Processes a feedback response from a user identified by the given <code data-dev-comment-type="paramref" class="paramref">userID</code> concerning
+the question-answer pair identified by <code data-dev-comment-type="paramref" class="paramref">questionID</code> and <code data-dev-comment-type="paramref" class="paramref">answerID</code>.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void SendFeedbackOnAnswer(int userID, int answerID, int questionID, int feedback)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The user id of the user who wants to send feedback.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">answerID</span></td>
+        <td><p>The answer ID related to the question-answer pair for which feedback is sent.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">questionID</span></td>
+        <td><p>The question ID related to the question-answer pair for which feedback is sent.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">feedback</span></td>
+        <td><p>A feedback code related to the feedback. This could be as simple as 'good' = 1 and 'bad' = 0,
+or more advanced using feelings like 'happy' = 0, 'angry' = 1, 'sad' = 2 ...  as long as the server understands it well.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Exception</span></td>
+        <td><p>An exception has been passed by the web socket thread.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_SendQuestion_System_Int32_System_String_System_Double_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.SendQuestion(System.Int32%2CSystem.String%2CSystem.Double)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L310">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_SendQuestion_" data-uid="ClusterClient.Connector.SendQuestion*"></a>
+  <h4 id="ClusterClient_Connector_SendQuestion_System_Int32_System_String_System_Double_" data-uid="ClusterClient.Connector.SendQuestion(System.Int32,System.String,System.Double)">SendQuestion(Int32, String, Double)</h4>
+  <div class="markdown level1 summary"><p>Sends a given question from a given user to the server and returns the answer from the server.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task&lt;ServerAnswer&gt; SendQuestion(int userID, string question, double timeout = 5)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Int32</span></td>
+        <td><span class="parametername">userID</span></td>
+        <td><p>The ID of the user for whom an answer is required.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">question</span></td>
+        <td><p>The question to which an answer is required.</p>
+</td>
+      </tr>
+      <tr>
+        <td><span class="xref">System.Double</span></td>
+        <td><span class="parametername">timeout</span></td>
+        <td><p>The timeout to be set in seconds before throwing an exception.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="returns">Returns</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.Threading.Tasks.Task</span>&lt;<a class="xref" href="ClusterClient.Models.ServerAnswer.html">ServerAnswer</a>&gt;</td>
+        <td><p>A server answer object with a question ID assigned to the given question by the server.
+In case the <code>Answer</code> property of the returned server answer is <code>null</code>, then the server the server has assigned a
+question ID to the given question, but it hasn't found an answer yet.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5 class="exceptions">Exceptions</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Condition</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.TimeoutException</span></td>
+        <td><p>A timeout occurred and no response has been received from the server to this question,
+so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+  <span class="small pull-right mobile-hide">
+    <span class="divider">|</span>
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector_StoreMessageFromServer_System_String_.md&amp;value=---%0Auid%3A%20ClusterClient.Connector.StoreMessageFromServer(System.String)%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A">Improve this Doc</a>
+  </span>
+  <span class="small pull-right mobile-hide">
+    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L184">View Source</a>
+  </span>
+  <a id="ClusterClient_Connector_StoreMessageFromServer_" data-uid="ClusterClient.Connector.StoreMessageFromServer*"></a>
+  <h4 id="ClusterClient_Connector_StoreMessageFromServer_System_String_" data-uid="ClusterClient.Connector.StoreMessageFromServer(System.String)">StoreMessageFromServer(String)</h4>
+  <div class="markdown level1 summary"><p>Parses and stores a message received from the server, so it can be retrieved by another method later on.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+  <h5 class="decalaration">Declaration</h5>
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">protected void StoreMessageFromServer(string serverMessage)</code></pre>
+  </div>
+  <h5 class="parameters">Parameters</h5>
+  <table class="table table-bordered table-striped table-condensed">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="xref">System.String</span></td>
+        <td><span class="parametername">serverMessage</span></td>
+        <td><p>A message from the server that should be stored.</p>
+</td>
+      </tr>
+    </tbody>
+  </table>
+</article>
+          </div>
+          
+          <div class="hidden-sm col-md-2" role="complementary">
+            <div class="sideaffix">
+              <div class="contribution">
+                <ul class="nav">
+                  <li>
+                    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/new/release-cluster-client-0.1.0/apiSpec/new?filename=ClusterClient_Connector.md&amp;value=---%0Auid%3A%20ClusterClient.Connector%0Asummary%3A%20'*You%20can%20override%20summary%20for%20the%20API%20here%20using%20*MARKDOWN*%20syntax'%0A---%0A%0A*Please%20type%20below%20more%20information%20about%20this%20API%3A*%0A%0A" class="contribution-link">Improve this Doc</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector/blob/release-cluster-client-0.1.0/ClusterClient/Connector.cs/#L18" class="contribution-link">View Source</a>
+                  </li>
+                </ul>
+              </div>
+              <nav class="bs-docs-sidebar hidden-print hidden-xs hidden-sm affix" id="affix">
+              <!-- <p><a class="back-to-top" href="#top">Back to top</a><p> -->
+              </nav>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <footer>
+        <div class="grad-bottom"></div>
+        <div class="footer">
+          <div class="container">
+            <span class="pull-right">
+              <a href="#top">Back to top</a>
+            </span>
+            
+            <span>Generated by <strong>DocFX</strong></span>
+          </div>
+        </div>
+      </footer>
+    </div>
+    
+    <script type="text/javascript" src="../styles/docfx.vendor.js"></script>
+    <script type="text/javascript" src="../styles/docfx.js"></script>
+    <script type="text/javascript" src="../styles/main.js"></script>
+  </body>
+</html>
