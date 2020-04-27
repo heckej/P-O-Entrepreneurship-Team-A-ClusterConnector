@@ -5,10 +5,10 @@ items:
   id: ServerMessage
   parent: ClusterClient.Models
   children:
-  - ClusterClient.Models.ServerMessage.Action
-  - ClusterClient.Models.ServerMessage.StatusCode
-  - ClusterClient.Models.ServerMessage.StatusMessage
-  - ClusterClient.Models.ServerMessage.UserID
+  - ClusterClient.Models.ServerMessage.action
+  - ClusterClient.Models.ServerMessage.status_code
+  - ClusterClient.Models.ServerMessage.status_msg
+  - ClusterClient.Models.ServerMessage.user_id
   langs:
   - csharp
   - vb
@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerMessage
     path: Models/ServerMessage.cs
@@ -49,140 +49,140 @@ items:
   modifiers.vb:
   - Public
   - Class
-- uid: ClusterClient.Models.ServerMessage.Action
-  commentId: P:ClusterClient.Models.ServerMessage.Action
-  id: Action
+- uid: ClusterClient.Models.ServerMessage.action
+  commentId: P:ClusterClient.Models.ServerMessage.action
+  id: action
   parent: ClusterClient.Models.ServerMessage
   langs:
   - csharp
   - vb
-  name: Action
-  nameWithType: ServerMessage.Action
-  fullName: ClusterClient.Models.ServerMessage.Action
+  name: action
+  nameWithType: ServerMessage.action
+  fullName: ClusterClient.Models.ServerMessage.action
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: Action
+    id: action
     path: Models/ServerMessage.cs
-    startLine: 8
+    startLine: 13
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public string Action { get; set; }
+    content: public string action { get; set; }
     parameters: []
     return:
       type: System.String
-    content.vb: Public Property Action As String
-  overload: ClusterClient.Models.ServerMessage.Action*
+    content.vb: Public Property action As String
+  overload: ClusterClient.Models.ServerMessage.action*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerMessage.UserID
-  commentId: P:ClusterClient.Models.ServerMessage.UserID
-  id: UserID
+- uid: ClusterClient.Models.ServerMessage.user_id
+  commentId: P:ClusterClient.Models.ServerMessage.user_id
+  id: user_id
   parent: ClusterClient.Models.ServerMessage
   langs:
   - csharp
   - vb
-  name: UserID
-  nameWithType: ServerMessage.UserID
-  fullName: ClusterClient.Models.ServerMessage.UserID
+  name: user_id
+  nameWithType: ServerMessage.user_id
+  fullName: ClusterClient.Models.ServerMessage.user_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: UserID
+    id: user_id
     path: Models/ServerMessage.cs
-    startLine: 9
+    startLine: 14
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int UserID { get; set; }
-    parameters: []
-    return:
-      type: System.Int32
-    content.vb: Public Property UserID As Integer
-  overload: ClusterClient.Models.ServerMessage.UserID*
-  modifiers.csharp:
-  - public
-  - get
-  - set
-  modifiers.vb:
-  - Public
-- uid: ClusterClient.Models.ServerMessage.StatusMessage
-  commentId: P:ClusterClient.Models.ServerMessage.StatusMessage
-  id: StatusMessage
-  parent: ClusterClient.Models.ServerMessage
-  langs:
-  - csharp
-  - vb
-  name: StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-  type: Property
-  source:
-    remote:
-      path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-0.1.0
-      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: StatusMessage
-    path: Models/ServerMessage.cs
-    startLine: 10
-  assemblies:
-  - ClusterClient
-  namespace: ClusterClient.Models
-  syntax:
-    content: public string StatusMessage { get; set; }
+    content: public string user_id { get; set; }
     parameters: []
     return:
       type: System.String
-    content.vb: Public Property StatusMessage As String
-  overload: ClusterClient.Models.ServerMessage.StatusMessage*
+    content.vb: Public Property user_id As String
+  overload: ClusterClient.Models.ServerMessage.user_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
-- uid: ClusterClient.Models.ServerMessage.StatusCode
-  commentId: P:ClusterClient.Models.ServerMessage.StatusCode
-  id: StatusCode
+- uid: ClusterClient.Models.ServerMessage.status_msg
+  commentId: P:ClusterClient.Models.ServerMessage.status_msg
+  id: status_msg
   parent: ClusterClient.Models.ServerMessage
   langs:
   - csharp
   - vb
-  name: StatusCode
-  nameWithType: ServerMessage.StatusCode
-  fullName: ClusterClient.Models.ServerMessage.StatusCode
+  name: status_msg
+  nameWithType: ServerMessage.status_msg
+  fullName: ClusterClient.Models.ServerMessage.status_msg
   type: Property
   source:
     remote:
       path: ClusterClient/Models/ServerMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: StatusCode
+    id: status_msg
     path: Models/ServerMessage.cs
-    startLine: 11
+    startLine: 15
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int StatusCode { get; set; }
+    content: public string status_msg { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property status_msg As String
+  overload: ClusterClient.Models.ServerMessage.status_msg*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Models.ServerMessage.status_code
+  commentId: P:ClusterClient.Models.ServerMessage.status_code
+  id: status_code
+  parent: ClusterClient.Models.ServerMessage
+  langs:
+  - csharp
+  - vb
+  name: status_code
+  nameWithType: ServerMessage.status_code
+  fullName: ClusterClient.Models.ServerMessage.status_code
+  type: Property
+  source:
+    remote:
+      path: ClusterClient/Models/ServerMessage.cs
+      branch: release-cluster-client-1.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: status_code
+    path: Models/ServerMessage.cs
+    startLine: 16
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public int status_code { get; set; }
     parameters: []
     return:
       type: System.Int32
-    content.vb: Public Property StatusCode As Integer
-  overload: ClusterClient.Models.ServerMessage.StatusCode*
+    content.vb: Public Property status_code As Integer
+  overload: ClusterClient.Models.ServerMessage.status_code*
   modifiers.csharp:
   - public
   - get
@@ -487,11 +487,11 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.ServerMessage.Action*
-  commentId: Overload:ClusterClient.Models.ServerMessage.Action
-  name: Action
-  nameWithType: ServerMessage.Action
-  fullName: ClusterClient.Models.ServerMessage.Action
+- uid: ClusterClient.Models.ServerMessage.action*
+  commentId: Overload:ClusterClient.Models.ServerMessage.action
+  name: action
+  nameWithType: ServerMessage.action
+  fullName: ClusterClient.Models.ServerMessage.action
 - uid: System.String
   commentId: T:System.String
   parent: System
@@ -499,11 +499,21 @@ references:
   name: String
   nameWithType: String
   fullName: System.String
-- uid: ClusterClient.Models.ServerMessage.UserID*
-  commentId: Overload:ClusterClient.Models.ServerMessage.UserID
-  name: UserID
-  nameWithType: ServerMessage.UserID
-  fullName: ClusterClient.Models.ServerMessage.UserID
+- uid: ClusterClient.Models.ServerMessage.user_id*
+  commentId: Overload:ClusterClient.Models.ServerMessage.user_id
+  name: user_id
+  nameWithType: ServerMessage.user_id
+  fullName: ClusterClient.Models.ServerMessage.user_id
+- uid: ClusterClient.Models.ServerMessage.status_msg*
+  commentId: Overload:ClusterClient.Models.ServerMessage.status_msg
+  name: status_msg
+  nameWithType: ServerMessage.status_msg
+  fullName: ClusterClient.Models.ServerMessage.status_msg
+- uid: ClusterClient.Models.ServerMessage.status_code*
+  commentId: Overload:ClusterClient.Models.ServerMessage.status_code
+  name: status_code
+  nameWithType: ServerMessage.status_code
+  fullName: ClusterClient.Models.ServerMessage.status_code
 - uid: System.Int32
   commentId: T:System.Int32
   parent: System
@@ -511,13 +521,3 @@ references:
   name: Int32
   nameWithType: Int32
   fullName: System.Int32
-- uid: ClusterClient.Models.ServerMessage.StatusMessage*
-  commentId: Overload:ClusterClient.Models.ServerMessage.StatusMessage
-  name: StatusMessage
-  nameWithType: ServerMessage.StatusMessage
-  fullName: ClusterClient.Models.ServerMessage.StatusMessage
-- uid: ClusterClient.Models.ServerMessage.StatusCode*
-  commentId: Overload:ClusterClient.Models.ServerMessage.StatusCode
-  name: StatusCode
-  nameWithType: ServerMessage.StatusCode
-  fullName: ClusterClient.Models.ServerMessage.StatusCode

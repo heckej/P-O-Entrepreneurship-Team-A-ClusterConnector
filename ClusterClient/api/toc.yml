@@ -9,6 +9,8 @@
   items:
   - uid: ClusterClient.Models.Actions
     name: Actions
+  - uid: ClusterClient.Models.Requests
+    name: Requests
   - uid: ClusterClient.Models.ServerAnswer
     name: ServerAnswer
   - uid: ClusterClient.Models.ServerMessage
@@ -17,6 +19,8 @@
     name: ServerQuestion
   - uid: ClusterClient.Models.ServerQuestionsMessage
     name: ServerQuestionsMessage
+  - uid: ClusterClient.Models.ServerStatusCode
+    name: ServerStatusCode
   - uid: ClusterClient.Models.UserAnswer
     name: UserAnswer
   - uid: ClusterClient.Models.UserAnswersMessage

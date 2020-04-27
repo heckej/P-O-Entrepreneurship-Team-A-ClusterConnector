@@ -12,6 +12,7 @@ namespace ClusterClientConsole
         static void Main(string[] args)
         {
             con.EndPointAddress = "http://localhost:3978/api/ClusterClient";
+            con.SurpressConnectionErrors();
             bool exit = false;
             string input;
             while (!exit)
@@ -27,9 +28,6 @@ namespace ClusterClientConsole
                         break;
                     case "r":
                         RequestQuestions();
-                        break;
-                    case "t":
-                        TestEndPoint();
                         break;
                     case "stop":
                         return;
@@ -80,13 +78,6 @@ namespace ClusterClientConsole
             {
                 Console.WriteLine(e);
             }
-        }
-
-        static void TestEndPoint()
-        {
-            var task = con.SendMessageToEndPointAsync("test");
-            task.Wait();
-            Console.WriteLine("End point connected: " + task.Result);
         }
     }
 }

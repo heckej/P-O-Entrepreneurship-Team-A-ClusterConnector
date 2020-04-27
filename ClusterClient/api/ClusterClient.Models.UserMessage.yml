@@ -5,7 +5,8 @@ items:
   id: UserMessage
   parent: ClusterClient.Models
   children:
-  - ClusterClient.Models.UserMessage.UserID
+  - ClusterClient.Models.UserMessage.ToJson
+  - ClusterClient.Models.UserMessage.user_id
   langs:
   - csharp
   - vb
@@ -16,7 +17,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserMessage
     path: Models/UserMessage.cs
@@ -25,8 +26,8 @@ items:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public class UserMessage
-    content.vb: Public Class UserMessage
+    content: public abstract class UserMessage
+    content.vb: Public MustInherit Class UserMessage
   inheritance:
   - System.Object
   derivedClasses:
@@ -41,45 +42,81 @@ items:
   - System.Object.ToString
   modifiers.csharp:
   - public
+  - abstract
   - class
   modifiers.vb:
   - Public
+  - MustInherit
   - Class
-- uid: ClusterClient.Models.UserMessage.UserID
-  commentId: P:ClusterClient.Models.UserMessage.UserID
-  id: UserID
+- uid: ClusterClient.Models.UserMessage.user_id
+  commentId: P:ClusterClient.Models.UserMessage.user_id
+  id: user_id
   parent: ClusterClient.Models.UserMessage
   langs:
   - csharp
   - vb
-  name: UserID
-  nameWithType: UserMessage.UserID
-  fullName: ClusterClient.Models.UserMessage.UserID
+  name: user_id
+  nameWithType: UserMessage.user_id
+  fullName: ClusterClient.Models.UserMessage.user_id
   type: Property
   source:
     remote:
       path: ClusterClient/Models/UserMessage.cs
-      branch: release-cluster-client-0.1.0
+      branch: release-cluster-client-1.1.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
-    id: UserID
+    id: user_id
     path: Models/UserMessage.cs
-    startLine: 8
+    startLine: 10
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
   syntax:
-    content: public int UserID { get; set; }
+    content: public string user_id { get; set; }
     parameters: []
     return:
-      type: System.Int32
-    content.vb: Public Property UserID As Integer
-  overload: ClusterClient.Models.UserMessage.UserID*
+      type: System.String
+    content.vb: Public Property user_id As String
+  overload: ClusterClient.Models.UserMessage.user_id*
   modifiers.csharp:
   - public
   - get
   - set
   modifiers.vb:
   - Public
+- uid: ClusterClient.Models.UserMessage.ToJson
+  commentId: M:ClusterClient.Models.UserMessage.ToJson
+  id: ToJson
+  parent: ClusterClient.Models.UserMessage
+  langs:
+  - csharp
+  - vb
+  name: ToJson()
+  nameWithType: UserMessage.ToJson()
+  fullName: ClusterClient.Models.UserMessage.ToJson()
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Models/UserMessage.cs
+      branch: release-cluster-client-1.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: ToJson
+    path: Models/UserMessage.cs
+    startLine: 12
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public abstract string ToJson()
+    return:
+      type: System.String
+    content.vb: Public MustOverride Function ToJson As String
+  overload: ClusterClient.Models.UserMessage.ToJson*
+  modifiers.csharp:
+  - public
+  - abstract
+  modifiers.vb:
+  - Public
+  - MustOverride
 references:
 - uid: ClusterClient.Models
   commentId: N:ClusterClient.Models
@@ -378,15 +415,20 @@ references:
   name: System
   nameWithType: System
   fullName: System
-- uid: ClusterClient.Models.UserMessage.UserID*
-  commentId: Overload:ClusterClient.Models.UserMessage.UserID
-  name: UserID
-  nameWithType: UserMessage.UserID
-  fullName: ClusterClient.Models.UserMessage.UserID
-- uid: System.Int32
-  commentId: T:System.Int32
+- uid: ClusterClient.Models.UserMessage.user_id*
+  commentId: Overload:ClusterClient.Models.UserMessage.user_id
+  name: user_id
+  nameWithType: UserMessage.user_id
+  fullName: ClusterClient.Models.UserMessage.user_id
+- uid: System.String
+  commentId: T:System.String
   parent: System
   isExternal: true
-  name: Int32
-  nameWithType: Int32
-  fullName: System.Int32
+  name: String
+  nameWithType: String
+  fullName: System.String
+- uid: ClusterClient.Models.UserMessage.ToJson*
+  commentId: Overload:ClusterClient.Models.UserMessage.ToJson
+  name: ToJson
+  nameWithType: UserMessage.ToJson
+  fullName: ClusterClient.Models.UserMessage.ToJson
