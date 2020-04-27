@@ -309,7 +309,17 @@ namespace ClusterClient
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
         /// </summary>
         /// <param name="serverMessage">A message from the server that should be stored.</param>
-        protected internal void StoreMessageFromServer(string serverMessage)
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If proactive messaging is blocked for the user to whom the message was sent or if the end point didn't accept the message
+        ///         by returning a 2xx status code, then the message has been stored internally and the missed proactive messages state of the 
+        ///         user equals true.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        protected internal async void StoreMessageFromServer(string serverMessage)
         {
             Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
