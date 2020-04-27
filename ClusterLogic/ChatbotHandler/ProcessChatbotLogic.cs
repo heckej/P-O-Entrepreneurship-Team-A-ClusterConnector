@@ -547,7 +547,7 @@ namespace ClusterLogic.ChatbotHandler
         /// <returns> optional return, can be void </returns>
         public static object ProcessFeedbackAnswer(ChatbotFeedbackModel chatbotFeedbackModel)
         {
-            throw new NotImplementedException();
+            return null;
         }
     }
 }
