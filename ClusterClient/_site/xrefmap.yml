@@ -293,6 +293,12 @@ references:
   commentId: F:ClusterClient.Models.Actions.Default
   fullName: ClusterClient.Models.Actions.Default
   nameWithType: Actions.Default
+- uid: ClusterClient.Models.Actions.Feedback
+  name: Feedback
+  href: api/ClusterClient.Models.Actions.html#ClusterClient_Models_Actions_Feedback
+  commentId: F:ClusterClient.Models.Actions.Feedback
+  fullName: ClusterClient.Models.Actions.Feedback
+  nameWithType: Actions.Feedback
 - uid: ClusterClient.Models.Actions.GetActions
   name: GetActions()
   href: api/ClusterClient.Models.Actions.html#ClusterClient_Models_Actions_GetActions
@@ -312,6 +318,24 @@ references:
   commentId: F:ClusterClient.Models.Actions.Questions
   fullName: ClusterClient.Models.Actions.Questions
   nameWithType: Actions.Questions
+- uid: ClusterClient.Models.FeedbackStatusCode
+  name: FeedbackStatusCode
+  href: api/ClusterClient.Models.FeedbackStatusCode.html
+  commentId: T:ClusterClient.Models.FeedbackStatusCode
+  fullName: ClusterClient.Models.FeedbackStatusCode
+  nameWithType: FeedbackStatusCode
+- uid: ClusterClient.Models.FeedbackStatusCode.Negative
+  name: Negative
+  href: api/ClusterClient.Models.FeedbackStatusCode.html#ClusterClient_Models_FeedbackStatusCode_Negative
+  commentId: F:ClusterClient.Models.FeedbackStatusCode.Negative
+  fullName: ClusterClient.Models.FeedbackStatusCode.Negative
+  nameWithType: FeedbackStatusCode.Negative
+- uid: ClusterClient.Models.FeedbackStatusCode.Positive
+  name: Positive
+  href: api/ClusterClient.Models.FeedbackStatusCode.html#ClusterClient_Models_FeedbackStatusCode_Positive
+  commentId: F:ClusterClient.Models.FeedbackStatusCode.Positive
+  fullName: ClusterClient.Models.FeedbackStatusCode.Positive
+  nameWithType: FeedbackStatusCode.Positive
 - uid: ClusterClient.Models.Requests
   name: Requests
   href: api/ClusterClient.Models.Requests.html
@@ -723,6 +747,19 @@ references:
   commentId: T:ClusterClient.Models.UserMessage
   fullName: ClusterClient.Models.UserMessage
   nameWithType: UserMessage
+- uid: ClusterClient.Models.UserMessage.action
+  name: action
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_action
+  commentId: P:ClusterClient.Models.UserMessage.action
+  fullName: ClusterClient.Models.UserMessage.action
+  nameWithType: UserMessage.action
+- uid: ClusterClient.Models.UserMessage.action*
+  name: action
+  href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_action_
+  commentId: Overload:ClusterClient.Models.UserMessage.action
+  isSpec: "True"
+  fullName: ClusterClient.Models.UserMessage.action
+  nameWithType: UserMessage.action
 - uid: ClusterClient.Models.UserMessage.ToJson
   name: ToJson()
   href: api/ClusterClient.Models.UserMessage.html#ClusterClient_Models_UserMessage_ToJson
