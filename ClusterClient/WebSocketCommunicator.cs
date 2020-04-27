@@ -259,7 +259,6 @@ namespace ClusterClient
                 {
                     Console.WriteLine("Communicate loop.");
                     this.cancellationToken.ThrowIfCancellationRequested();
-                    Console.WriteLine("No cancellation exception thrown.");
 
                     // Work-around to ignore aborted websocket. This is not a decent fix, but the problem usually lies at the server side.
                     if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
@@ -282,13 +281,11 @@ namespace ClusterClient
                         Console.WriteLine("Confirmation message sent.");
                     }
                     await this.HandleSendReceiveTasksAsync();
-                    Console.WriteLine("Still alive.");
                 }
             } 
             catch(OperationCanceledException)
             {
                 Console.WriteLine("Web socket connection closed by calling class instance.");
-                Debug.WriteLine("WebSocket connection closed by calling class instance.");
             }
             catch (Exception e)
             {
@@ -296,8 +293,6 @@ namespace ClusterClient
                 //if (e is InvalidOperationException)
                     //e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
                 this.exceptionQueue.Enqueue(e);
-                Console.WriteLine("An exception occurred in websocket thread: " + e);
-                Debug.WriteLine("Exception in WebSocket thread: " + e);
             }
             finally
             {
@@ -326,10 +321,6 @@ namespace ClusterClient
         {
             CancellationTokenSource tempCancellationSource = new CancellationTokenSource(this.connectionTimeoutSeconds*1000);
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
-            Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
-            Console.WriteLine("Connected.");
-            Debug.WriteLine("Connected to WebSocket.");
-            Console.WriteLine("Thread state at connect: " + Thread.CurrentThread.ThreadState);
         }
 
 
