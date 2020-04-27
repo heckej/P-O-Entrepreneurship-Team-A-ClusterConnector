@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -201,6 +202,64 @@ namespace ClusterClient
         /*********************************************
          * Message parsing
          ********************************************/
+
+        /// <summary>
+        /// Variable referencing a HTTP client used to connect to an end point.
+        /// </summary>
+        private static readonly HttpClient httpClient = new HttpClient();
+
+        private static string _endPoint = null;
+        /// <summary>
+        /// The end point uri to which proactive messages should be sent.
+        /// </summary>
+        public static string EndPointAddress { get => _endPoint; set => _endPoint = value; }
+
+        /// <summary>
+        /// Set containing the user id's of the users for whom proactive messaging is disabled.
+        /// </summary>
+        private static readonly ISet<string> _blockProactiveMessagingUsers = new HashSet<string>();
+
+        /// <summary>
+        /// Disables proactive messaging for a user.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom proactive messaging should be disabled.</param>
+        public static void BlockProactiveMessagingForUser(string userID)
+        {
+            Connector._blockProactiveMessagingUsers.Add(userID);
+        }
+
+        /// <summary>
+        /// Enables proactive messaging for a user.
+        /// Proactive messaging is enabled by default if the <c>EndPointAddress</c> of this connector is set.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom proactive messaging should be enabled.</param>
+        public static void UnblockProactiveMessagingForUser(string userID)
+        {
+            Connector._blockProactiveMessagingUsers.Remove(userID);
+        }
+
+        /// <summary>
+        /// Checks whether proactive messaging is currently enabled for a user.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom proactive the messaging blocking state should be checked</param>
+        /// <returns></returns>
+        public static bool ProactiveMessagingBlockedForUser(string userID)
+        {
+            return Connector._blockProactiveMessagingUsers.Contains(userID);
+        }
+
+        /// <summary>
+        /// Sends a json string to the end point of this connector.
+        /// </summary>
+        /// <param name="content">The json string to be sent.</param>
+        /// <returns>True if and only if the end point address of this connector is set and the response code is 2xx.</returns>
+        private async Task<bool> SendMessageToEndPoint(string content)
+        {
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var response = await Connector.httpClient.PostAsync(Connector.EndPointAddress, httpContent);
+            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
+
+        }
 
         /// <summary>
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
