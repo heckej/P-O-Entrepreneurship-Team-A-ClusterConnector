@@ -242,7 +242,7 @@ namespace ClusterClient
         /// </summary>
         /// <param name="content">The json string to be sent.</param>
         /// <returns>True if and only if the end point address of this connector is set and the response code is 2xx.</returns>
-        public async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
+        private async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
         {
             Console.WriteLine("Sending proactive message: " + content);
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
@@ -252,9 +252,19 @@ namespace ClusterClient
                 Method = HttpMethod.Post
             };
             httpRequest.Headers.Add("Authorization", this.authorization);
-            var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
-            Console.WriteLine("Response status code: " + response.StatusCode);
-            return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
+            try
+            {
+                var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
+                Console.WriteLine("Response status code: " + response.StatusCode);
+                response.EnsureSuccessStatusCode();
+                return true;
+            } 
+            catch(Exception)
+            {
+                // Proactive message blocked by end point.
+                return false;
+            }
+            
 
         }
 
