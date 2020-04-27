@@ -4,12 +4,18 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <UserSecretsId>1062b6d7-a0b4-4604-8c53-edb65d01155c</UserSecretsId>
     <PackageId>ClusterClient</PackageId>
-    <Version>0.5.3</Version>
+    <Version>1.0.0</Version>
     <Authors>heckej</Authors>
     <Company>P&amp;O CW Entrepreneurship - Team A</Company>
     <PackageDescription>A package that provides methods to communicate with a Cluster Connector Server.</PackageDescription>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageReleaseNotes>* InvalidCastException and KeyNotFoundException solved when looking for new answers.</PackageReleaseNotes>
+    <PackageReleaseNotes>Support added for proactive messaging by the following new methods:
+* Connector.BlockProactiveMessagingForUser(string)
+* Connector.MissedProactiveMessagesForUser(string)
+* Connector.ProactiveMessagingBlockedForUser(string)
+* Connector.UnblockProactiveMessagingForUser(string)
+and the following property:
+* Connector.EndPointAddress</PackageReleaseNotes>
     <RepositoryUrl>https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector</RepositoryUrl>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 
