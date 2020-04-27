@@ -47,6 +47,7 @@
     <Compile Include="Models\BaseModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotAnswerRequestModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotCompareQuestionsModel.cs" />
+    <Compile Include="Models\ChatbotModels\ChatbotFeedbackModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotGivenAnswerModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotNewAnswerModel.cs" />
     <Compile Include="Models\ChatbotModels\ChatbotNewQuestionModel.cs" />
