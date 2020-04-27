@@ -60,6 +60,72 @@ namespace ClusterConnector
             msgIdToUserID.Add(msg_id, new NewAnswerOffenseCheck(question_id, answer, user_id));
             return msg_id;
         }
+
+        static Dictionary<char, String> forbiddenSQL = null;
+        public static String UserInputToSQLSafe(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            int index = 0;
+            while (index < userInput.Length)
+            {
+                char c = userInput[index];
+                if (forbiddenSQL.ContainsKey(c))
+                {
+                    String value = " ";
+                    forbiddenSQL.TryGetValue(c, out value);
+                    userInput = userInput.Insert(index, value);
+                    index += value.Length;
+                    userInput = userInput.Remove(index, 1);
+                }
+                index++;
+            }
+            return userInput;
+        }
+
+        public static String SQLSafeToUserInput(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            foreach (var item in forbiddenSQL)
+            {
+                while (userInput.Contains(item.Value))
+                {
+                    userInput = userInput.Replace(item.Value, item.Key.ToString());
+                }
+            }
+            return userInput;
+        }
+
+        private static void CreateForbiddenDict()
+        {
+            forbiddenSQL = new Dictionary<char, string>();
+            forbiddenSQL.Add('\'', "_char1");
+            forbiddenSQL.Add('"', "_char2");
+            forbiddenSQL.Add('%', "_char3");
+            forbiddenSQL.Add('?', "_char4");
+            forbiddenSQL.Add('!', "_char5");
+            forbiddenSQL.Add('@', "_char6");
+            forbiddenSQL.Add('#', "_char7");
+            forbiddenSQL.Add('$', "_char8");
+            forbiddenSQL.Add('*', "_char9");
+            forbiddenSQL.Add('+', "_char10");
+            forbiddenSQL.Add('/', "_char11");
+            forbiddenSQL.Add('-', "_char12");
+            forbiddenSQL.Add('(', "_char13");
+            forbiddenSQL.Add(')', "_char14");
+            forbiddenSQL.Add('{', "_char15");
+            forbiddenSQL.Add('}', "_char16");
+            forbiddenSQL.Add('[', "_char17");
+            forbiddenSQL.Add(']', "_char18");
+            forbiddenSQL.Add('<', "_char19");
+            forbiddenSQL.Add('>', "_char20");
+            forbiddenSQL.Add('|', "_char21");
+        }
     }
 
     public interface ServerData

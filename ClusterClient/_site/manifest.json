@@ -1,0 +1,318 @@
+{
+  "homepages": [],
+  "source_base_path": "D:/Documenten/Leuven/P&O CW/P-O-Entrepreneurship-Team-A-ClusterConnector/ClusterClient",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Connector.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Connector.html",
+          "hash": "xS+3Xe9p5c8DQQjwwShr8Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.Actions.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.Actions.html",
+          "hash": "ufG3Brgd1QMDtUmiL3ET5Q=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.Requests.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.Requests.html",
+          "hash": "ujI2wBkzMdvUnvU5uwpvxQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerAnswer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerAnswer.html",
+          "hash": "6ILoSO/q4/vtMNB18OS4Qg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerMessage.html",
+          "hash": "oq5BaoBU5ekgMWhx0r0W0A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerQuestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerQuestion.html",
+          "hash": "e3aUez4x4bKfLDZuqizp+g=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerQuestionsMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerQuestionsMessage.html",
+          "hash": "juBrWE4Z58fQ0vxr4pNHuQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.ServerStatusCode.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.ServerStatusCode.html",
+          "hash": "WFroJ1UQA635Gqs8rmeGxQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserAnswer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserAnswer.html",
+          "hash": "UI8tayeaCnEE4rd03ZJhxg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserAnswersMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserAnswersMessage.html",
+          "hash": "jGY+bGaddE77Trb2hD8Wxw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserFeedback.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserFeedback.html",
+          "hash": "9it7RRtbzADD02k07QtmoA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserMessage.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserMessage.html",
+          "hash": "wAWFPjHReCKXE796gTgDcA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserQuestion.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserQuestion.html",
+          "hash": "hqxjckSZOS5Tt+NyjjFTyw=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.UserRequest.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.UserRequest.html",
+          "hash": "2uI5o4FabMDFNO1klg1V+A=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.Models.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.Models.html",
+          "hash": "hEVYVm7KEvZhpCcQcL80mA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/ClusterClient.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/ClusterClient.html",
+          "hash": "pOsMqYS9Q423MQYKo6cHaA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "api/index.md",
+      "output": {
+        ".html": {
+          "relative_path": "api/index.html",
+          "hash": "pygCN02xu6dd5lt5Yj9MGA=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html",
+          "hash": "rqFLJlH4sCo5t/uaTsBqpQ=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "articles/intro.md",
+      "output": {
+        ".html": {
+          "relative_path": "articles/intro.html",
+          "hash": "jtci4za2zKtIUMA/cUNoDg=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "articles/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "articles/toc.html",
+          "hash": "gB8AESyvNru97tzIZofEEg=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html",
+          "hash": "2Hslm9YMsnbMXP+M8+WK6Q=="
+        }
+      },
+      "is_incremental": true,
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html",
+          "hash": "+rHUkRZHZRi5gd1aTU6lJA=="
+        }
+      },
+      "is_incremental": false,
+      "version": ""
+    }
+  ],
+  "incremental_info": [
+    {
+      "status": {
+        "can_incremental": true,
+        "incrementalPhase": "build",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {
+        "ConceptualDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 3,
+          "skipped_file_count": 3
+        },
+        "ManagedReferenceDocumentProcessor": {
+          "can_incremental": true,
+          "incrementalPhase": "build",
+          "total_file_count": 16,
+          "skipped_file_count": 5
+        },
+        "TocDocumentProcessor": {
+          "can_incremental": false,
+          "details": "Processor TocDocumentProcessor cannot support incremental build because the processor doesn't implement ISupportIncrementalDocumentProcessor interface.",
+          "incrementalPhase": "build",
+          "total_file_count": 0,
+          "skipped_file_count": 0
+        }
+      }
+    },
+    {
+      "status": {
+        "can_incremental": true,
+        "details": "Can support incremental post processing.",
+        "incrementalPhase": "postProcessing",
+        "total_file_count": 0,
+        "skipped_file_count": 0
+      },
+      "processors": {}
+    }
+  ],
+  "version_info": {},
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}

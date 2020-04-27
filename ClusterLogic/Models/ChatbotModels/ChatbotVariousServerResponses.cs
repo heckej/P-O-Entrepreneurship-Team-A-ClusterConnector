@@ -67,4 +67,33 @@ namespace ClusterLogic.Models.ChatbotModels
         public string question { get => _question; set => _question = value; }
         public int chatbot_temp_id { get => _chatbot_temp_id; set => _chatbot_temp_id = value; }
     }
+
+    public class ServerAnswerAfterQuestion
+    {
+        private string _action = "answers";
+        private string _user_id = null;
+        private int _question_id;
+        private int _answer_id;
+        private string _answer;
+        private float _certainty;
+        private string _question = null;
+
+        public ServerAnswerAfterQuestion(String openAnswerModel, NewAnswerOffenseCheck newAnswerOffenseCheck, OffensivenessLogicResponse result, int answerId, string question)
+        {
+            user_id = openAnswerModel;
+            question_id = result.Question_id;
+            answer_id = answerId;
+            answer = newAnswerOffenseCheck.answer;
+            certainty = .75f;
+            this.question = question;
+        }
+
+        public string user_id { get => _user_id; set => _user_id = value; }
+        public int question_id { get => _question_id; set => _question_id = value; }
+        public int answer_id { get => _answer_id; set => _answer_id = value; }
+        public string action { get => _action; set => _action = value; }
+        public string answer { get => _answer; set => _answer = value; }
+        public float certainty { get => _certainty; set => _certainty = value; }
+        public string question { get => _question; set => _question = value; }
+    }
 }

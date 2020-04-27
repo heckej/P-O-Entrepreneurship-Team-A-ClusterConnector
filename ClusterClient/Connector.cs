@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
+using System.Net.Mime;
 using System.Net.WebSockets;
 using System.Reflection;
 using System.Text;
@@ -130,28 +132,19 @@ namespace ClusterClient
         {
             if (this.webSocketCommunicator != null)
             {
-                Console.WriteLine("Thread state at initialize thread in null check: " + this.webSocketConnectionThread.ThreadState);
-                Console.WriteLine("Stop websocket.");
                 this.cancellationTokenSource.Cancel();
             }
-            // create new cancellation token source
             this.cancellationTokenSource = new CancellationTokenSource();
-            Console.WriteLine("Exception queue length: " + this.exceptionsFromWebSocketCommunicator.Count);
-            Console.WriteLine("Clearing exception queue.");
             Debug.WriteLine("Clearing exception queue.");
             this.exceptionsFromWebSocketCommunicator.Clear();
-            Console.WriteLine("Starting new thread.");
             Debug.WriteLine("Starting new thread.");
             this.webSocketCommunicator = new WebSocketCommunicator(this.webSocketHostURI, this.exceptionsFromWebSocketCommunicator, 
-                                                        this.StoreMessageFromServer, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token, this.authorization);
+                                                        this.StoreMessageFromServerAsync, this.messagesToBeSent, this.webSocketConnectionTimeout, this.cancellationTokenSource.Token, this.authorization);
             
             this.webSocketConnectionThread = new Thread(new ThreadStart(this.webSocketCommunicator.Run));
             this.webSocketConnectionThread.IsBackground = true;
             this.webSocketConnectionThread.Start();
-
-            Console.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
             Debug.WriteLine("Thread " + this.webSocketConnectionThread.Name + " started.");
-            Console.WriteLine("Thread state at initialize thread end: " + this.webSocketConnectionThread.ThreadState);
         }
 
         /// <summary>
@@ -160,22 +153,23 @@ namespace ClusterClient
         /// </summary>
         private void CheckoutWebSocket()
         {
-            Console.WriteLine("Checkout web socket.");
-            if (this.exceptionsFromWebSocketCommunicator.Count > 0)
+            while (this.exceptionsFromWebSocketCommunicator.Count > 0)
             {
-                if (!this.cancellationTokenSource.Token.IsCancellationRequested)
-                    this.cancellationTokenSource.Cancel();
                 Exception exception = this.exceptionsFromWebSocketCommunicator.Dequeue();
-                Debug.WriteLine("Exception received from websocket thread: " + exception);
-                Console.WriteLine("Exception received from websocket thread: " + exception);
-                throw exception;
+                if (exception is WebSocketException && this._surpressConnectionErrors)
+                    Debug.WriteLine("WebSocketException surpressed: " + exception.Message);
+                else
+                {
+                    if (!this.cancellationTokenSource.Token.IsCancellationRequested)
+                        this.cancellationTokenSource.Cancel();
+                    Console.WriteLine("Exception received from websocket thread: " + exception);
+                    throw exception;
+                }
+                
             }
-            else if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
+            if (this.webSocketConnectionThread == null | !this.webSocketConnectionThread.IsAlive)
             {
                 Debug.WriteLine("Reinitializing websocket thread.");
-                Console.WriteLine("Reinitializing websocket thread. Alive: " + this.webSocketConnectionThread.IsAlive);
-                Console.WriteLine("Cancellation requested: " + this.cancellationTokenSource.Token.IsCancellationRequested);
-                Console.WriteLine("Thread state: " + this.webSocketConnectionThread.ThreadState);
                 this.InitializeWebSocketThread();
             }
         }
@@ -190,11 +184,22 @@ namespace ClusterClient
 
         /// <summary>
         /// Enables a constant check of the websocket state on the debugging output stream.
+        /// Not that this is a very CPU consuming option.
         /// </summary>
         /// <param name="flag"></param>
         public void EnableWebSocketStateCheck(bool flag)
         {
             this.webSocketCommunicator.enableCheckWebSocketStateDebugging = flag;
+        }
+
+        private bool _surpressConnectionErrors = false;
+
+        /// <summary>
+        /// Makes the public methods of this connector surpress connection related errors.
+        /// </summary>
+        public void SurpressConnectionErrors()
+        {
+            this._surpressConnectionErrors = true;
         }
 
 
@@ -203,12 +208,141 @@ namespace ClusterClient
          ********************************************/
 
         /// <summary>
+        /// Variable referencing a HTTP client used to connect to an end point.
+        /// </summary>
+        private static readonly HttpClient httpClient = new HttpClient();
+
+        private string _endPoint = null;
+        /// <summary>
+        /// The end point uri to which proactive messages should be sent.
+        /// </summary>
+        public string EndPointAddress { get => _endPoint; set => _endPoint = value; }
+
+        /// <summary>
+        /// Set containing the user id's of the users for whom proactive messaging is disabled.
+        /// </summary>
+        private readonly ISet<string> _blockProactiveMessagingUsers = new HashSet<string>();
+
+        /// <summary>
+        /// Disables proactive messaging for a user.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom proactive messaging should be disabled.</param>
+        public void BlockProactiveMessagingForUser(string userID)
+        {
+            this._blockProactiveMessagingUsers.Add(userID);
+        }
+
+        /// <summary>
+        /// Enables proactive messaging for a user.
+        /// Proactive messaging is enabled by default if the <c>EndPointAddress</c> of this connector is set.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom proactive messaging should be enabled.</param>
+        public void UnblockProactiveMessagingForUser(string userID)
+        {
+            this._blockProactiveMessagingUsers.Remove(userID);
+        }
+
+        /// <summary>
+        /// Checks whether proactive messaging is currently enabled for a user.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom the proactive messaging blocking state should be checked.</param>
+        /// <returns>True if and only if proactive messaging is blocked for the given user or if the <c>EndPointAddress</c> of this null.</returns>
+        public bool ProactiveMessagingBlockedForUser(string userID)
+        {
+            return this._blockProactiveMessagingUsers.Contains(userID) || EndPointAddress == null;
+        }
+
+        /// <summary>
+        /// Sends a json string to the end point of this connector.
+        /// </summary>
+        /// <param name="content">The json string to be sent.</param>
+        /// <returns>True if and only if the end point address of this connector is set and the response code is 2xx.</returns>
+        private async Task<bool> SendMessageToEndPointAsync(string content, string route = Actions.Default)
+        {
+            Console.WriteLine("Sending proactive message: " + content);
+            var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
+            var httpRequest = new HttpRequestMessage
+            {
+                Content = httpContent,
+                Method = HttpMethod.Post
+            };
+            httpRequest.Headers.Add("Authorization", this.authorization);
+            try
+            {
+                var response = await Connector.httpClient.PostAsync(this.EndPointAddress + "/" + route, httpContent);
+                Console.WriteLine("Response status code: " + response.StatusCode);
+                response.EnsureSuccessStatusCode();
+                return true;
+            } 
+            catch(Exception)
+            {
+                // Proactive message blocked by end point.
+                return false;
+            }
+            
+
+        }
+
+        /// <summary>
+        /// Set containing the user id's of the users who missed proactive messages.
+        /// </summary>
+        private readonly ISet<string> _missedProactiveMessagesUsers = new HashSet<string>();
+
+        /// <summary>
+        /// Checks whether proactive messages couldn't be sent to a user because they were blocked.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom should be checked whether proactive messages have been missed.</param>
+        /// <returns></returns>
+        public bool MissedProactiveMessagesForUser(string userID)
+        {
+            return this._missedProactiveMessagesUsers.Contains(userID);
+        }
+
+        /// <summary>
+        /// Sets the missed proactive message flag for a user.
+        /// </summary>
+        /// <param name="enable">The flag to be set.</param>
+        /// <param name="userID">The user id of the user for whom the flag should be set.</param>
+        private void SetMissedProactiveMessagesForUser(bool enable, string userID)
+        {
+            if (enable)
+                this._missedProactiveMessagesUsers.Add(userID);
+            else
+                this._missedProactiveMessagesUsers.Remove(userID);
+        }
+
+        /// <summary>
+        /// Sets the missed proactive messages flag for all users to false.
+        /// </summary>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         For every userID, <c>MissedProactiveMessagesForUser(userID)</c> equals false.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void ClearMissedProactiveMessagesFlagForAllUsers()
+        {
+            this._missedProactiveMessagesUsers.Clear();
+        }
+
+        /// <summary>
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
         /// </summary>
         /// <param name="serverMessage">A message from the server that should be stored.</param>
-        protected internal void StoreMessageFromServer(string serverMessage)
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         If proactive messaging is blocked for the user to whom the message was sent or if the end point didn't accept the message
+        ///         by returning a 2xx status code, then the message has been stored internally and the missed proactive messages state of the 
+        ///         user equals true.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        protected internal async Task StoreMessageFromServerAsync(string serverMessage)
         {
-            Console.WriteLine("Storing message from server: " + serverMessage);
             ServerMessage parsedMessage = ParseServerMessage(serverMessage);
             string action;
             if (parsedMessage == null)
@@ -218,9 +352,16 @@ namespace ClusterClient
                 action = parsedMessage.action;
             else
                 action = Actions.Default;
-            Console.WriteLine("Message added under action " + action);
-            this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
-            this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
+
+            bool addToReceivedMessages = this.ProactiveMessagingBlockedForUser(parsedMessage.user_id);
+            if (!addToReceivedMessages)
+                addToReceivedMessages = await this.SendMessageToEndPointAsync(serverMessage, action);
+            if (addToReceivedMessages)
+            {
+                this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
+                this.receivedMessages[action][parsedMessage.user_id].Add(parsedMessage);
+                this.SetMissedProactiveMessagesForUser(true, parsedMessage.user_id);
+            }
         }
 
         /// <summary>
@@ -312,7 +453,7 @@ namespace ClusterClient
         /// <param name="chatbotRequest">The request from the chatbot as a user message object.</param>
         /// <returns>A json string that complies to the structure understood by the server containing the information of the given 
         /// <paramref name="chatbotRequest" /> as far as the structure allows it.</returns>
-        private static string ParseChatbotRequest(UserMessage chatbotRequest)
+        private static string ParseClientRequest(UserMessage chatbotRequest)
         {
             return chatbotRequest.ToJson();
         }
@@ -324,9 +465,8 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         private void AddMessageToSendQueue(UserMessage chatbotRequest)
         {
-            Console.WriteLine("Adding message to send queue: " + chatbotRequest);
             this.CheckoutWebSocket();
-            string message = ParseChatbotRequest(chatbotRequest);
+            string message = ParseClientRequest(chatbotRequest);
             this.messagesToBeSent.Enqueue(message);
         }
 
@@ -369,11 +509,13 @@ namespace ClusterClient
                 question = question,
                 chatbot_temp_id = this.GetNextTempChatbotID()
             };
+            this.BlockProactiveMessagingForUser(userID);
             this.AddMessageToSendQueue(request);
             var answer = this.GetAnswerFromServerToQuestion(request.chatbot_temp_id, userID, timeout);
             /*if (answer == null)
                 throw new TimeoutException("No response was received from the server to this question, so no question ID could be assigned. " +
                     "Try again later or use a higher timeout.");*/
+            this.UnblockProactiveMessagingForUser(userID);
             return answer;
         }
 
@@ -389,7 +531,6 @@ namespace ClusterClient
         /// to this question, so no question ID could be assigned to the given question. Try again later or use a higher timeout to avoid this.</exception>
         private ServerAnswer GetAnswerFromServerToQuestion(int tempChatbotID, string userID, double timeout)
         {
-            Console.WriteLine("Waiting for answer from server.");
             // set timeout and wait for answer
             // convert timeout to milliseconds
             timeout *= 1000;
@@ -404,7 +545,6 @@ namespace ClusterClient
                 found = answer != null;
             }
             watch.Stop();
-            Console.WriteLine("Found anwser: " + answer);
             if (!found)
                 return null;
             return answer;
@@ -416,7 +556,11 @@ namespace ClusterClient
         /// <returns>A set containing all answers received from the serverin response to questions from this client.</returns>
         public ISet<ServerAnswer> GetNewResponses()
         {
-            return (ISet<ServerAnswer>) this.receivedMessages[Actions.Answer].SelectMany(d => d.Value);
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
+            foreach (ServerAnswer answer in this.receivedMessages[Actions.Answer].SelectMany(d => d.Value))
+                answers.Add(answer);
+            this.ClearMissedProactiveMessagesFlagForAllUsers();
+            return answers;
         }
 
         /// <summary>
@@ -427,8 +571,29 @@ namespace ClusterClient
         /// <returns>A set containing all answers received from the server and addressed to the user identified by the given <paramref name="userID"/>.</returns>
         public ISet<ServerAnswer> GetNewAnswersForUser(string userID)
         {
-            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>((ISet<ServerAnswer>) this.receivedMessages[Actions.Answer][userID]);
-            this.receivedMessages[Actions.Answer][userID].Clear();
+            ISet<ServerAnswer> answers = new HashSet<ServerAnswer>();
+            try
+            {
+                if (this.receivedMessages[Actions.Answer].ContainsKey(userID))
+                {
+                    foreach (ServerMessage answer in this.receivedMessages[Actions.Answer][userID])
+                        try
+                        {
+                            answers.Add((ServerAnswer)answer);
+                        }
+                        catch (InvalidCastException)
+                        {
+                            Console.WriteLine("Illegal message under answer key, under userID " + userID);
+                        }
+                    this.receivedMessages[Actions.Answer][userID].Clear();
+                }
+            }
+            catch(KeyNotFoundException e)
+            {
+                Console.WriteLine("Unexpected error when looking for answers:\n" + e);
+            }
+            this.SetMissedProactiveMessagesForUser(false, userID);
+                
             return answers;
         }
 
@@ -557,6 +722,7 @@ namespace ClusterClient
             this.CheckoutWebSocket();
             // Create set of questions
             ISet<ServerQuestion> questions = new HashSet<ServerQuestion>();
+            this.BlockProactiveMessagingForUser(userID);
             // Check if questions offline -> probably not, but if there are any, add them
             ISet<ServerMessage> messages = this.GetActionMessagesAddressedToUser(Actions.Questions, userID);
 
@@ -590,6 +756,7 @@ namespace ClusterClient
                         this.RemoveReceivedMessage(responseMessage);
                 }
             }
+            this.UnblockProactiveMessagingForUser(userID);
             Console.WriteLine("Time before returning questions: " + DateTime.Now.ToString());
             return questions;
         }
@@ -674,7 +841,6 @@ namespace ClusterClient
             }
             if (response != null)
                 response = new HashSet<ServerMessage>(response);
-            
             return response;
         }
 
@@ -693,7 +859,6 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(string userID, int questionID, string answer)
         {
-            Console.WriteLine("Answer question method called.");
             UserAnswer userAnswer = new UserAnswer
             {
                 question_id = questionID,
@@ -710,7 +875,6 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void AnswerQuestion(string userID, UserAnswer answer)
         {
-            Console.WriteLine("Answer question method UserAnswer called.");
             UserAnswersMessage answers = new UserAnswersMessage
             {
                 user_id = userID
@@ -759,7 +923,6 @@ namespace ClusterClient
         /// <exception cref="Exception">An exception has been passed by the web socket thread.</exception>
         public void SendFeedbackOnAnswer(string userID, int answerID, int questionID, int feedback)
         {
-            Console.WriteLine("Send feedback method called.");
             UserFeedback userFeedback = new UserFeedback
             {
                 user_id = userID,

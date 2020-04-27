@@ -25,12 +25,12 @@ namespace ClusterClient
         /// <param name="sendQueue">A queue in which the messages to be sent can be found.</param>
         /// <param name="connectionTimeout">The timeout to be set when connecting to the websocket host.</param>
         /// <param name="cancellationToken">The cancellation token to be used to stop this thread from running.</param>
-        public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, MethodToPassMessageToClient passMessageToClient,
+        public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, Func<string, Task> passMessageToClient,
             Queue<string> sendQueue, int connectionTimeout, CancellationToken cancellationToken, string authorization)
         {
             this.webSocketURI = webSocketURI;
             this.exceptionQueue = exceptionQueue;
-            this.PassMessageToClient = passMessageToClient;
+            this.PassMessageToClientAsync = passMessageToClient;
             this.sendQueue = sendQueue;
             this.connectionTimeoutSeconds = connectionTimeout;
             this.cancellationToken = cancellationToken;
@@ -74,15 +74,9 @@ namespace ClusterClient
         private int connectionTimeoutSeconds;
 
         /// <summary>
-        /// An instance method of the calling class that handles received messages.
-        /// </summary>
-        /// <param name="messageFromServer"></param>
-        public delegate void MethodToPassMessageToClient(string messageFromServer);
-
-        /// <summary>
         /// Variable referencing an instance method of the calling class that handles received messages.
         /// </summary>
-        private readonly MethodToPassMessageToClient PassMessageToClient;
+        private readonly Func<string, Task> PassMessageToClientAsync;
 
         /// <summary>
         /// A boolean enabling a constant check on websocket state.
@@ -94,12 +88,8 @@ namespace ClusterClient
         /// </summary>
         public void Run()
         {
-            Console.WriteLine("Running thread.");
             Task task = this.CommunicateWithServerAsync();
             task.Wait();
-            Console.WriteLine("End of run method. Thread should return.");
-            Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Thread state at run end: " + Thread.CurrentThread.ThreadState);
         }
 
         /// <summary>
@@ -110,39 +100,30 @@ namespace ClusterClient
         {
             while (true)
             {
-                Console.WriteLine("Thread state at receive begin: " + Thread.CurrentThread.ThreadState);
-                Console.WriteLine("Cancellation requested (receive): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
-                Console.WriteLine("No cancellation exception thrown. Waiting for result.");
                 // Reserve 1 kB buffer to store received message.
                 ArraySegment<byte> bytesReceived = new ArraySegment<byte>(new byte[1024]);
                 WebSocketReceiveResult result = await this.webSocket.ReceiveAsync(
                             bytesReceived, this.cancellationToken);
-                Console.WriteLine("Result received: " + result);
                 try
                 {
                     string message = Encoding.UTF8.GetString(bytesReceived.Array, 0, result.Count);
                     this.ProcessReceivedMessage(message);
-                    Console.WriteLine("Message processed: " + message);
                 }
                 catch (ArgumentNullException)
                 {
                     Debug.WriteLine("Websocket returned null message.");
-                    Console.WriteLine("Websocket returned null message.");
                 }   
                 catch (ArgumentException)
                 {
                     Debug.WriteLine("Received message contains invalid unicode code points and will be ignored.");
-                    Console.WriteLine("Received message contains invalid unicode code points and will be ignored.");
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine("Unexpected: " + e);
+                    Debug.WriteLine("Unexpected exception while receiving task: " + e);
                 }
-
+                
             }
-            // Console.WriteLine("Thread state at receive end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of receive messages.");
         }
 
         /// <summary>
@@ -150,10 +131,10 @@ namespace ClusterClient
         /// </summary>
         /// <param name="message">The message to be passed on to the calling class instance.</param>
         /// <returns></returns>
-        private void ProcessReceivedMessage(string message)
+        private async void ProcessReceivedMessage(string message)
         {
             Console.WriteLine("Processing received message: " + message);
-            this.PassMessageToClient(message);
+            await this.PassMessageToClientAsync(message);
         }
 
         /// <summary>
@@ -206,8 +187,6 @@ namespace ClusterClient
         /// <returns></returns>
         private async Task HandleSendReceiveTasksAsync()
         {
-            Console.WriteLine("Handling sending and receiving messages.");
-            Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
             Task checkStateTask = null;
@@ -280,7 +259,6 @@ namespace ClusterClient
                 {
                     Console.WriteLine("Communicate loop.");
                     this.cancellationToken.ThrowIfCancellationRequested();
-                    Console.WriteLine("No cancellation exception thrown.");
 
                     // Work-around to ignore aborted websocket. This is not a decent fix, but the problem usually lies at the server side.
                     if (this.webSocket == null || this.webSocket.State == WebSocketState.Aborted)
@@ -303,13 +281,11 @@ namespace ClusterClient
                         Console.WriteLine("Confirmation message sent.");
                     }
                     await this.HandleSendReceiveTasksAsync();
-                    Console.WriteLine("Still alive.");
                 }
             } 
             catch(OperationCanceledException)
             {
                 Console.WriteLine("Web socket connection closed by calling class instance.");
-                Debug.WriteLine("WebSocket connection closed by calling class instance.");
             }
             catch (Exception e)
             {
@@ -317,8 +293,6 @@ namespace ClusterClient
                 //if (e is InvalidOperationException)
                     //e = new Exception("WebSocket State after " + i + " loops: " + oldState + e.Message);
                 this.exceptionQueue.Enqueue(e);
-                Console.WriteLine("An exception occurred in websocket thread: " + e);
-                Debug.WriteLine("Exception in WebSocket thread: " + e);
             }
             finally
             {
@@ -346,12 +320,7 @@ namespace ClusterClient
         private async Task ConnectToServerAsync()
         {
             CancellationTokenSource tempCancellationSource = new CancellationTokenSource(this.connectionTimeoutSeconds*1000);
-            Console.WriteLine("Trying to connect during " + this.connectionTimeoutSeconds * 1000 + "ms.");
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
-            Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
-            Console.WriteLine("Connected.");
-            Debug.WriteLine("Connected to WebSocket.");
-            Console.WriteLine("Thread state at connect: " + Thread.CurrentThread.ThreadState);
         }
 
 

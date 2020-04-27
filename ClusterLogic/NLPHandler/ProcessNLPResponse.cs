@@ -8,6 +8,7 @@ using ClusterConnector.Manager;
 using ClusterConnector.Models.Database;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using ClusterConnector;
 
 namespace ClusterLogic.NLPHandler
 {
@@ -101,7 +102,10 @@ namespace ClusterLogic.NLPHandler
                 // This query should only return 0 or 1 result
                 if (reader.Read())
                 {
-                    result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, reader.GetString(0));
+                    /****/
+                    String sqlSafeAnswer = ServerUtilities.SQLSafeToUserInput(reader.GetString(0));
+                    /****/
+                    result = new MatchQuestionLogicResponse(matchQuestionModel.question_id, matchQuestionModel.msg_id, bestInfo.question_id, true, sqlSafeAnswer);
                 }
             }
 
@@ -149,36 +153,27 @@ namespace ClusterLogic.NLPHandler
             // Check if the sentence contains a blacklisted word
             DBManager manager = new DBManager(true);
             String sentence = offensivenessModel.question;
-            String[] words = sentence.Split(' ');
             StringBuilder sb = new StringBuilder();
             sb.Append("SELECT forbidden_word ");
             sb.Append("FROM dbo.Blacklist;");
             String sql = sb.ToString();
-            List<String> blacklist = new List<String>();
-            // ToDo: make query to get blacklist and put result in placklist variable
+            String blacklistedWord = null;
             using (SqlDataReader reader = manager.Read(sql))
             {
                 if (reader != null)
-                    // This query should only return 0 or 1 result
                     while (reader.Read())
                     {
-                        blacklist.Add(reader.GetString(0));
+                        blacklistedWord = reader.GetString(0);
+                        if (sentence.Contains(blacklistedWord))
+                        {
+                            offensive = true;
+                            break;
+                        }
                     }
                 else
                     Debug.WriteLine("Reader null");
             }
             manager.Close();
-            foreach (String word in words)
-            {
-                foreach(String offensiveWord in blacklist)
-                {
-                    if(String.Equals(word, offensiveWord))
-                    {
-                        offensive = true;
-                        break;
-                    }
-                }
-            }
 
             // Return the result
             return new OffensivenessLogicResponse(
@@ -222,6 +217,35 @@ namespace ClusterLogic.NLPHandler
                 nonsenseModelResponse.question,
                 nonsenseModelResponse.msg_id
                 );
+        }
+
+        public static string getQuestionFromID(int question_id)
+        {
+            DBManager manager = new DBManager(true);
+
+            String result = null;
+
+            StringBuilder sb = new StringBuilder();
+            sb.Append("SELECT question ");
+            sb.Append("FROM Questions q ");
+            sb.Append($"WHERE q.question_id = {question_id}; ");
+            String sql = sb.ToString();
+
+            using (SqlDataReader reader = manager.Read(sql))
+            {
+                // This query should only return 0 or 1 result
+                if (reader.Read())
+                {
+                    result = reader.GetString(0);
+                    /****/
+                    result = ServerUtilities.SQLSafeToUserInput(result);
+                    /****/
+                }
+            }
+
+            manager.Close();
+
+            return result;
         }
     }
 }

@@ -8,9 +8,11 @@ namespace ClusterClientConsole
     class Program
     {
         public static Connector con = new Connector("843iu233d3m4pxb1", "ws://localhost:39160/api/Chatbot/WS", 10);
-
+        
         static void Main(string[] args)
         {
+            con.EndPointAddress = "http://localhost:3978/api/ClusterClient";
+            con.SurpressConnectionErrors();
             bool exit = false;
             string input;
             while (!exit)

@@ -297,7 +297,10 @@ namespace ClusterAPI.Controllers.NLP
                                     }
                                     else
                                     {
-                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First(), ProcessChatbotLogic.SaveQuestionToDatabase((NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id])));
+                                        int question_id = ProcessChatbotLogic.SaveQuestionToDatabase((NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                                        String user_id = ((NewOpenQuestion)ServerUtilities.msgIdToUserID[((MatchQuestionModelResponse)model.Value.First()).msg_id]).user_id;
+                                        ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First(), question_id));
+                                        ProcessChatbotLogic.AddNewOpenAnswer(user_id,question_id);
                                     }
                                 }
                             }
@@ -397,7 +400,9 @@ namespace ClusterAPI.Controllers.NLP
                 else
                 {
                     //ProcessChatbotLogic.SaveQuestionToDatabase((NewQuestionNonsenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
-                    ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    int answerId = ProcessChatbotLogic.SaveAnswerToOpenQuestion((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                    String openAnswerModelUser = ProcessChatbotLogic.RetrieveOpenAnswer(((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]).question_id);
+                    ChatbotWebSocketController.SendAnswerToQuestion(new ServerAnswerAfterQuestion(openAnswerModelUser, (NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id], result, answerId, ProcessNLPResponse.getQuestionFromID(((NewAnswerOffenseCheck)ServerUtilities.msgIdToUserID[result.Msg_id]).question_id)));
                 }
             }
             else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewQuestionNonsenseCheck)
