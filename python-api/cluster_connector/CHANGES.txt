@@ -1,0 +1,71 @@
+=======================================
+CHANGES.txt - Cluster Connector NLP API
+=======================================
+
+v1.1.4
+---------------------------------------
+* `KeyError` solved when original task doesn't contain a `sentence` key.
+* Original `question_id`/`answer_id` sent to server with response.
+
+v1.1.3
+---------------------------------------
+* `sentence` and `sentence_id` keys correctly added to nonsense task.
+* When in debugging mode, the exception `StopAsyncIteration` and `RunTimeError` is no longer printed where it occurred
+  before.
+
+v1.1.2
+---------------------------------------
+* The method `reply()` no longer expects the argument to contain a `sentence` key as it mistakenly did before.
+
+v1.1.1
+---------------------------------------
+* When in debugging mode, the exception `StopAsyncIteration` is no longer printed where it occurred before.
+
+v1.1.0
+---------------------------------------
+* New `authorization` argument in `Connector` and `WebsocketThread`. This argument will become compulsory in a future
+  release.
+
+v1.0.2
+---------------------------------------
+* Security issue related to websocket connection temporarily fixed (same problem as in 1.0.1). A decent fix will
+  result in a new major release.
+v1.0.1
+---------------------------------------
+* Security issue related to websocket connection temporarily fixed. A decent fix will result in a new major release.
+
+v1.0.0
+---------------------------------------
+This version is a major update involving several incompatibility changes related to some attributes and the task/message
+protocol.
+* Usage of websockets enabled by default.
+* Usage of requests no longer supported. Therefore the attributes `use_websocket`, `prefetch` and `fetch_in_background`
+  have been removed. Also the specifications of some methods that made use of requests (`get_next_item()` and `reply()`)
+  has been updated.
+* Support added for general offensiveness test for both questions and answers.
+* Nonsense protocol implemented generally.
+
+v0.2.0
+---------------------------------------
+* Usage of websockets added as connection method instead of GET/POST requests. This is officially still under development,
+  so it is disabled by default, but it is greatly encouraged to enable this feature, because future releases will quite
+  probably drop support for GET/POST requests.
+* New class WebsocketThread added. This class is used in the Connection class and should not be used elsewhere in normal
+  circumstances.
+* Problems while parsing tasks from the server have been fixed.
+* A method to test the validity of a task has been added.
+* The method `has_item()` may throw websocket related exceptions from now on.
+* Logging debugging information is now available. Use the following statements to enable this:
+    ```
+        >> import logging, sys
+        >> logging.basicConfig(stream=sys.stderr, level=logging.DEBUG)
+    ```
+
+v0.1.2
+---------------------------------------
+* Bug solved: `KeyError` occurred because of case sensitiveness in dictionary keys.
+* Bug solved: empty responses from server are now handled correctly.
+
+v0.1.1
+---------------------------------------
+The method `has_task()` now behaves as expected, i.e. it returns whether any tasks are available instead of always True.
