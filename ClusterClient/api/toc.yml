@@ -1,0 +1,25 @@
+### YamlMime:TableOfContent
+- uid: ClusterClient
+  name: ClusterClient
+  items:
+  - uid: ClusterClient.Connector
+    name: Connector
+- uid: ClusterClient.Models
+  name: ClusterClient.Models
+  items:
+  - uid: ClusterClient.Models.Actions
+    name: Actions
+  - uid: ClusterClient.Models.ServerAnswer
+    name: ServerAnswer
+  - uid: ClusterClient.Models.ServerMessage
+    name: ServerMessage
+  - uid: ClusterClient.Models.ServerQuestion
+    name: ServerQuestion
+  - uid: ClusterClient.Models.ServerQuestionsMessage
+    name: ServerQuestionsMessage
+  - uid: ClusterClient.Models.UserAnswer
+    name: UserAnswer
+  - uid: ClusterClient.Models.UserAnswersMessage
+    name: UserAnswersMessage
+  - uid: ClusterClient.Models.UserMessage
+    name: UserMessage

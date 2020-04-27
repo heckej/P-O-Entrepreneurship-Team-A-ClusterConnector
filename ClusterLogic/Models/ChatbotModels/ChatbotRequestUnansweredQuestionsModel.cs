@@ -17,27 +17,29 @@ namespace ClusterLogic.Models.ChatbotModels
     /// From Chatbot -> ClusterAPI on api/Chatbot/WS json: {"request_marker":"true"}
     public class ChatbotRequestUnansweredQuestionsModel : BaseModel
     {
-        private bool _request_marker = false;
+        private String _user_id;
+        private String _request;
 
-        public bool request_marker { get => _request_marker; set => _request_marker = value; }
+        public string user_id { get => _user_id; set => _user_id = value; }
+        public string request { get => _request; set => _request = value; }
 
         public bool IsComplete()
         {
-            return _request_marker != false;
+            return user_id != null && request != null;
         }
     }
 
     public class ChatbotRequestUnansweredQuestionsResponseModel : BaseModel
     {
-        private int _user_id = -1;
+        private string _user_id = null;
         private int _question_id = -1;
 
         public int question_id { get => _question_id; set => _question_id = value; }
-        public int user_id { get => _user_id; set => _user_id = value; }
+        public string user_id { get => _user_id; set => _user_id = value; }
 
         public bool IsComplete()
         {
-            return _user_id != -1 && _question_id != -1;
+            return _user_id != null && _question_id != -1;
         }
     }
 }

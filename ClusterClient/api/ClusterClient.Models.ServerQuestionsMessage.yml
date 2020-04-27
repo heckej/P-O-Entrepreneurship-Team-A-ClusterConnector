@@ -1,0 +1,507 @@
+### YamlMime:ManagedReference
+items:
+- uid: ClusterClient.Models.ServerQuestionsMessage
+  commentId: T:ClusterClient.Models.ServerQuestionsMessage
+  id: ServerQuestionsMessage
+  parent: ClusterClient.Models
+  children:
+  - ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  langs:
+  - csharp
+  - vb
+  name: ServerQuestionsMessage
+  nameWithType: ServerQuestionsMessage
+  fullName: ClusterClient.Models.ServerQuestionsMessage
+  type: Class
+  source:
+    remote:
+      path: ClusterClient/Models/ServerQuestionsMessage.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: ServerQuestionsMessage
+    path: Models/ServerQuestionsMessage.cs
+    startLine: 8
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: 'public class ServerQuestionsMessage : ServerMessage'
+    content.vb: >-
+      Public Class ServerQuestionsMessage
+          Inherits ServerMessage
+  inheritance:
+  - System.Object
+  - ClusterClient.Models.ServerMessage
+  inheritedMembers:
+  - ClusterClient.Models.ServerMessage.Action
+  - ClusterClient.Models.ServerMessage.UserID
+  - ClusterClient.Models.ServerMessage.StatusMessage
+  - ClusterClient.Models.ServerMessage.StatusCode
+  - System.Object.Equals(System.Object)
+  - System.Object.Equals(System.Object,System.Object)
+  - System.Object.GetHashCode
+  - System.Object.GetType
+  - System.Object.MemberwiseClone
+  - System.Object.ReferenceEquals(System.Object,System.Object)
+  - System.Object.ToString
+  modifiers.csharp:
+  - public
+  - class
+  modifiers.vb:
+  - Public
+  - Class
+- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  commentId: P:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  id: AnswerQuestions
+  parent: ClusterClient.Models.ServerQuestionsMessage
+  langs:
+  - csharp
+  - vb
+  name: AnswerQuestions
+  nameWithType: ServerQuestionsMessage.AnswerQuestions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  type: Property
+  source:
+    remote:
+      path: ClusterClient/Models/ServerQuestionsMessage.cs
+      branch: release-cluster-client-0.1.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: AnswerQuestions
+    path: Models/ServerQuestionsMessage.cs
+    startLine: 10
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public List<ServerQuestion> AnswerQuestions { get; set; }
+    parameters: []
+    return:
+      type: System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
+    content.vb: Public Property AnswerQuestions As List(Of ServerQuestion)
+  overload: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+references:
+- uid: ClusterClient.Models
+  commentId: N:ClusterClient.Models
+  name: ClusterClient.Models
+  nameWithType: ClusterClient.Models
+  fullName: ClusterClient.Models
+- uid: System.Object
+  commentId: T:System.Object
+  parent: System
+  isExternal: true
+  name: Object
+  nameWithType: Object
+  fullName: System.Object
+- uid: ClusterClient.Models.ServerMessage
+  commentId: T:ClusterClient.Models.ServerMessage
+  parent: ClusterClient.Models
+  name: ServerMessage
+  nameWithType: ServerMessage
+  fullName: ClusterClient.Models.ServerMessage
+- uid: ClusterClient.Models.ServerMessage.Action
+  commentId: P:ClusterClient.Models.ServerMessage.Action
+  parent: ClusterClient.Models.ServerMessage
+  name: Action
+  nameWithType: ServerMessage.Action
+  fullName: ClusterClient.Models.ServerMessage.Action
+- uid: ClusterClient.Models.ServerMessage.UserID
+  commentId: P:ClusterClient.Models.ServerMessage.UserID
+  parent: ClusterClient.Models.ServerMessage
+  name: UserID
+  nameWithType: ServerMessage.UserID
+  fullName: ClusterClient.Models.ServerMessage.UserID
+- uid: ClusterClient.Models.ServerMessage.StatusMessage
+  commentId: P:ClusterClient.Models.ServerMessage.StatusMessage
+  parent: ClusterClient.Models.ServerMessage
+  name: StatusMessage
+  nameWithType: ServerMessage.StatusMessage
+  fullName: ClusterClient.Models.ServerMessage.StatusMessage
+- uid: ClusterClient.Models.ServerMessage.StatusCode
+  commentId: P:ClusterClient.Models.ServerMessage.StatusCode
+  parent: ClusterClient.Models.ServerMessage
+  name: StatusCode
+  nameWithType: ServerMessage.StatusCode
+  fullName: ClusterClient.Models.ServerMessage.StatusCode
+- uid: System.Object.Equals(System.Object)
+  commentId: M:System.Object.Equals(System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object)
+  nameWithType: Object.Equals(Object)
+  fullName: System.Object.Equals(System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.Equals(System.Object,System.Object)
+  commentId: M:System.Object.Equals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: Equals(Object, Object)
+  nameWithType: Object.Equals(Object, Object)
+  fullName: System.Object.Equals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.Equals(System.Object,System.Object)
+    name: Equals
+    nameWithType: Object.Equals
+    fullName: System.Object.Equals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetHashCode
+  commentId: M:System.Object.GetHashCode
+  parent: System.Object
+  isExternal: true
+  name: GetHashCode()
+  nameWithType: Object.GetHashCode()
+  fullName: System.Object.GetHashCode()
+  spec.csharp:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetHashCode
+    name: GetHashCode
+    nameWithType: Object.GetHashCode
+    fullName: System.Object.GetHashCode
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.GetType
+  commentId: M:System.Object.GetType
+  parent: System.Object
+  isExternal: true
+  name: GetType()
+  nameWithType: Object.GetType()
+  fullName: System.Object.GetType()
+  spec.csharp:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.GetType
+    name: GetType
+    nameWithType: Object.GetType
+    fullName: System.Object.GetType
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.MemberwiseClone
+  commentId: M:System.Object.MemberwiseClone
+  parent: System.Object
+  isExternal: true
+  name: MemberwiseClone()
+  nameWithType: Object.MemberwiseClone()
+  fullName: System.Object.MemberwiseClone()
+  spec.csharp:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.MemberwiseClone
+    name: MemberwiseClone
+    nameWithType: Object.MemberwiseClone
+    fullName: System.Object.MemberwiseClone
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ReferenceEquals(System.Object,System.Object)
+  commentId: M:System.Object.ReferenceEquals(System.Object,System.Object)
+  parent: System.Object
+  isExternal: true
+  name: ReferenceEquals(Object, Object)
+  nameWithType: Object.ReferenceEquals(Object, Object)
+  fullName: System.Object.ReferenceEquals(System.Object, System.Object)
+  spec.csharp:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ReferenceEquals(System.Object,System.Object)
+    name: ReferenceEquals
+    nameWithType: Object.ReferenceEquals
+    fullName: System.Object.ReferenceEquals
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: ', '
+    nameWithType: ', '
+    fullName: ', '
+  - uid: System.Object
+    name: Object
+    nameWithType: Object
+    fullName: System.Object
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Object.ToString
+  commentId: M:System.Object.ToString
+  parent: System.Object
+  isExternal: true
+  name: ToString()
+  nameWithType: Object.ToString()
+  fullName: System.Object.ToString()
+  spec.csharp:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+  spec.vb:
+  - uid: System.Object.ToString
+    name: ToString
+    nameWithType: Object.ToString
+    fullName: System.Object.ToString
+    isExternal: true
+  - name: (
+    nameWithType: (
+    fullName: (
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System
+  commentId: N:System
+  isExternal: true
+  name: System
+  nameWithType: System
+  fullName: System
+- uid: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions*
+  commentId: Overload:ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+  name: AnswerQuestions
+  nameWithType: ServerQuestionsMessage.AnswerQuestions
+  fullName: ClusterClient.Models.ServerQuestionsMessage.AnswerQuestions
+- uid: System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
+  commentId: T:System.Collections.Generic.List{ClusterClient.Models.ServerQuestion}
+  parent: System.Collections.Generic
+  definition: System.Collections.Generic.List`1
+  name: List<ServerQuestion>
+  nameWithType: List<ServerQuestion>
+  fullName: System.Collections.Generic.List<ClusterClient.Models.ServerQuestion>
+  nameWithType.vb: List(Of ServerQuestion)
+  fullName.vb: System.Collections.Generic.List(Of ClusterClient.Models.ServerQuestion)
+  name.vb: List(Of ServerQuestion)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: ClusterClient.Models.ServerQuestion
+    name: ServerQuestion
+    nameWithType: ServerQuestion
+    fullName: ClusterClient.Models.ServerQuestion
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: ClusterClient.Models.ServerQuestion
+    name: ServerQuestion
+    nameWithType: ServerQuestion
+    fullName: ClusterClient.Models.ServerQuestion
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic.List`1
+  commentId: T:System.Collections.Generic.List`1
+  isExternal: true
+  name: List<T>
+  nameWithType: List<T>
+  fullName: System.Collections.Generic.List<T>
+  nameWithType.vb: List(Of T)
+  fullName.vb: System.Collections.Generic.List(Of T)
+  name.vb: List(Of T)
+  spec.csharp:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Collections.Generic.List`1
+    name: List
+    nameWithType: List
+    fullName: System.Collections.Generic.List
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: T
+    nameWithType: T
+    fullName: T
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Collections.Generic
+  commentId: N:System.Collections.Generic
+  isExternal: true
+  name: System.Collections.Generic
+  nameWithType: System.Collections.Generic
+  fullName: System.Collections.Generic

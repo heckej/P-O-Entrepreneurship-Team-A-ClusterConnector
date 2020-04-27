@@ -1,0 +1,22 @@
+### YamlMime:ManagedReference
+items:
+- uid: ClusterClient
+  commentId: N:ClusterClient
+  id: ClusterClient
+  children:
+  - ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: ClusterClient
+  nameWithType: ClusterClient
+  fullName: ClusterClient
+  type: Namespace
+  assemblies:
+  - ClusterClient
+references:
+- uid: ClusterClient.Connector
+  commentId: T:ClusterClient.Connector
+  name: Connector
+  nameWithType: Connector
+  fullName: ClusterClient.Connector

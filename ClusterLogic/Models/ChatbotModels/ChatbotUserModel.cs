@@ -8,13 +8,13 @@ namespace ClusterLogic.Models.ChatbotModels
 {
     public class ChatbotUserModel : BaseModel
     {
-        private int _user_id = -1;
+        private string _user_id = null;
 
-        public int user_id { get => _user_id; set => _user_id = value; }
+        public string user_id { get => _user_id; set => _user_id = value; }
 
         public bool IsComplete()
         {
-            return _user_id != -1;
+            return _user_id != null;
         }
     }
 }
