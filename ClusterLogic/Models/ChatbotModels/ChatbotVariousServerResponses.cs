@@ -76,14 +76,16 @@ namespace ClusterLogic.Models.ChatbotModels
         private int _answer_id;
         private string _answer;
         private float _certainty;
+        private string _question = null;
 
-        public ServerAnswerAfterQuestion(NewAnswerOffenseCheck newAnswerOffenseCheck, OffensivenessLogicResponse result, int answerId)
+        public ServerAnswerAfterQuestion(object openAnswerModel, NewAnswerOffenseCheck newAnswerOffenseCheck, OffensivenessLogicResponse result, int answerId, string question)
         {
-            user_id = newAnswerOffenseCheck.user_id;
+            user_id = newAnswerOffenseCheck.user_id; //openAnswerModel.user_id
             question_id = result.Question_id;
             answer_id = answerId;
             answer = newAnswerOffenseCheck.answer;
             certainty = .75f;
+            this.question = question;
         }
 
         public string user_id { get => _user_id; set => _user_id = value; }
@@ -92,5 +94,6 @@ namespace ClusterLogic.Models.ChatbotModels
         public string action { get => _action; set => _action = value; }
         public string answer { get => _answer; set => _answer = value; }
         public float certainty { get => _certainty; set => _certainty = value; }
+        public string question { get => _question; set => _question = value; }
     }
 }

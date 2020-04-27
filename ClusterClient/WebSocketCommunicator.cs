@@ -25,12 +25,12 @@ namespace ClusterClient
         /// <param name="sendQueue">A queue in which the messages to be sent can be found.</param>
         /// <param name="connectionTimeout">The timeout to be set when connecting to the websocket host.</param>
         /// <param name="cancellationToken">The cancellation token to be used to stop this thread from running.</param>
-        public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, MethodToPassMessageToClient passMessageToClient,
+        public WebSocketCommunicator(Uri webSocketURI, Queue<Exception> exceptionQueue, Func<string, Task> passMessageToClient,
             Queue<string> sendQueue, int connectionTimeout, CancellationToken cancellationToken, string authorization)
         {
             this.webSocketURI = webSocketURI;
             this.exceptionQueue = exceptionQueue;
-            this.PassMessageToClient = passMessageToClient;
+            this.PassMessageToClientAsync = passMessageToClient;
             this.sendQueue = sendQueue;
             this.connectionTimeoutSeconds = connectionTimeout;
             this.cancellationToken = cancellationToken;
@@ -74,15 +74,9 @@ namespace ClusterClient
         private int connectionTimeoutSeconds;
 
         /// <summary>
-        /// An instance method of the calling class that handles received messages.
-        /// </summary>
-        /// <param name="messageFromServer"></param>
-        public delegate void MethodToPassMessageToClient(string messageFromServer);
-
-        /// <summary>
         /// Variable referencing an instance method of the calling class that handles received messages.
         /// </summary>
-        private readonly MethodToPassMessageToClient PassMessageToClient;
+        private readonly Func<string, Task> PassMessageToClientAsync;
 
         /// <summary>
         /// A boolean enabling a constant check on websocket state.
@@ -137,9 +131,10 @@ namespace ClusterClient
         /// </summary>
         /// <param name="message">The message to be passed on to the calling class instance.</param>
         /// <returns></returns>
-        private void ProcessReceivedMessage(string message)
+        private async void ProcessReceivedMessage(string message)
         {
-            this.PassMessageToClient(message);
+            Console.WriteLine("Processing received message: " + message);
+            await this.PassMessageToClientAsync(message);
         }
 
         /// <summary>

@@ -60,6 +60,53 @@ namespace ClusterConnector
             msgIdToUserID.Add(msg_id, new NewAnswerOffenseCheck(question_id, answer, user_id));
             return msg_id;
         }
+
+        static Dictionary<char, String> forbiddenSQL = null;
+        public static String UserInputToSQLSafe(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            int index = 0;
+            while (index != userInput.Length)
+            {
+                char c = userInput[index];
+                if (forbiddenSQL.ContainsKey(c))
+                {
+                    userInput = userInput.Insert(index++, "\\");
+                }
+                index++;
+            }
+            return userInput;
+        }
+
+        public static String SQLSafeToUserInput(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            int index = 1;
+            while (index != userInput.Length)
+            {
+                char c = userInput[index];
+                if (forbiddenSQL.ContainsKey(c) && userInput[index - 1] == '\\')
+                {
+                    userInput = userInput.Remove(index - 1, 1);
+                    index = index - 1;
+                }
+                index++;
+            }
+            return userInput;
+        }
+
+        private static void CreateForbiddenDict()
+        {
+            forbiddenSQL = new Dictionary<char, string>();
+            forbiddenSQL.Add('\'', "\'");
+            forbiddenSQL.Add('"', "\\\"");
+        }
     }
 
     public interface ServerData

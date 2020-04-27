@@ -12,6 +12,7 @@ namespace ClusterAPI
     {
         static void Main(string[] args)
         {
+            /*
             int command = -1;
 
             while (int.TryParse(Console.ReadLine(), out command)) {
@@ -35,7 +36,60 @@ namespace ClusterAPI
                         break;
                 }
             }
+            */
+            String s = "This is a \"test\"";
+            Console.Out.WriteLine(s);
+            String s2 = UserInputToSQLSafe(s);
+            Console.Out.WriteLine(s2);
+            String s3 = SQLSafeToUserInput(s2);
+            Console.Out.WriteLine(s3);
+        }
 
+        static Dictionary<char, String> forbiddenSQL = null;
+        public static String UserInputToSQLSafe(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            int index = 0;
+            while (index != userInput.Length)
+            {
+                char c = userInput[index];
+                if (forbiddenSQL.ContainsKey(c))
+                {
+                    userInput = userInput.Insert(index++, "\\");
+                }
+                index++;
+            }
+            return userInput;
+        }
+
+        public static String SQLSafeToUserInput(String userInput)
+        {
+            if (forbiddenSQL == null)
+            {
+                CreateForbiddenDict();
+            }
+            int index = 1;
+            while (index != userInput.Length)
+            {
+                char c = userInput[index];
+                if (forbiddenSQL.ContainsKey(c) && userInput[index - 1] == '\\')
+                {
+                    userInput = userInput.Remove(index - 1, 1);
+                    index = index - 1;
+                }
+                index++;
+            }
+            return userInput;
+        }
+
+        private static void CreateForbiddenDict()
+        {
+            forbiddenSQL = new Dictionary<char, string>();
+            forbiddenSQL.Add('\'', "\'");
+            forbiddenSQL.Add('"', "\\\"");
         }
     }
 }
