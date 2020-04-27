@@ -197,7 +197,7 @@ namespace ClusterClient
                 allTasks.Insert(0, checkStateTask);
             }
 
-            await Task.WhenAny(allTasks);
+            var finished = await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
