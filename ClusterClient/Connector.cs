@@ -208,24 +208,24 @@ namespace ClusterClient
         /// </summary>
         private static readonly HttpClient httpClient = new HttpClient();
 
-        private static string _endPoint = null;
+        private string _endPoint = null;
         /// <summary>
         /// The end point uri to which proactive messages should be sent.
         /// </summary>
-        public static string EndPointAddress { get => _endPoint; set => _endPoint = value; }
+        public string EndPointAddress { get => _endPoint; set => _endPoint = value; }
 
         /// <summary>
         /// Set containing the user id's of the users for whom proactive messaging is disabled.
         /// </summary>
-        private static readonly ISet<string> _blockProactiveMessagingUsers = new HashSet<string>();
+        private readonly ISet<string> _blockProactiveMessagingUsers = new HashSet<string>();
 
         /// <summary>
         /// Disables proactive messaging for a user.
         /// </summary>
         /// <param name="userID">The user id of the user for whom proactive messaging should be disabled.</param>
-        public static void BlockProactiveMessagingForUser(string userID)
+        public void BlockProactiveMessagingForUser(string userID)
         {
-            Connector._blockProactiveMessagingUsers.Add(userID);
+            this._blockProactiveMessagingUsers.Add(userID);
         }
 
         /// <summary>
@@ -233,9 +233,9 @@ namespace ClusterClient
         /// Proactive messaging is enabled by default if the <c>EndPointAddress</c> of this connector is set.
         /// </summary>
         /// <param name="userID">The user id of the user for whom proactive messaging should be enabled.</param>
-        public static void UnblockProactiveMessagingForUser(string userID)
+        public void UnblockProactiveMessagingForUser(string userID)
         {
-            Connector._blockProactiveMessagingUsers.Remove(userID);
+            this._blockProactiveMessagingUsers.Remove(userID);
         }
 
         /// <summary>
@@ -243,9 +243,9 @@ namespace ClusterClient
         /// </summary>
         /// <param name="userID">The user id of the user for whom proactive the messaging blocking state should be checked</param>
         /// <returns></returns>
-        public static bool ProactiveMessagingBlockedForUser(string userID)
+        public bool ProactiveMessagingBlockedForUser(string userID)
         {
-            return Connector._blockProactiveMessagingUsers.Contains(userID);
+            return this._blockProactiveMessagingUsers.Contains(userID);
         }
 
         /// <summary>
@@ -256,7 +256,7 @@ namespace ClusterClient
         private async Task<bool> SendMessageToEndPoint(string content)
         {
             var httpContent = new StringContent(content, Encoding.UTF8, "application/json");
-            var response = await Connector.httpClient.PostAsync(Connector.EndPointAddress, httpContent);
+            var response = await Connector.httpClient.PostAsync(this.EndPointAddress, httpContent);
             return (int)response.StatusCode >= 200 && (int)response.StatusCode < 300;
 
         }
