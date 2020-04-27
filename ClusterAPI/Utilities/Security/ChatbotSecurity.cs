@@ -9,7 +9,7 @@ namespace ClusterAPI.Controllers.Security
     {
         public bool Authenticate(IEnumerable<string> enumerable)
         {
-            if (enumerable == null)
+            if (enumerable == null | enumerable.First() == "chatbot")
             {
                 return false;
             }

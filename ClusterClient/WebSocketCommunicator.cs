@@ -88,12 +88,8 @@ namespace ClusterClient
         /// </summary>
         public void Run()
         {
-            Console.WriteLine("Running thread.");
             Task task = this.CommunicateWithServerAsync();
             task.Wait();
-            Console.WriteLine("End of run method. Thread should return.");
-            Console.WriteLine("Cancellation requested: " + this.cancellationToken.IsCancellationRequested);
-            Console.WriteLine("Thread state at run end: " + Thread.CurrentThread.ThreadState);
         }
 
         /// <summary>
@@ -104,39 +100,30 @@ namespace ClusterClient
         {
             while (true)
             {
-                Console.WriteLine("Thread state at receive begin: " + Thread.CurrentThread.ThreadState);
-                Console.WriteLine("Cancellation requested (receive): " + this.cancellationToken.IsCancellationRequested);
                 this.cancellationToken.ThrowIfCancellationRequested();
-                Console.WriteLine("No cancellation exception thrown. Waiting for result.");
                 // Reserve 1 kB buffer to store received message.
                 ArraySegment<byte> bytesReceived = new ArraySegment<byte>(new byte[1024]);
                 WebSocketReceiveResult result = await this.webSocket.ReceiveAsync(
                             bytesReceived, this.cancellationToken);
-                Console.WriteLine("Result received: " + result);
                 try
                 {
                     string message = Encoding.UTF8.GetString(bytesReceived.Array, 0, result.Count);
                     this.ProcessReceivedMessage(message);
-                    Console.WriteLine("Message processed: " + message);
                 }
                 catch (ArgumentNullException)
                 {
                     Debug.WriteLine("Websocket returned null message.");
-                    Console.WriteLine("Websocket returned null message.");
                 }   
                 catch (ArgumentException)
                 {
                     Debug.WriteLine("Received message contains invalid unicode code points and will be ignored.");
-                    Console.WriteLine("Received message contains invalid unicode code points and will be ignored.");
                 }
                 catch(Exception e)
                 {
-                    Console.WriteLine("Unexpected: " + e);
+                    Debug.WriteLine("Unexpected exception while receiving task: " + e);
                 }
-
+                
             }
-            // Console.WriteLine("Thread state at receive end: " + Thread.CurrentThread.ThreadState);
-            // Console.WriteLine("End of receive messages.");
         }
 
         /// <summary>
@@ -200,8 +187,6 @@ namespace ClusterClient
         /// <returns></returns>
         private async Task HandleSendReceiveTasksAsync()
         {
-            Console.WriteLine("Handling sending and receiving messages.");
-            Console.WriteLine("Thread state at handler begin: " + Thread.CurrentThread.ThreadState);
             var sendTask = this.SendMessagesAsync();
             var receiveTask = this.ReceiveMessagesAsync();
             Task checkStateTask = null;
@@ -212,7 +197,7 @@ namespace ClusterClient
                 allTasks.Insert(0, checkStateTask);
             }
 
-            var finished = await Task.WhenAny(allTasks);
+            await Task.WhenAny(allTasks);
             /*In case of resource issues, we could try to dispose the tasks, given they must be finished by now, 
             because they can only return when the cancellation token is cancelled.*/
             /*foreach (var task in allTasks)
@@ -340,7 +325,6 @@ namespace ClusterClient
         private async Task ConnectToServerAsync()
         {
             CancellationTokenSource tempCancellationSource = new CancellationTokenSource(this.connectionTimeoutSeconds*1000);
-            Console.WriteLine("Trying to connect during " + this.connectionTimeoutSeconds * 1000 + "ms.");
             await this.webSocket.ConnectAsync(this.webSocketURI, tempCancellationSource.Token);
             Console.WriteLine("Cancelled by timeout: " + tempCancellationSource.Token.IsCancellationRequested);
             Console.WriteLine("Connected.");
