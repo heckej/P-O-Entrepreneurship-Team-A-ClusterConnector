@@ -192,6 +192,7 @@ namespace ClusterClient
 
         /// <summary>
         /// Enables a constant check of the websocket state on the debugging output stream.
+        /// Not that this is a very CPU consuming option.
         /// </summary>
         /// <param name="flag"></param>
         public void EnableWebSocketStateCheck(bool flag)
