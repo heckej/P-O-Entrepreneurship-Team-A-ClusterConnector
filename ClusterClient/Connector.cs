@@ -262,6 +262,50 @@ namespace ClusterClient
         }
 
         /// <summary>
+        /// Set containing the user id's of the users who missed proactive messages.
+        /// </summary>
+        private readonly ISet<string> _missedProactiveMessagesUsers = new HashSet<string>();
+
+        /// <summary>
+        /// Checks whether proactive messages couldn't be sent to a user because they were blocked.
+        /// </summary>
+        /// <param name="userID">The user id of the user for whom should be checked whether proactive messages have been missed.</param>
+        /// <returns></returns>
+        public bool MissedProactiveMessagesForUser(string userID)
+        {
+            return this._missedProactiveMessagesUsers.Contains(userID);
+        }
+
+        /// <summary>
+        /// Sets the missed proactive message flag for a user.
+        /// </summary>
+        /// <param name="enable">The flag to be set.</param>
+        /// <param name="userID">The user id of the user for whom the flag should be set.</param>
+        private void SetMissedProactiveMessagesForUser(bool enable, string userID)
+        {
+            if (enable)
+                this._missedProactiveMessagesUsers.Add(userID);
+            else
+                this._missedProactiveMessagesUsers.Remove(userID);
+        }
+
+        /// <summary>
+        /// Sets the missed proactive messages flag for all users to false.
+        /// </summary>
+        /// <list type="table">
+        ///     <item>
+        ///         <term>Post</term>
+        ///         <description>
+        ///         For every userID, <c>MissedProactiveMessagesForUser(userID)</c> equals false.
+        ///         </description>
+        ///     </item>
+        /// </list>
+        private void ClearMissedProactiveMessagesFlagForAllUsers()
+        {
+            this._missedProactiveMessagesUsers.Clear();
+        }
+
+        /// <summary>
         /// Parses and stores a message received from the server, so it can be retrieved by another method later on.
         /// </summary>
         /// <param name="serverMessage">A message from the server that should be stored.</param>
