@@ -5,6 +5,7 @@ items:
   id: ClusterClient.Models
   children:
   - ClusterClient.Models.Actions
+  - ClusterClient.Models.FeedbackStatusCode
   - ClusterClient.Models.Requests
   - ClusterClient.Models.ServerAnswer
   - ClusterClient.Models.ServerMessage
@@ -62,6 +63,12 @@ references:
   name: ServerStatusCode
   nameWithType: ServerStatusCode
   fullName: ClusterClient.Models.ServerStatusCode
+- uid: ClusterClient.Models.FeedbackStatusCode
+  commentId: T:ClusterClient.Models.FeedbackStatusCode
+  parent: ClusterClient.Models
+  name: FeedbackStatusCode
+  nameWithType: FeedbackStatusCode
+  fullName: ClusterClient.Models.FeedbackStatusCode
 - uid: ClusterClient.Models.UserAnswer
   commentId: T:ClusterClient.Models.UserAnswer
   parent: ClusterClient.Models

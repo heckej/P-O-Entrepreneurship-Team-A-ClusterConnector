@@ -5,6 +5,7 @@ items:
   id: UserMessage
   parent: ClusterClient.Models
   children:
+  - ClusterClient.Models.UserMessage.action
   - ClusterClient.Models.UserMessage.ToJson
   - ClusterClient.Models.UserMessage.user_id
   langs:
@@ -17,7 +18,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserMessage
     path: Models/UserMessage.cs
@@ -62,11 +63,11 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: user_id
     path: Models/UserMessage.cs
-    startLine: 10
+    startLine: 11
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
@@ -77,6 +78,41 @@ items:
       type: System.String
     content.vb: Public Property user_id As String
   overload: ClusterClient.Models.UserMessage.user_id*
+  modifiers.csharp:
+  - public
+  - get
+  - set
+  modifiers.vb:
+  - Public
+- uid: ClusterClient.Models.UserMessage.action
+  commentId: P:ClusterClient.Models.UserMessage.action
+  id: action
+  parent: ClusterClient.Models.UserMessage
+  langs:
+  - csharp
+  - vb
+  name: action
+  nameWithType: UserMessage.action
+  fullName: ClusterClient.Models.UserMessage.action
+  type: Property
+  source:
+    remote:
+      path: ClusterClient/Models/UserMessage.cs
+      branch: release-cluster-client-1.2.0
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: action
+    path: Models/UserMessage.cs
+    startLine: 12
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient.Models
+  syntax:
+    content: public string action { get; set; }
+    parameters: []
+    return:
+      type: System.String
+    content.vb: Public Property action As String
+  overload: ClusterClient.Models.UserMessage.action*
   modifiers.csharp:
   - public
   - get
@@ -97,11 +133,11 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ToJson
     path: Models/UserMessage.cs
-    startLine: 12
+    startLine: 14
   assemblies:
   - ClusterClient
   namespace: ClusterClient.Models
@@ -427,6 +463,11 @@ references:
   name: String
   nameWithType: String
   fullName: System.String
+- uid: ClusterClient.Models.UserMessage.action*
+  commentId: Overload:ClusterClient.Models.UserMessage.action
+  name: action
+  nameWithType: UserMessage.action
+  fullName: ClusterClient.Models.UserMessage.action
 - uid: ClusterClient.Models.UserMessage.ToJson*
   commentId: Overload:ClusterClient.Models.UserMessage.ToJson
   name: ToJson

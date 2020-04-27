@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserAnswersMessage
     path: Models/UserAnswersMessage.cs
@@ -37,6 +37,7 @@ items:
   - ClusterClient.Models.UserMessage
   inheritedMembers:
   - ClusterClient.Models.UserMessage.user_id
+  - ClusterClient.Models.UserMessage.action
   - System.Object.Equals(System.Object)
   - System.Object.Equals(System.Object,System.Object)
   - System.Object.GetHashCode
@@ -64,7 +65,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: answer_questions
     path: Models/UserAnswersMessage.cs
@@ -99,7 +100,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswer
     path: Models/UserAnswersMessage.cs
@@ -132,7 +133,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswers
     path: Models/UserAnswersMessage.cs
@@ -168,7 +169,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ToJson
     path: Models/UserAnswersMessage.cs
@@ -214,6 +215,12 @@ references:
   name: user_id
   nameWithType: UserMessage.user_id
   fullName: ClusterClient.Models.UserMessage.user_id
+- uid: ClusterClient.Models.UserMessage.action
+  commentId: P:ClusterClient.Models.UserMessage.action
+  parent: ClusterClient.Models.UserMessage
+  name: action
+  nameWithType: UserMessage.action
+  fullName: ClusterClient.Models.UserMessage.action
 - uid: System.Object.Equals(System.Object)
   commentId: M:System.Object.Equals(System.Object)
   parent: System.Object

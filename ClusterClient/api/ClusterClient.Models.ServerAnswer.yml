@@ -21,7 +21,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerAnswer
     path: Models/ServerAnswer.cs
@@ -69,7 +69,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: question_id
     path: Models/ServerAnswer.cs
@@ -104,7 +104,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: question
     path: Models/ServerAnswer.cs
@@ -139,7 +139,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: answer_id
     path: Models/ServerAnswer.cs
@@ -174,7 +174,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: answer
     path: Models/ServerAnswer.cs
@@ -209,7 +209,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: chatbot_temp_id
     path: Models/ServerAnswer.cs
@@ -244,7 +244,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerAnswer.cs
-      branch: release-cluster-client-1.1.0
+      branch: release-cluster-client-1.2.0
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: certainty
     path: Models/ServerAnswer.cs

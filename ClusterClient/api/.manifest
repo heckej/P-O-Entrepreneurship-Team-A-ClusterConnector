@@ -25,8 +25,12 @@
   "ClusterClient.Models.Actions": "ClusterClient.Models.Actions.yml",
   "ClusterClient.Models.Actions.Answer": "ClusterClient.Models.Actions.yml",
   "ClusterClient.Models.Actions.Default": "ClusterClient.Models.Actions.yml",
+  "ClusterClient.Models.Actions.Feedback": "ClusterClient.Models.Actions.yml",
   "ClusterClient.Models.Actions.GetActions": "ClusterClient.Models.Actions.yml",
   "ClusterClient.Models.Actions.Questions": "ClusterClient.Models.Actions.yml",
+  "ClusterClient.Models.FeedbackStatusCode": "ClusterClient.Models.FeedbackStatusCode.yml",
+  "ClusterClient.Models.FeedbackStatusCode.Negative": "ClusterClient.Models.FeedbackStatusCode.yml",
+  "ClusterClient.Models.FeedbackStatusCode.Positive": "ClusterClient.Models.FeedbackStatusCode.yml",
   "ClusterClient.Models.Requests": "ClusterClient.Models.Requests.yml",
   "ClusterClient.Models.Requests.Default": "ClusterClient.Models.Requests.yml",
   "ClusterClient.Models.Requests.GetRequests": "ClusterClient.Models.Requests.yml",
@@ -62,6 +66,7 @@
   "ClusterClient.Models.UserAnswersMessage.answer_questions": "ClusterClient.Models.UserAnswersMessage.yml",
   "ClusterClient.Models.UserAnswersMessage.ToJson": "ClusterClient.Models.UserAnswersMessage.yml",
   "ClusterClient.Models.UserMessage": "ClusterClient.Models.UserMessage.yml",
+  "ClusterClient.Models.UserMessage.action": "ClusterClient.Models.UserMessage.yml",
   "ClusterClient.Models.UserMessage.ToJson": "ClusterClient.Models.UserMessage.yml",
   "ClusterClient.Models.UserMessage.user_id": "ClusterClient.Models.UserMessage.yml"
 }
