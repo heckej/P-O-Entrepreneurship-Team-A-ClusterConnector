@@ -345,7 +345,7 @@ namespace ClusterClient
 
             bool addToReceivedMessages = this.ProactiveMessagingBlockedForUser(parsedMessage.user_id);
             if (!addToReceivedMessages)
-                addToReceivedMessages = await this.SendMessageToEndPointAsync(serverMessage, action);
+                addToReceivedMessages = !(await this.SendMessageToEndPointAsync(serverMessage, action));
             if (addToReceivedMessages)
             {
                 this.InitializeReceivedMessagesActionForUser(action, parsedMessage.user_id);
