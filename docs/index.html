@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Clusterdocs</title>
+    <style>
+      body {
+        text-align: center;
+        background-color: rgb(31, 62, 80);
+        color: white;
+        font-family: sans-serif;
+        margin: 0;
+        height: 90vh; // stretch body to the whole page
+        display: flex; // define a flex container
+        flex-direction: column; // arrange items in column
+        justify-content: center; // align vertically center
+
+      }
+
+      button.library-name {
+        font-family: Lucida Console;
+        margin: 1em;
+        padding: 1em;
+        width: 20em;
+        background: white;
+        color: rgb(48, 102, 156);
+        /*border: rgb(115, 196, 196) solid 0.25em;*/
+        border: none;
+        cursor: pointer;
+      }
+
+      button.library-name:hover {
+        background: rgb(230, 230, 230);
+      }
+
+      #logo {
+        height: 300px;
+        width: 300px;
+        border: white 0.75em solid;
+        border-radius: 50%;
+        padding: 1em;
+        margin: 1em;
+      }
+
+      footer {
+        margin-top: 2em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Clusterdocs</h1>
+    <img id="logo" src="logo.png" alt="Cluster logo"><br>
+    <button onclick="window.location.href = 'cluster-connector'" class="library-name" type="button" name="cluster-connector">cluster-connector (Python)</button><br>
+    <button onclick="window.location.href = 'ClusterClient'" class="library-name" type="button" name="ClusterClient">ClusterClient (C#)</button>
+    <footer>Copyright &copy; 2020</footer>
+  </body>
+</html>
