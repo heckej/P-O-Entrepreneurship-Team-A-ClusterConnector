@@ -19,7 +19,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UserAnswersMessage
     path: Models/UserAnswersMessage.cs
@@ -65,7 +65,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: answer_questions
     path: Models/UserAnswersMessage.cs
@@ -100,7 +100,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswer
     path: Models/UserAnswersMessage.cs
@@ -133,7 +133,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AddAnswers
     path: Models/UserAnswersMessage.cs
@@ -169,7 +169,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/UserAnswersMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ToJson
     path: Models/UserAnswersMessage.cs
