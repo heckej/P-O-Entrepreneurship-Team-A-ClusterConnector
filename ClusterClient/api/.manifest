@@ -17,6 +17,7 @@
   "ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions(System.String,System.Double)": "ClusterClient.Connector.yml",
   "ClusterClient.Connector.ResetConnection": "ClusterClient.Connector.yml",
   "ClusterClient.Connector.SendFeedbackOnAnswer(System.String,System.Int32,System.Int32,System.Int32)": "ClusterClient.Connector.yml",
+  "ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)": "ClusterClient.Connector.yml",
   "ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)": "ClusterClient.Connector.yml",
   "ClusterClient.Connector.StoreMessageFromServerAsync(System.String)": "ClusterClient.Connector.yml",
   "ClusterClient.Connector.SurpressConnectionErrors": "ClusterClient.Connector.yml",
