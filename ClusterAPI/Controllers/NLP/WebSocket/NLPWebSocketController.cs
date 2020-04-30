@@ -287,6 +287,12 @@ namespace ClusterAPI.Controllers.NLP
                                         if (temp != null)
                                         {
                                             NLPWebSocketController.SendQuestionMatchRequest(temp);
+                                        }else if (temp.compare_questions.Length == 0)
+                                        {
+                                            int question_id = ProcessChatbotLogic.SaveQuestionToDatabase((NewOpenQuestion)ServerUtilities.msgIdToUserID[result.Msg_id]);
+                                            String user_id = ((NewOpenQuestion)ServerUtilities.msgIdToUserID[((MatchQuestionModelResponse)model.Value.First()).msg_id]).user_id;
+                                            ChatbotWebSocketController.SendAnswerToQuestion(new ServerResponseNoAnswerToQuestion(result, (MatchQuestionModelResponse)model.Value.First(), question_id));
+                                            ProcessChatbotLogic.AddNewOpenAnswer(user_id, question_id);
                                         }
                                     }
                                 }else if (ServerUtilities.msgIdToUserID[result.Msg_id] is NewOpenQuestion)
