@@ -21,6 +21,7 @@ items:
   - ClusterClient.Connector.RequestAndRetrieveUnansweredQuestions(System.String,System.Double)
   - ClusterClient.Connector.ResetConnection
   - ClusterClient.Connector.SendFeedbackOnAnswer(System.String,System.Int32,System.Int32,System.Int32)
+  - ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)
   - ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
   - ClusterClient.Connector.StoreMessageFromServerAsync(System.String)
   - ClusterClient.Connector.SurpressConnectionErrors
@@ -35,7 +36,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: Connector
     path: Connector.cs
@@ -78,7 +79,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: .ctor
     path: Connector.cs
@@ -120,7 +121,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ResetConnection
     path: Connector.cs
@@ -152,7 +153,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: CloseWebSocketConnection
     path: Connector.cs
@@ -184,7 +185,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: EnableWebSocketStateCheck
     path: Connector.cs
@@ -220,7 +221,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SurpressConnectionErrors
     path: Connector.cs
@@ -252,7 +253,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: EndPointAddress
     path: Connector.cs
@@ -289,7 +290,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: BlockProactiveMessagingForUser
     path: Connector.cs
@@ -325,7 +326,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: UnblockProactiveMessagingForUser
     path: Connector.cs
@@ -361,7 +362,7 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ProactiveMessagingBlockedForUser
     path: Connector.cs
@@ -386,6 +387,47 @@ items:
   - public
   modifiers.vb:
   - Public
+- uid: ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)
+  commentId: M:ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)
+  id: SendMessageToEndPointAsync(System.String,System.String)
+  parent: ClusterClient.Connector
+  langs:
+  - csharp
+  - vb
+  name: SendMessageToEndPointAsync(String, String)
+  nameWithType: Connector.SendMessageToEndPointAsync(String, String)
+  fullName: ClusterClient.Connector.SendMessageToEndPointAsync(System.String, System.String)
+  type: Method
+  source:
+    remote:
+      path: ClusterClient/Connector.cs
+      branch: cluster-client-c#
+      repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
+    id: SendMessageToEndPointAsync
+    path: Connector.cs
+    startLine: 259
+  assemblies:
+  - ClusterClient
+  namespace: ClusterClient
+  summary: "\nSends a json string to the end point of this connector.\n"
+  example: []
+  syntax:
+    content: public Task<bool> SendMessageToEndPointAsync(string content, string route = "no_action")
+    parameters:
+    - id: content
+      type: System.String
+      description: The json string to be sent.
+    - id: route
+      type: System.String
+    return:
+      type: System.Threading.Tasks.Task{System.Boolean}
+      description: True if and only if the end point address of this connector is set and the response code is 2xx.
+    content.vb: Public Function SendMessageToEndPointAsync(content As String, route As String = "no_action") As Task(Of Boolean)
+  overload: ClusterClient.Connector.SendMessageToEndPointAsync*
+  modifiers.csharp:
+  - public
+  modifiers.vb:
+  - Public
 - uid: ClusterClient.Connector.MissedProactiveMessagesForUser(System.String)
   commentId: M:ClusterClient.Connector.MissedProactiveMessagesForUser(System.String)
   id: MissedProactiveMessagesForUser(System.String)
@@ -400,11 +442,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: MissedProactiveMessagesForUser
     path: Connector.cs
-    startLine: 295
+    startLine: 285
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -439,30 +481,30 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: StoreMessageFromServerAsync
     path: Connector.cs
-    startLine: 343
+    startLine: 333
   assemblies:
   - ClusterClient
   namespace: ClusterClient
   summary: "\nParses and stores a message received from the server, so it can be retrieved by another method later on.\n"
   example: []
   syntax:
-    content: protected Task StoreMessageFromServerAsync(string serverMessage)
+    content: public Task StoreMessageFromServerAsync(string serverMessage)
     parameters:
     - id: serverMessage
       type: System.String
       description: A message from the server that should be stored.
     return:
       type: System.Threading.Tasks.Task
-    content.vb: Protected Function StoreMessageFromServerAsync(serverMessage As String) As Task
+    content.vb: Public Function StoreMessageFromServerAsync(serverMessage As String) As Task
   overload: ClusterClient.Connector.StoreMessageFromServerAsync*
   modifiers.csharp:
-  - protected
+  - public
   modifiers.vb:
-  - Protected
+  - Public
 - uid: ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
   commentId: M:ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
   id: SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
@@ -477,11 +519,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SendQuestionAndWaitForAnswer
     path: Connector.cs
-    startLine: 501
+    startLine: 491
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -526,11 +568,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetNewResponses
     path: Connector.cs
-    startLine: 556
+    startLine: 546
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -561,11 +603,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: GetNewAnswersForUser
     path: Connector.cs
-    startLine: 571
+    startLine: 561
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -600,11 +642,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: HasAnswerToQuestionOfUser
     path: Connector.cs
-    startLine: 607
+    startLine: 597
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -642,11 +684,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: RequestAndRetrieveUnansweredQuestions
     path: Connector.cs
-    startLine: 718
+    startLine: 708
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -687,11 +729,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestion
     path: Connector.cs
-    startLine: 859
+    startLine: 849
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -733,11 +775,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestion
     path: Connector.cs
-    startLine: 875
+    startLine: 865
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -776,11 +818,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: AnswerQuestions
     path: Connector.cs
-    startLine: 898
+    startLine: 888
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -821,11 +863,11 @@ items:
   source:
     remote:
       path: ClusterClient/Connector.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: SendFeedbackOnAnswer
     path: Connector.cs
-    startLine: 923
+    startLine: 913
   assemblies:
   - ClusterClient
   namespace: ClusterClient
@@ -1220,6 +1262,100 @@ references:
   name: ProactiveMessagingBlockedForUser
   nameWithType: Connector.ProactiveMessagingBlockedForUser
   fullName: ClusterClient.Connector.ProactiveMessagingBlockedForUser
+- uid: ClusterClient.Connector.SendMessageToEndPointAsync*
+  commentId: Overload:ClusterClient.Connector.SendMessageToEndPointAsync
+  name: SendMessageToEndPointAsync
+  nameWithType: Connector.SendMessageToEndPointAsync
+  fullName: ClusterClient.Connector.SendMessageToEndPointAsync
+- uid: System.Threading.Tasks.Task{System.Boolean}
+  commentId: T:System.Threading.Tasks.Task{System.Boolean}
+  parent: System.Threading.Tasks
+  definition: System.Threading.Tasks.Task`1
+  name: Task<Boolean>
+  nameWithType: Task<Boolean>
+  fullName: System.Threading.Tasks.Task<System.Boolean>
+  nameWithType.vb: Task(Of Boolean)
+  fullName.vb: System.Threading.Tasks.Task(Of System.Boolean)
+  name.vb: Task(Of Boolean)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - uid: System.Boolean
+    name: Boolean
+    nameWithType: Boolean
+    fullName: System.Boolean
+    isExternal: true
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks.Task`1
+  commentId: T:System.Threading.Tasks.Task`1
+  isExternal: true
+  name: Task<TResult>
+  nameWithType: Task<TResult>
+  fullName: System.Threading.Tasks.Task<TResult>
+  nameWithType.vb: Task(Of TResult)
+  fullName.vb: System.Threading.Tasks.Task(Of TResult)
+  name.vb: Task(Of TResult)
+  spec.csharp:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: <
+    nameWithType: <
+    fullName: <
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: '>'
+    nameWithType: '>'
+    fullName: '>'
+  spec.vb:
+  - uid: System.Threading.Tasks.Task`1
+    name: Task
+    nameWithType: Task
+    fullName: System.Threading.Tasks.Task
+    isExternal: true
+  - name: '(Of '
+    nameWithType: '(Of '
+    fullName: '(Of '
+  - name: TResult
+    nameWithType: TResult
+    fullName: TResult
+  - name: )
+    nameWithType: )
+    fullName: )
+- uid: System.Threading.Tasks
+  commentId: N:System.Threading.Tasks
+  isExternal: true
+  name: System.Threading.Tasks
+  nameWithType: System.Threading.Tasks
+  fullName: System.Threading.Tasks
 - uid: ClusterClient.Connector.MissedProactiveMessagesForUser*
   commentId: Overload:ClusterClient.Connector.MissedProactiveMessagesForUser
   name: MissedProactiveMessagesForUser
@@ -1237,12 +1373,6 @@ references:
   name: Task
   nameWithType: Task
   fullName: System.Threading.Tasks.Task
-- uid: System.Threading.Tasks
-  commentId: N:System.Threading.Tasks
-  isExternal: true
-  name: System.Threading.Tasks
-  nameWithType: System.Threading.Tasks
-  fullName: System.Threading.Tasks
 - uid: System.Exception
   commentId: T:System.Exception
   isExternal: true

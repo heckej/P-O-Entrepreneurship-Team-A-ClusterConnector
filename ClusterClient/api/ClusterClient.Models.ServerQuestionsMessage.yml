@@ -16,7 +16,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestionsMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerQuestionsMessage
     path: Models/ServerQuestionsMessage.cs
@@ -64,7 +64,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestionsMessage.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: answer_questions
     path: Models/ServerQuestionsMessage.cs

@@ -217,6 +217,19 @@ references:
   isSpec: "True"
   fullName: ClusterClient.Connector.SendFeedbackOnAnswer
   nameWithType: Connector.SendFeedbackOnAnswer
+- uid: ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)
+  name: SendMessageToEndPointAsync(String, String)
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendMessageToEndPointAsync_System_String_System_String_
+  commentId: M:ClusterClient.Connector.SendMessageToEndPointAsync(System.String,System.String)
+  fullName: ClusterClient.Connector.SendMessageToEndPointAsync(System.String, System.String)
+  nameWithType: Connector.SendMessageToEndPointAsync(String, String)
+- uid: ClusterClient.Connector.SendMessageToEndPointAsync*
+  name: SendMessageToEndPointAsync
+  href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendMessageToEndPointAsync_
+  commentId: Overload:ClusterClient.Connector.SendMessageToEndPointAsync
+  isSpec: "True"
+  fullName: ClusterClient.Connector.SendMessageToEndPointAsync
+  nameWithType: Connector.SendMessageToEndPointAsync
 - uid: ClusterClient.Connector.SendQuestionAndWaitForAnswer(System.String,System.String,System.Double)
   name: SendQuestionAndWaitForAnswer(String, String, Double)
   href: api/ClusterClient.Connector.html#ClusterClient_Connector_SendQuestionAndWaitForAnswer_System_String_System_String_System_Double_

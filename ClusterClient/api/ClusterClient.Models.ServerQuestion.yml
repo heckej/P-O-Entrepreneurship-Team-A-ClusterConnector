@@ -17,7 +17,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestion.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: ServerQuestion
     path: Models/ServerQuestion.cs
@@ -58,7 +58,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestion.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: question_id
     path: Models/ServerQuestion.cs
@@ -93,7 +93,7 @@ items:
   source:
     remote:
       path: ClusterClient/Models/ServerQuestion.cs
-      branch: release-cluster-client-1.2.0
+      branch: cluster-client-c#
       repo: https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector
     id: question
     path: Models/ServerQuestion.cs
