@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using ClusterClient;
 using ClusterClient.Models;
@@ -7,11 +10,12 @@ namespace ClusterClientConsole
 {
     class Program
     {
-        public static Connector con = new Connector("843iu233d3m4pxb1", "ws://localhost:39160/api/Chatbot/WS", 10);
+        public static Connector con = new Connector("843iu233d3m4pxb1", "ws://localhost:39160/api/Chatbot/WS", 1);
         
         static void Main(string[] args)
         {
             con.EndPointAddress = "http://localhost:3978/api/ClusterClient";
+            //con.EndPointAddress = "https://penobot.azurewebsites.net/api/ClusterClient";
             con.SurpressConnectionErrors();
             bool exit = false;
             string input;
@@ -28,6 +32,9 @@ namespace ClusterClientConsole
                         break;
                     case "r":
                         RequestQuestions();
+                        break;
+                    case "t":
+                        TestProactive();
                         break;
                     case "stop":
                         return;
@@ -78,6 +85,37 @@ namespace ClusterClientConsole
             {
                 Console.WriteLine(e);
             }
+        }
+
+        static void TestProactive()
+        {
+            var answer = new ServerAnswer()
+            {
+                user_id = "UNJN2HTDH:TNPMJ4WV7",
+                action = "answers",
+                answer = "Hey",
+                answer_id = 1,
+                certainty = 1.1,
+                chatbot_temp_id = 1,
+                question = "Hay",
+                question_id = 2,
+                status_code = 0,
+                status_msg = "OK"
+            };
+            var answer_questions = new List<ServerQuestion>();
+            answer_questions.Add(new ServerQuestion());
+            var questions = new ServerQuestionsMessage()
+            {
+                user_id = "",
+                action = Actions.Questions,
+                answer_questions = answer_questions,
+                status_code = 0,
+                status_msg = ""
+            };
+            var json = JsonSerializer.Serialize<ServerQuestionsMessage>(questions);
+            var done = con.SendMessageToEndPointAsync(json, Actions.Questions).Result;
+            con.StoreMessageFromServerAsync(json).Wait();
+            Console.WriteLine(done);
         }
     }
 }
