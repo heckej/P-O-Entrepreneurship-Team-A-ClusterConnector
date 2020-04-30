@@ -3,81 +3,60 @@
   <head>
     <meta charset="utf-8">
     <title>Clusterdocs</title>
-    <style>
-      body {
-        text-align: center;
-        background-color: rgb(31, 62, 80);
-        color: white;
-        font-family: sans-serif;
-        margin: 0;
-        height: 90vh; // stretch body to the whole page
-        display: flex; // define a flex container
-        flex-direction: column; // arrange items in column
-        justify-content: center; // align vertically center
-
-      }
-
-      button.library-name {
-        font-family: Lucida Console;
-        margin: 1em;
-        padding: 1em;
-        width: 20em;
-        background: white;
-        color: rgb(48, 102, 156);
-        /*border: rgb(115, 196, 196) solid 0.25em;*/
-        border: none;
-        cursor: pointer;
-      }
-
-      button.library-name:hover {
-        background: rgb(230, 230, 230);
-      }
-
-      .cover {
-        height: 300px;
-        padding: 1em;
-        margin: 1em;
-      }
-
-      #logo {
-          display: none;
-          height: 300px;
-          width: 300px;
-          border: white 0.75em solid;
-          border-radius: 50%;
-      }
-
-      #demo {
-        height: 300px;
-        margin: 1.75em;
-      }
-
-      a {
-        color: white;
-        text-decoration: none;
-      }
-
-      footer {
-        margin-top: 2em;
-      }
-    </style>
-    <script type="text/javascript">
-      function showLogo() {
-        document.getElementById('demo').style.display = "none";
-        document.getElementById('logo').style.display = "inline";
-      }
-    </script>
+    <link rel="stylesheet" href="styles/stylesheet.css">
   </head>
   <body>
     <h1>Clusterdocs</h1>
     <div class="cover">
-      <video id="demo" src="demo.mp4" controls="true" autoplay poster="logo.png" onended="showLogo()"></video><br>
-      <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-code"><img id="logo" src="logo.png" alt="Cluster logo"></a><br>
+      <video class="fadein" id="demo" src="demo.mp4" controls="true" autoplay="true" poster="logo.png" onended="showLogo()"></video><br>
+      <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-code"><img id="logo" class="fadeout" src="logo.png" alt="Cluster logo"></a><br>
+      <button class="button" id="skip-video" type="button" onclick="skipVideo()" name="button">Skip video</button>
     </div><br>
-    <button onclick="window.location.href = 'cluster-connector'" class="library-name" type="button" name="cluster-connector">cluster-connector (Python)</button>
-    <button onclick="window.location.href = 'ClusterClient'" class="library-name" type="button" name="ClusterClient">ClusterClient (C#)</button><br>
-    <button onclick="window.location.href = 'https://heckej.github.io/P-O-Entrepreneurship-Team-A-code/doc_NLP_faq_forum/faq_forum/'" class="library-name" type="button" name="ClusterClient">NLP Tools</button>
-    <button onclick="window.location.href = 'https://yvesdhondt.github.io/P-O-Entrepreneurship-Moderator/'" class="library-name" type="button" name="ClusterClient">Cluster Moderator</button>
+    <div class="content">
+      <div class="column column-repos" id="column-repos">
+        <h2>Repo's</h2>
+        <div class="content-column">
+          <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-code" class="button repo-name" name="cluster-code">Chatbot + NLP</a>
+          <a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-ClusterConnector" class="button repo-name" name="cluster-code">Cluster Connector</a>
+          <a href="https://github.com/yvesdhondt/P-O-Entrepreneurship-Moderator" class="button repo-name" name="cluster-code">Cluster Moderator</a>
+        </div>
+      </div>
+      <div class="column column-docs" id="column-docs">
+        <h2>Docs</h2>
+        <div class="content-column">
+          <a href="cluster-connector" class="button library-name" name="cluster-connector">cluster-connector (Python)</a>
+          <a href="ClusterClient" class="button library-name" name="ClusterClient">ClusterClient (C#)</a>
+          <a href="https://heckej.github.io/P-O-Entrepreneurship-Team-A-code/doc_NLP_faq_forum/faq_forum/" class="button library-name" name="ClusterClient">NLP Tools</a>
+          <a href="https://yvesdhondt.github.io/P-O-Entrepreneurship-Moderator/" class="button library-name" name="ClusterClient">Cluster Moderator</a>
+        </div>
+      </div>
+    </div>
     <footer><a href="https://github.com/heckej/P-O-Entrepreneurship-Team-A-code" >Copyright &copy; 2020 - Cluster</a></footer>
+    <script type="text/javascript">
+      var demo = document.getElementById('demo');
+      var logo = document.getElementById('logo');
+      var repos = document.getElementById('column-repos');
+      var docs = document.getElementById('column-docs');
+      var skipVideoButton = document.getElementById('skip-video');
+      function skipVideo() {
+          demo.style.display = "none";
+          logo.style.display = "inline";
+          logo.style.opacity = 1;
+          repos.style.display = "inline";
+          docs.style.display = "inline";
+          docs.style.opacity = 1;
+          repos.style.opacity = 1;
+          skipVideoButton.style.display = "none";
+      }
+      function showLogo() {
+        demo.classList.add("fadeout");
+        demo.classList.remove("fadein");
+        skipVideoButton.classList.add("fadeout");
+        skipVideoButton.classList.remove("fadein");
+        setTimeout(function () {
+          skipVideo();
+        }, 1500);
+      }
+    </script>
   </body>
 </html>

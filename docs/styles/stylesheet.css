@@ -1,0 +1,89 @@
+body {
+  text-align: center;
+  background-color: rgb(31, 62, 80);
+  color: white;
+  font-family: sans-serif;
+  margin: 0;
+  height: 90vh; /* stretch body to the whole page*/
+  display: flex; /* define a flex container*/
+  flex-direction: column; /* arrange items in column*/
+  justify-content: center; /* align vertically center*/
+
+}
+
+.content {
+  display: flex;
+}
+
+.content-column {
+  display: flex; /* define a flex container*/
+  flex-wrap: wrap;
+  /*flex-direction: column; /* arrange items in column*/
+  justify-content: center; /* align vertically center*/
+}
+
+.column {
+  display: flex;
+  flex-direction: column; /* arrange items in column*/
+  justify-content: center; /* align vertically center*/
+  width: 50%;
+  text-align: center;
+  display: none;
+  transition: all 1s;
+  opacity: 0;
+}
+
+.button {
+  font-family: Lucida Console;
+  margin: 1em;
+  padding: 1em;
+  width: 17em;
+  background: white;
+  color: rgb(48, 102, 156);
+  /*border: rgb(115, 196, 196) solid 0.25em;*/
+  border: none;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: rgb(230, 230, 230);
+}
+
+.cover {
+  height: 300px;
+  margin-bottom: 0.25em;
+}
+
+#logo {
+  display: none;
+  height: 300px;
+  width: 300px;
+  border: white 0.75em solid;
+  border-radius: 50%;
+  transition: all 1s ease-in-out;
+}
+
+#demo {
+  height: 300px;
+  margin: 1.75em;
+}
+
+.fadeout {
+  opacity: 0;
+  transition: all 1.5s ease-in-out;
+}
+
+.fadein {
+  opacity: 1;
+  transition: all 3s ease-in-out;
+}
+
+a {
+  color: white;
+  text-decoration: none;
+}
+
+footer {
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
