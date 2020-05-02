@@ -24,7 +24,7 @@ class WebsocketThread(threading.Thread):
     __version__ = '1.1.1'
 
     def __init__(self, websocket_uri: str, exception_queue: queue.Queue, add_tasks,
-                 reply_queue: collections.deque, loop, authorization, connection_timeout: float):
+                 reply_queue: queue.Queue, loop, authorization, connection_timeout: float):
         """
         Args:
             websocket_uri: A string containing the uri of the websocket host with which a connection should be made.
@@ -55,13 +55,6 @@ class WebsocketThread(threading.Thread):
         """Starts communication with the websocket host."""
         self._loop.run_until_complete(self._communicate_with_server())
         logging.debug("Thread " + self.getName() + " has stopped.")
-
-    async def _replies_to_send(self):
-        """Generates next reply to be sent and removes it from the reply queue."""
-        try:
-            yield self._reply_queue.popleft()
-        except IndexError:
-            raise StopAsyncIteration()
 
     async def _receive_handler(self):
         """Checks for new messages from server and processes them.
@@ -95,23 +88,15 @@ class WebsocketThread(threading.Thread):
     async def _send_handler(self):
         """Sends replies from reply queue.
 
-        Waits 0.5s if reply could not be sent. Waits 0.05s if no replies are available.
+        Waits 0.5s if reply could not be sent.
 
         Post: `self.stop` equals True
         """
         while not self.stop:
             try:
-                async for reply in self._replies_to_send():
-                    await self._websocket.send(reply)
-                    logging.debug("Reply sent: " + str(reply))
-            except StopAsyncIteration as e1:
-                #logging.debug(e1)
-                #logging.debug("No replies available.")
-                await asyncio.sleep(0.05)
-            except RuntimeError as e2:
-                #logging.debug(e2)
-                #logging.debug("Can't handle StopAsyncIteration.")
-                await asyncio.sleep(0.05)
+                reply = self._reply_queue.get()
+                await self._websocket.send(reply)
+                logging.debug("Reply sent: " + str(reply))
             except Exception as e:
                 logging.debug("Reply not sent.")
                 logging.exception(e)

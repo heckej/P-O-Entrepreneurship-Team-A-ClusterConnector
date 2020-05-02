@@ -98,7 +98,7 @@ class Connector(object):
         self._websocket_connection_timeout = websocket_connection_timeout
         self._websocket_uri = websocket_uri
         self._authorization = authorization
-        self._reply_queue = collections.deque()  # keep list of replies to send
+        self._reply_queue = queue.Queue()  # keep list of replies to send
         self._websocket_thread = None
         self._websocket_exceptions = queue.Queue()  # queue to keep exceptions thrown by websocket thread
         self._init_websocket_thread()
@@ -419,10 +419,11 @@ class Connector(object):
             Exception: Something went wrong while sending the reply to the server.
                 This exception may become more specific in a future release, but for now it is kept as general as
                 possible, so any implementation changes don't effect these specifications.
+            Full exception: the queue of messages to be sent is currently full.
         """
         self._checkout_websocket()
         action = self._tasks_in_progress[response['msg_id']]['action'].lower()
         if Actions.has_value(action) and response['msg_id'] in self._tasks_in_progress.keys():
             data = self._parse_request(response)
             del self._tasks_in_progress[response['msg_id']]
-            self._reply_queue.append(json.dumps(data))
+            self._reply_queue.put_nowait(json.dumps(data))
