@@ -568,7 +568,7 @@ namespace ClusterLogic.ChatbotHandler
             StringBuilder sb = new StringBuilder();
             sb.Append("UPDATE dbo.Answers ");
             sb.Append($"SET negative_feedback = negative_feedback + 1 ");
-            sb.Append($"WHERE answer_id = '{chatbotFeedbackModel.answer_id}'; ");
+            sb.Append($"WHERE answer_id = {chatbotFeedbackModel.answer_id}; ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
@@ -588,7 +588,7 @@ namespace ClusterLogic.ChatbotHandler
             StringBuilder sb = new StringBuilder();
             sb.Append("UPDATE dbo.Answers ");
             sb.Append($"SET positive_feedback = positive_feedback + 1 ");
-            sb.Append($"WHERE answer_id = '{chatbotFeedbackModel.answer_id}'; ");
+            sb.Append($"WHERE answer_id = {chatbotFeedbackModel.answer_id}; ");
             String sqlCommand = sb.ToString();
 
             manager.Read(sqlCommand);
