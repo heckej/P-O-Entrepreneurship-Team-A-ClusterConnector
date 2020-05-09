@@ -1,4 +1,5 @@
-﻿using ClusterLogic.Models;
+﻿using ClusterConnector.Manager;
+using ClusterLogic.Models;
 using ClusterLogic.NLPHandler;
 using System;
 using System.Collections.Generic;
@@ -37,12 +38,25 @@ namespace ClusterAPI
                 }
             }
             */
-            String s = "This is a \"test\"";
+            // Add a reference to the answer to the question
+            DBManager manager = new DBManager(true);
+
+            // Reference the new answer from the questions table
+            StringBuilder sb = new StringBuilder();
+            sb.Append("UPDATE dbo.Answers ");
+            sb.Append($"SET negative_feedback = negative_feedback + 1 ");
+            sb.Append($"WHERE answer_id = 111; ");
+            String sqlCommand = sb.ToString();
+
+            manager.Read(sqlCommand);
+            manager.Close();
+
+            /*String s = "This is a \"test\"";
             Console.Out.WriteLine(s);
             String s2 = UserInputToSQLSafe(s);
             Console.Out.WriteLine(s2);
             String s3 = SQLSafeToUserInput(s2);
-            Console.Out.WriteLine(s3);
+            Console.Out.WriteLine(s3);*/
         }
 
         static Dictionary<char, String> forbiddenSQL = null;
